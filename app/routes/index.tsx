@@ -82,6 +82,7 @@ const Index = () => {
               {name}
             </button>
           ))}
+          <input type="hidden" name="names" value={names.join(',')} />
         </div>
 
         <footer>
