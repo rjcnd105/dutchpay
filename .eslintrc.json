@@ -1,0 +1,27 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "extends": ["@remix-run/eslint-config", "plugin:prettier/recommended"],
+  "plugins": ["@typescript-eslint", "react", "jsx-a11y", "prettier", "simple-import-sort"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "ignorePatterns": ["*.config.ts", "*.config.js"],
+  "rules": {
+    "react/jsx-pascal-case": "off",
+    "react/function-component-definition": "off",
+    "react/prop-types": "off",
+    "no-multi-assign": "off",
+    "no-unused-vars": "warn",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "react-hooks/rules-of-hooks": "off"
+  }
+}
