@@ -1,0 +1,12 @@
+.ui_Button {
+    &.solid_primary400, &.solid_subOrange, &.solid_darkgrey {
+        @apply border-1 rounded-8;
+    }
+    &.solid_primary400 {
+        @apply border-primary400
+    }
+}
+
+.solid_primary400 {
+    @apply border-1 rounded-8;
+}

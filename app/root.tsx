@@ -1,7 +1,8 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
 
-import appCss from './styles/app.css'
+import pretendardCss from './styles/fonts/pretendard.css'
+import globalComponentStyle from './styles/globalComponentStyle.css'
 import globalStyles from './styles/globals.css'
 import styles from './tailwind.css'
 
@@ -12,14 +13,15 @@ export const meta: MetaFunction = () => ({
 })
 
 export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: pretendardCss },
   { rel: 'stylesheet', href: styles },
-  { rel: 'stylesheet', href: appCss },
   { rel: 'stylesheet', href: globalStyles },
+  { rel: 'stylesheet', href: globalComponentStyle },
 ]
 
 export default function App() {
   return (
-    <html lang="en">
+    <html lang="en" className="font-Pretendard text-body2 text-darkgrey100">
       <head>
         <Meta />
         <Links />

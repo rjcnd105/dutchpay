@@ -11,22 +11,38 @@ datasource db {
 }
 
 model Room {
-  id            String     @id @default(cuid())
-  name          String     @default("정산")
-  createdAt     DateTime   @default(now())
-  expiryDate    DateTime   @default(now())
-  payers        Payer[]
+  id                String     @id @unique @default(cuid())
+  name              String     @db.VarChar(10) @default("정산")
+  createdAt         DateTime   @default(now())
+  expiryDate        DateTime   @default(now())
+  payers            Payer[]
 }
 
 model Payer {
-  id            Int        @id @default(autoincrement())
-  name          String
-  room          Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId        String     @unique
-  accountNumber String
+  id                Int        @id @default(autoincrement())
+  name              String     @db.VarChar(6)
+  room              Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId            String     @unique
+  accountNumber     String
+  payItems          PayItem[]
+  debtorForItem     DebtorForItem[]
 }
 
 model PayItem {
-  id            Int        @id @default(autoincrement())
-  name          String
+  id                Int             @id @default(autoincrement())
+  name              String?         @db.VarChar(12)
+  amount            Int             @default(0)
+  payer             Payer           @relation(fields: [payerId], references: [id])
+  payerId           Int             @unique
+  debtorForItem     DebtorForItem[]
+}
+
+model DebtorForItem {
+  payItem           PayItem    @relation(fields: [payItemId], references: [id], onDelete: Cascade)
+  payItemId         Int        @unique
+  debtor            Payer      @relation(fields: [debtorId], references: [id], onDelete: Cascade)
+  debtorId          Int
+  extraAmount       Int        @default(0)
+
+  @@id([payItemId, debtorId])
 }

@@ -10,6 +10,7 @@ type LoaderData = Room[]
 
 export const loader: LoaderFunction = async () => {
   const rooms = await db.room.findMany()
+
   return rooms
 }
 

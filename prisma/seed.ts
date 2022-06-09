@@ -10,7 +10,7 @@ async function seed() {
   )
 }
 
-seed()
+seed().then(console.log)
 
 function getRooms() {
   return [

@@ -3,6 +3,8 @@ import { redirect } from '@remix-run/node'
 import { Form } from '@remix-run/react'
 import { useReducer, useRef, useState } from 'react'
 
+import Button from '~/components/ui/Button'
+import { useCheckboxState } from '~/hooks/useCheckboxState'
 import arrayUtils from '~/utils/arrayUtils'
 import { db } from '~/utils/db.server'
 import stringUtils from '~/utils/stringUtils'
@@ -19,7 +21,6 @@ export async function action({ request }: DataFunctionArgs) {
 
   console.log('index.tsx', 'userName', userName)
   console.log('index.tsx', 'names', names)
-  console.log('index.tsx', 'form', [...form])
 
   if (!stringUtils.isNotEmptyStr(names))
     return {
@@ -28,66 +29,56 @@ export async function action({ request }: DataFunctionArgs) {
     }
 
   const room = await db.room.create({ data: { name: '정산' } })
-  console.log('index.tsx', 'room', room)
   return redirect(`/${room.id}`)
 }
 
-type NameReducerActions = {
-  type: 'ADD' | 'REMOVE'
-  name: string
-}
-const nameRemover = arrayUtils.matchRemove<string>()
-function nameReducer(state: string[], action: NameReducerActions) {
-  switch (action.type) {
-    case 'ADD':
-      state.push(action.name)
-      return state
-
-    case 'REMOVE':
-      return nameRemover(state, action.name)
-
-    default:
-      return state
-  }
-}
-
 const Index = () => {
-  const [names, dispatch] = useReducer(nameReducer, [])
+  const checks = useCheckboxState([])
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="flex justify-start items-center pt-20 h-screen w-screen flex-col text-center">
-      <Form method="post" replace>
+    <div className="flex justify-start pt-32 px-20 max-w-[375px] w-full mx-auto">
+      <Form className="w-full" method="post">
         <div>
-          <label>누구누구 정산할꺼야?</label>
-          <input name="user-name" placeholder="정산할 사람 이름" ref={nameInputRef} />
-          <button
-            onClick={() => {
-              if (nameInputRef.current) {
-                dispatch({ type: 'ADD', name: nameInputRef.current.value })
-                nameInputRef.current.value = ''
-              }
-            }}>
-            추가
-          </button>
+          <label className="font-extralight text-title block">누구누구 정산할꺼야?</label>
+          <div className="border-1 rounded-8 p-8 border-grey200 py-8 px-16 mt-16">
+            <input
+              className="placeholder-grey200"
+              name="user-name"
+              maxLength={10}
+              placeholder="정산할 사람 이름"
+              ref={nameInputRef}
+            />
+            <button
+              onClick={() => {
+                if (nameInputRef.current) {
+                  checks.add(nameInputRef.current.value)
+                  nameInputRef.current.value = ''
+                }
+              }}>
+              추가
+            </button>
+          </div>
         </div>
 
         <div id="names-wrap" className="flex flex-wrap ">
-          {names.map((name, i) => (
+          {checks.values.map((name, i) => (
             <button
               key={`${name + i}`}
               onClick={() => {
-                dispatch({ type: 'REMOVE', name })
+                checks.remove(name)
               }}>
               {name}
             </button>
           ))}
-          <input type="hidden" name="names" value={names.join(',')} />
+          <input type="hidden" name="names" value={checks.values.join(',')} />
         </div>
 
         <footer>
           <span className="">n명</span>
-          <button type="submit">다음</button>
+          <Button theme="solid_primary400" type="submit">
+            다음
+          </Button>
         </footer>
       </Form>
     </div>

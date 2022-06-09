@@ -2,14 +2,8 @@ import type { LinksFunction } from '@remix-run/react/routeModules'
 import clsx from 'clsx'
 import type { ComponentPropsWithoutRef } from 'react'
 
-import css from './icon.css'
+import css from './BgIcon.css'
 
-export const iconLink: LinksFunction = () => [
-  {
-    rel: 'stylesheet',
-    href: css,
-  },
-]
 export const iconNames = [
   'arrow_left',
   'arrow_right',
