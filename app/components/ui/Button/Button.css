@@ -1,12 +1,9 @@
 .ui_Button {
+    @apply py-8 px-12 min-h-48 flex items-center justify-center;
     &.solid_primary400, &.solid_subOrange, &.solid_darkgrey {
-        @apply border-1 rounded-8;
+        @apply rounded-8;
     }
     &.solid_primary400 {
-        @apply border-primary400
+        @apply bg-primary400 text-white;
     }
-}
-
-.solid_primary400 {
-    @apply border-1 rounded-8;
 }

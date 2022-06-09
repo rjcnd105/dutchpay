@@ -2,8 +2,8 @@ import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
 
 import pretendardCss from './styles/fonts/pretendard.css'
+import globalStyles from './styles/global.css'
 import globalComponentStyle from './styles/globalComponentStyle.css'
-import globalStyles from './styles/globals.css'
 import styles from './tailwind.css'
 
 export const meta: MetaFunction = () => ({

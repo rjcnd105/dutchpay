@@ -434,6 +434,15 @@ Ensure the default browser behavior of the `hidden` attribute.
 .mt-16 {
   margin-top: 16px;
 }
+.mt-auto {
+  margin-top: auto;
+}
+.mb-16 {
+  margin-bottom: 16px;
+}
+.mb-4 {
+  margin-bottom: 4px;
+}
 .block {
   display: block;
 }
@@ -444,6 +453,18 @@ Ensure the default browser behavior of the `hidden` attribute.
 }
 .hidden {
   display: none;
+}
+.h-full {
+  height: 100%;
+}
+.max-h-\[812px\] {
+  max-height: 812px;
+}
+.max-h-\[600px\] {
+  max-height: 600px;
+}
+.max-h-\[512px\] {
+  max-height: 512px;
 }
 .w-full {
   width: 100%;
@@ -509,15 +530,33 @@ Ensure the default browser behavior of the `hidden` attribute.
 .text-title {
   font-size: 24px;
 }
+.text-caption1 {
+  font-size: 14px;
+}
 .font-extralight {
   font-weight: 200;
 }
 .font-bold {
   font-weight: 700;
 }
+.font-light {
+  font-weight: 300;
+}
 .text-darkgrey100 {
   --tw-text-opacity: 1;
+  color: rgba(141, 141, 146, var(--tw-text-opacity));
+}
+.text-grey100 {
+  --tw-text-opacity: 1;
+  color: rgba(232, 232, 235, var(--tw-text-opacity));
+}
+.text-darkgrey300 {
+  --tw-text-opacity: 1;
   color: rgba(28, 28, 28, var(--tw-text-opacity));
+}
+.text-grey300 {
+  --tw-text-opacity: 1;
+  color: rgba(188, 188, 193, var(--tw-text-opacity));
 }
 .placeholder-grey200::-moz-placeholder {
   --tw-placeholder-opacity: 1;

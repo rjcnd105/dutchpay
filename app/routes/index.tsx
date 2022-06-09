@@ -37,8 +37,8 @@ const Index = () => {
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="flex justify-start pt-32 px-20 max-w-[375px] w-full mx-auto">
-      <Form className="w-full" method="post">
+    <div className="flex justify-start pt-32 px-20 max-w-[375px] w-full mx-auto h-full max-h-[512px]">
+      <Form className="flex flex-col w-full" method="post">
         <div>
           <label className="font-extralight text-title block">누구누구 정산할꺼야?</label>
           <div className="border-1 rounded-8 p-8 border-grey200 py-8 px-16 mt-16">
@@ -59,23 +59,24 @@ const Index = () => {
               추가
             </button>
           </div>
+          <div id="names-wrap" className="flex flex-wrap ">
+            {checks.values.map((name, i) => (
+              <button
+                key={`${name + i}`}
+                onClick={() => {
+                  checks.remove(name)
+                }}>
+                {name}
+              </button>
+            ))}
+            <input type="hidden" name="names" value={checks.values.join(',')} />
+          </div>
         </div>
 
-        <div id="names-wrap" className="flex flex-wrap ">
-          {checks.values.map((name, i) => (
-            <button
-              key={`${name + i}`}
-              onClick={() => {
-                checks.remove(name)
-              }}>
-              {name}
-            </button>
-          ))}
-          <input type="hidden" name="names" value={checks.values.join(',')} />
-        </div>
-
-        <footer>
-          <span className="">n명</span>
+        <footer className="mt-auto mb-16">
+          <span className="text-caption1 font-light mb-4 text-grey300">
+            <span className="text-darkgrey100">{checks.values.length}명</span>/10명
+          </span>
           <Button theme="solid_primary400" type="submit">
             다음
           </Button>
