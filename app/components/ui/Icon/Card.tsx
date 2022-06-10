@@ -1,8 +1,8 @@
+import type { SVGProps } from 'react'
 import * as React from 'react'
-import { SVGProps } from 'react'
 
 const SvgCard = (props: SVGProps<SVGSVGElement>) => (
-  <svg width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg viewBox="0 0 24 24" width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       clipRule="evenodd"
       d="M5.143 6.286h13.714a2.286 2.286 0 0 1 2.286 2.285v8a2.286 2.286 0 0 1-2.286 2.286H5.143a2.286 2.286 0 0 1-2.286-2.286v-8a2.286 2.286 0 0 1 2.286-2.285Z"

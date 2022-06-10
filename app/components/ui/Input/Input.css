@@ -1,0 +1,20 @@
+.ui_Input {
+    @apply flex w-full overflow-hidden border-b-1 border-b-grey200 text-darkgrey300;
+
+    input {
+        @apply w-full bg-transparent transition-all px-[2px] focus-visible:outline-0;
+    }
+
+
+    .input-clear {
+        @apply min-w-32;
+
+        button {
+            @apply hidden justify-end items-center w-full h-full;
+        }
+    }
+
+    input:valid ~ .input-clear button {
+        @apply flex;
+    }
+}

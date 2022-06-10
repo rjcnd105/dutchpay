@@ -1,4 +1,5 @@
 const sizes = {
+  0: '0',
   4: '4px',
   8: '8px',
   12: '12px',
@@ -43,6 +44,8 @@ module.exports = {
 
       warning: '#FB6258',
       success: '#2FB3FE',
+
+      transparent: 'transparent',
     },
     fontFamily: {
       Pretendard: ['Pretendard', 'sans-serif'],
@@ -80,6 +83,7 @@ module.exports = {
       1: '1px',
     },
     borderRadius: {
+      4: '4px',
       8: '8px',
       26: '26px',
     },

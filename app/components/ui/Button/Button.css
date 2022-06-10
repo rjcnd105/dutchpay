@@ -1,9 +1,21 @@
 .ui_Button {
-    @apply py-8 px-12 min-h-48 flex items-center justify-center;
-    &.solid_primary400, &.solid_subOrange, &.solid_darkgrey {
-        @apply rounded-8;
+    @apply text-darkgrey300 min-w-max;
+    &.blue, &.darkgrey, &.subOrange, &.lightblue  {
+        @apply text-white;
     }
-    &.solid_primary400 {
-        @apply bg-primary400 text-white;
+    &.blue {
+        @apply bg-primary400;
+    }
+    &.darkgrey {
+        @apply bg-darkgrey200;
+    }
+    &.chip {
+        @apply rounded-26;
+    }
+    &.lightgrey {
+        @apply bg-lightgrey100;
+    }
+    button {
+        @apply flex items-center justify-center px-12 h-full w-full;
     }
 }

@@ -1,8 +1,8 @@
+import type { SVGProps } from 'react'
 import * as React from 'react'
-import { SVGProps } from 'react'
 
 const SvgShare1 = (props: SVGProps<SVGSVGElement>) => (
-  <svg width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg viewBox="0 0 24 24" width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <circle cx={18.286} cy={5.714} r={2.786} stroke="#000" />
     <circle cx={5.714} cy={12.571} r={2.786} stroke="#000" />
     <circle cx={18.286} cy={18.286} r={2.786} stroke="#000" />

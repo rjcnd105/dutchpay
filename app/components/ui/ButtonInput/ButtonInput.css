@@ -1,0 +1,16 @@
+.ui_ButtonInput {
+    @apply flex border-grey200 border-1 py-8 px-16 rounded-8;
+    transition-timing-function: ease-out;
+    transition: .2s border-color;
+
+    .ui_Input .input-clear {
+        @apply min-w-[36px];
+        button {
+            @apply justify-center;
+        }
+    }
+
+    &.ui_ButtonInput:has(input:focus) {
+        @apply border-primary300;
+    }
+}

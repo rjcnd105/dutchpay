@@ -1,8 +1,8 @@
+import type { SVGProps } from 'react'
 import * as React from 'react'
-import { SVGProps } from 'react'
 
 const SvgCalendar = (props: SVGProps<SVGSVGElement>) => (
-  <svg width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg viewBox="0 0 24 24" width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       clipRule="evenodd"
       d="M5.25 3.985h13.5A2.25 2.25 0 0 1 21 6.235v13.5a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 19.735v-13.5a2.25 2.25 0 0 1 2.25-2.25Z"

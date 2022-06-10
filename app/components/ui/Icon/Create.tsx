@@ -1,8 +1,8 @@
+import type { SVGProps } from 'react'
 import * as React from 'react'
-import { SVGProps } from 'react'
 
 const SvgCreate = (props: SVGProps<SVGSVGElement>) => (
-  <svg width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg viewBox="0 0 24 24" width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M11.429 5.143H6.286A2.286 2.286 0 0 0 4 7.429v10.286A2.286 2.286 0 0 0 6.286 20h11.428A2.286 2.286 0 0 0 20 17.715v-5.143"
       stroke="#000"
