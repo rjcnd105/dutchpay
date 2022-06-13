@@ -1,6 +1,7 @@
 import type { DataFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, useSubmit } from '@remix-run/react'
+import { pipe } from 'fp-ts/lib/function'
 import type { KeyboardEventHandler } from 'react'
 import { useCallback, useReducer, useRef, useState } from 'react'
 
@@ -21,8 +22,6 @@ export async function action({ request }: DataFunctionArgs) {
   console.log('index.tsx', ', request', request)
   const form = await request.formData()
   const names = form.get('names')
-
-  console.log('index.tsx', 'names', names)
 
   if (!stringUtils.isNotEmptyStr(names))
     return {

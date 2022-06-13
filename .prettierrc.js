@@ -9,4 +9,5 @@ module.exports = {
   arrowParens: 'avoid',
   printWidth: 120,
   endOfLine: 'lf',
+  parser: 'typescript',
 }
