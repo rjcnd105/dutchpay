@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.1.1 | MIT License | https://tailwindcss.com
+! tailwindcss v3.1.2 | MIT License | https://tailwindcss.com
 *//*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
@@ -513,8 +513,17 @@ video {
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
 }
+.absolute {
+  position: absolute;
+}
 .relative {
   position: relative;
+}
+.right-0 {
+  right: 0;
+}
+.top-1\/2 {
+  top: 50%;
 }
 .mx-auto {
   margin-left: auto;
@@ -532,11 +541,20 @@ video {
 .mt-4 {
   margin-top: 4px;
 }
+.ml-auto {
+  margin-left: auto;
+}
+.mt-16 {
+  margin-top: 16px;
+}
 .mt-auto {
   margin-top: auto;
 }
 .mb-4 {
   margin-bottom: 4px;
+}
+.ml-8 {
+  margin-left: 8px;
 }
 .block {
   display: block;
@@ -557,6 +575,9 @@ video {
 }
 .h-32 {
   height: 32px;
+}
+.h-16 {
+  height: 16px;
 }
 .max-h-\[512px\] {
   max-height: 512px;
@@ -594,6 +615,13 @@ video {
 .justify-center {
   justify-content: center;
 }
+.gap-x-8 {
+  -moz-column-gap: 8px;
+       column-gap: 8px;
+}
+.gap-y-12 {
+  row-gap: 12px;
+}
 .rounded-8 {
   border-radius: 8px;
 }
@@ -617,6 +645,9 @@ video {
 }
 .fill-grey300 {
   fill: #BCBCC1;
+}
+.fill-grey200 {
+  fill: #D4D4DA;
 }
 .p-16 {
   padding: 16px;

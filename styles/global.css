@@ -6,3 +6,7 @@ button {
     font-weight: inherit;
     color: inherit;
 }
+
+.error {
+    @apply text-caption1 text-warning font-light;
+}

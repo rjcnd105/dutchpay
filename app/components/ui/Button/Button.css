@@ -18,4 +18,7 @@
     button {
         @apply flex items-center justify-center px-12 h-full w-full;
     }
+    &.solid button:disabled {
+        @apply bg-grey300 text-white cursor-not-allowed;
+    }
 }

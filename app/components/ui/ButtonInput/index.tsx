@@ -14,10 +14,20 @@ type Props = ComponentPropsWithRef<'input'> & { button: ComponentPropsWithoutRef
 }
 
 const ButtonInput = forwardRef<HTMLInputElement, Props>(({ button, isInvalid, ...props }, ref) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  useImperativeHandle(ref, () => inputRef.current as HTMLInputElement)
+
+  const onClear = useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.focus()
+      domUtils.inputChangeTrigger(inputRef.current, '')
+    }
+  }, [])
+
   return (
     <div className={clsx('ui_ButtonInput', isInvalid && '!border-warning')}>
-      <Input {...props} ref={ref} borderNone />
-      <Button theme="solid/darkgrey" size="sm" {...button} />
+      <Input {...props} ref={inputRef} borderNone />
+      <Button theme="solid/darkgrey" size="sm" onClick={onClear} {...button} />
     </div>
   )
 })
