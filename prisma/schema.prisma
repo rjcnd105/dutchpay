@@ -12,10 +12,11 @@ datasource db {
 
 model Room {
   id                String     @id @unique @default(cuid())
-  name              String     @db.VarChar(10) @default("정산")
+  name              String     @db.VarChar(13) @default("정산")
   createdAt         DateTime   @default(now())
   expiryDate        DateTime   @default(now())
   payers            Payer[]
+  payItems          PayItem[]
 }
 
 model Payer {
@@ -23,18 +24,20 @@ model Payer {
   name              String     @db.VarChar(6)
   room              Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId            String     @unique
-  accountNumber     String
   payItems          PayItem[]
-  debtorForItem     DebtorForItem[]
+  debtorForItems    DebtorForItem[]
 }
 
 model PayItem {
   id                Int             @id @default(autoincrement())
+  room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId            String          @unique
   name              String?         @db.VarChar(12)
   amount            Int             @default(0)
   payer             Payer           @relation(fields: [payerId], references: [id])
   payerId           Int             @unique
-  debtorForItem     DebtorForItem[]
+  payDate           DateTime
+  debtorForItems    DebtorForItem[]
 }
 
 model DebtorForItem {

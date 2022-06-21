@@ -7,28 +7,33 @@ import * as RE from 'fp-ts/lib/ReaderEither'
 import { stringArrLiftE, stringLiftE } from '~/utils/lift'
 import { foldValidatorS, singleErrorValidator } from '~/utils/validation'
 
-export namespace Room {
+export namespace RoomD {
   export const ERROR_TYPE = {
-    최대글자수초과: '최대글자수초과',
-    최소글자수미달: '최소글자수미달',
-    최대인원초과: '최대인원초과',
+    name: { 최대글자수초과: '최대글자수초과', 최소글자수미달: '최소글자수미달' },
+    payers: {
+      최대인원초과: '최대인원초과',
+      최소인원미달: '최소인원미달',
+    },
   } as const
 
   const nameLengthMax = singleErrorValidator((name: RoomModel['name']) => name.length <= 16, {
-    type: Room.ERROR_TYPE.최대글자수초과,
+    type: ERROR_TYPE.name.최대글자수초과,
     message: '16자까지 입력 가능해',
   })
   const nameLengthMin = singleErrorValidator((name: RoomModel['name']) => name.length === 0, {
-    type: Room.ERROR_TYPE.최소글자수미달,
+    type: ERROR_TYPE.name.최소글자수미달,
   })
   const payerMax = singleErrorValidator((payerName: string[]) => payerName.length <= 10, {
-    type: Room.ERROR_TYPE.최대인원초과,
+    type: ERROR_TYPE.payers.최대인원초과,
     message: '10명까지만 가능해',
+  })
+  const payerMin = singleErrorValidator((payerName: string[]) => payerName.length > 0, {
+    type: ERROR_TYPE.payers.최소인원미달,
   })
 
   export const validator = {
     name: flow(stringLiftE, nameLengthMin, nameLengthMax, nameLengthMin),
-    payers: flow(stringArrLiftE, payerMax),
+    payers: flow(stringArrLiftE, payerMin, payerMax),
   } as const
 
   const myValidS = {

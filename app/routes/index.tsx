@@ -5,15 +5,15 @@ import { Form, useSubmit } from '@remix-run/react'
 import clsx from 'clsx'
 import { isRight } from 'fp-ts/lib/Either'
 import { flow, pipe } from 'fp-ts/lib/function'
+import { motion } from 'framer-motion'
 import type { KeyboardEventHandler } from 'react'
 import { useCallback, useMemo, useReducer, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
 
 import Button from '~/components/ui/Button'
 import ButtonInput from '~/components/ui/ButtonInput'
 import { CrossCircle } from '~/components/ui/Icon'
-import { Payer } from '~/domain/Payer'
-import { Room } from '~/domain/Room'
+import { PayerD } from '~/domain/PayerD'
+import { RoomD } from '~/domain/RoomD'
 import { useCheckboxState } from '~/hooks/useCheckboxState'
 import useError from '~/hooks/useError'
 import arrayUtils from '~/utils/arrayUtils'
@@ -37,6 +37,15 @@ export async function action({ request }: DataFunctionArgs) {
     }
 
   const room = await db.room.create({ data: { name: '정산' } })
+
+  const payerNames = names.split(',')
+
+  const payers = await db.payer.createMany({
+    data: payerNames.map(payerName => ({
+      name: payerName,
+      roomId: room.id,
+    })),
+  })
   return redirect(`/${room.id}`)
 }
 
@@ -48,17 +57,16 @@ const Index = () => {
   const submit = useSubmit()
   const [name, setName] = useState<string>('')
   const payers = useCheckboxState([])
-  const nameError = useError(Payer.validator.name(name))
-  const payerError = useError(Room.validator.payers(payers.values))
+  const nameError = useError(PayerD.validator.name(name))
+  const payerError = useError(RoomD.validator.payers(payers.values))
 
   const nameAdd = () => {
-    if (!nameError.error) {
-      payers.add(name)
-      setName('')
-    } else {
-      nameError.showError()
-    }
+    if (nameError.error) return
+    payers.add(name)
+    setName('')
+    nameError.hiddenError()
   }
+  const a = [...Object.values(RoomD.validator.payers)].some(fn => !fn(payers.values))
 
   const enterToNameAdd = domUtils.onEnter(nameAdd)
 
@@ -78,13 +86,14 @@ const Index = () => {
             value={name}
             onChange={e => {
               setName(e.target.value)
-              nameError.hiddenError()
+              nameError.showError()
             }}
             onKeyDown={enterToNameAdd}
             button={{
               className: 'w-[64px] font-light',
               children: '추가',
               onClick: nameAdd,
+              disabled: !!nameError.error,
             }}
             onFocus={nameError.hiddenError}
           />
@@ -94,29 +103,32 @@ const Index = () => {
             <span className={clsx('text-darkgrey100 ml-auto', nameError.viewError && 'error')}>{name.length}</span>
             /6
           </span>
-          <div id="names-wrap" className="flex flex-wrap mt-16 gap-x-8 gap-y-12">
+          <div id="names-wrap" className="flex flex-wrap mt-16 gap-x-8 gap-y-12 pb-16">
             {payers.values.map((name, i) => (
-              <Button
-                theme="chip/lightgrey"
+              <motion.div
                 key={`${name + i}`}
-                type="button"
-                onClick={e => {
-                  payers.remove(name)
-                }}>
-                {name}
-              </Button>
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, type: 'spring', bounce: 0.58 }}>
+                <Button
+                  theme="chip/lightgrey"
+                  type="button"
+                  onClick={e => {
+                    payers.remove(name)
+                  }}>
+                  {name}
+                </Button>
+              </motion.div>
             ))}
           </div>
         </div>
 
         <footer className="mt-auto mb-16">
           <span className="text-caption1 font-light mb-4 text-grey300">
-            <span className={clsx('text-darkgrey100', payerError.error && 'error')}>{payers.values.length}명</span>/10명
+            <span className={clsx('text-darkgrey100', payerError.error && 'error')}>{payers.values.length}명</span>
+            /10명
           </span>
-          <Button
-            theme="solid/blue"
-            onClick={handleSubmit}
-            disabled={[...Object.values(Room.validator.payers)].some(fn => !fn(payers.values))}>
+          <Button theme="solid/blue" onClick={handleSubmit} disabled={!!payerError.error}>
             다음
           </Button>
         </footer>

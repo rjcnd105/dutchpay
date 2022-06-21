@@ -1,5 +1,8 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import cssHasPseudo from 'css-has-pseudo/browser'
 import { useEffect } from 'react'
 
 import styles from './styles/app.css'
@@ -22,7 +25,6 @@ export const links: LinksFunction = () => [
 
 export default function App() {
   useEffect(() => {
-    const cssHasPseudo = require('css-has-pseudo/browser')
     cssHasPseudo(document)
   }, [])
   return (
