@@ -9,6 +9,9 @@
     &.darkgrey button{
         @apply bg-darkgrey200;
     }
+    &.subOrange {
+        @apply bg-orange300;
+    }
     &.chip {
         @apply rounded-26;
     }

@@ -23,6 +23,7 @@ module.exports = {
     },
     colors: {
       white: '#ffffff',
+      black: '#000000',
       lightgrey100: '#F5F5F9',
       lightgrey200: '#EEEEF1',
       grey100: '#E8E8EB',
@@ -77,7 +78,11 @@ module.exports = {
     boxShadow: {
       100: '0px -4px 12px rgba(0, 0, 0, 0.05)',
     },
-    opacity: {},
+    opacity: {
+      0: 0,
+      40: 0.4,
+      100: 1,
+    },
     borderWidth: {
       0: '0',
       1: '1px',

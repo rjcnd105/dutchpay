@@ -36,21 +36,24 @@ export async function action({ request }: DataFunctionArgs) {
       message: '이름이 입력되지 않았음',
     }
 
-  const room = await db.room.create({ data: { name: '정산' } })
-
   const payerNames = names.split(',')
 
-  const payers = await db.payer.createMany({
-    data: payerNames.map(payerName => ({
-      name: payerName,
-      roomId: room.id,
-    })),
-  })
-  return redirect(`/${room.id}`)
-}
+  const room = await db.$transaction(async prisma => {
+    const room = await db.room.create({
+      data: { name: '정산' },
+    })
 
-const defaultNameField = {
-  name: '',
+    await db.payer.createMany({
+      data: payerNames.map(payerName => ({
+        name: payerName,
+        roomId: room.id,
+      })),
+    })
+
+    return room
+  })
+
+  return redirect(`/${room.id}`)
 }
 
 const Index = () => {

@@ -513,9 +513,36 @@ video {
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
 }
+.static {
+  position: static;
+}
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.z-20 {
+  z-index: 20;
+}
+.z-10 {
+  z-index: 10;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+.mt-16 {
+  margin-top: 16px;
+}
+.mt-48 {
+  margin-top: 48px;
 }
 .mt-24 {
   margin-top: 24px;
@@ -531,9 +558,6 @@ video {
 }
 .ml-auto {
   margin-left: auto;
-}
-.mt-16 {
-  margin-top: 16px;
 }
 .mt-auto {
   margin-top: auto;
@@ -576,11 +600,17 @@ video {
 .w-\[64px\] {
   width: 64px;
 }
-.w-4\/5 {
-  width: 80%;
+.min-w-\[112px\] {
+  min-width: 112px;
+}
+.max-w-\[180px\] {
+  max-width: 180px;
 }
 .max-w-\[375px\] {
   max-width: 375px;
+}
+.flex-auto {
+  flex: 1 1 auto;
 }
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -620,13 +650,16 @@ video {
   --tw-border-opacity: 1 !important;
   border-color: rgba(251, 98, 88, var(--tw-border-opacity)) !important;
 }
-.bg-darkgrey200 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(76, 77, 78, var(--tw-bg-opacity));
-}
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+}
+.bg-black\/40 {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.bg-darkgrey200 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(76, 77, 78, var(--tw-bg-opacity));
 }
 .fill-grey200 {
   fill: #D4D4DA;
@@ -634,8 +667,15 @@ video {
 .fill-grey300 {
   fill: #BCBCC1;
 }
+.stroke-white {
+  stroke: #ffffff;
+}
 .p-16 {
   padding: 16px;
+}
+.px-16 {
+  padding-left: 16px;
+  padding-right: 16px;
 }
 .px-20 {
   padding-left: 20px;
@@ -674,12 +714,13 @@ video {
 .font-light {
   font-weight: 300;
 }
-.font-bold {
-  font-weight: 700;
-}
 .text-darkgrey100 {
   --tw-text-opacity: 1;
   color: rgba(141, 141, 146, var(--tw-text-opacity));
+}
+.text-primary400 {
+  --tw-text-opacity: 1;
+  color: rgba(78, 103, 248, var(--tw-text-opacity));
 }
 .text-white {
   --tw-text-opacity: 1;
@@ -689,8 +730,17 @@ video {
   --tw-text-opacity: 1;
   color: rgba(188, 188, 193, var(--tw-text-opacity));
 }
+.underline {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+}
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.backdrop-blur-sm {
+  --tw-backdrop-blur: blur(4px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .transition {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;

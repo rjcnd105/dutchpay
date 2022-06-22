@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async () => {
   return rooms
 }
 
-export default function Users() {
+export default function Rooms() {
   const rooms = useLoaderData<LoaderData>()
   return (
     <ul>
