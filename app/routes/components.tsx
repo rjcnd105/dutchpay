@@ -10,7 +10,7 @@ const buttonThemes = [
   'solid/darkgrey',
   'text',
   'ghost/blue',
-  'ghost/white',
+  'ghost/lightblue',
   'chip/white',
   'chip/lightblue',
   'chip/blue',

@@ -1,28 +1,71 @@
 .ui_Button {
     @apply text-darkgrey300 min-w-max overflow-hidden;
-    &.blue, &.darkgrey, &.subOrange, &.lightblue  {
-        @apply text-white;
-    }
-    &.blue button {
-        @apply bg-primary400;
-    }
-    &.darkgrey button{
-        @apply bg-darkgrey200;
-    }
-    &.subOrange {
-        @apply bg-orange300;
-    }
-    &.chip {
-        @apply rounded-26;
-    }
-    &.lightgrey button {
-        @apply bg-lightgrey100;
-    }
+
     button {
         @apply flex items-center justify-center px-12 h-full w-full;
     }
-    &.solid button:disabled {
-        @apply bg-grey300 text-white;
 
+
+
+    /* solid */
+    &.solid {
+        button:disabled {
+            @apply bg-grey300 text-white;
+        }
+
+        &.blue, &.darkgrey, &.subOrange, &.lightblue  {
+            @apply text-white;
+        }
+
+        &.blue button {
+            @apply bg-primary400;
+        }
+        &.darkgrey button {
+            @apply bg-darkgrey200;
+        }
+        &.subOrange button {
+            @apply bg-orange300;
+        }
+        &.lightgrey button {
+            @apply bg-lightgrey100;
+        }
     }
+
+    &.chip, &.ghost {
+        @apply min-h-[35px] h-[35px];
+        button {
+            @apply rounded-26;
+        }
+    }
+
+    /* chip */
+    &.chip {
+        &.white {}
+        &.lightblue {}
+        &.blue button {
+            @apply bg-primary400 text-white;
+        }
+        &.lightgrey button {
+            @apply bg-lightgrey100;
+        }
+    }
+
+    /* ghost */
+    &.ghost {
+        button { @apply border-1; }
+
+        &.blue button{
+            @apply text-primary200 border-primary300;
+        }
+        &.lightblue button{
+            @apply text-primary300 border-primary200;
+        }
+    }
+
+    &.text {
+        button:disabled {
+            @apply text-grey100 ;
+        }
+    }
+
 }

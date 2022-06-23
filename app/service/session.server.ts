@@ -2,12 +2,9 @@ import type { DataFunctionArgs, Session } from '@remix-run/node'
 import { createCookieSessionStorage } from '@remix-run/node'
 import * as O from 'fp-ts/lib/Option'
 
+import type { Message } from '~/model/Message'
+
 export const PAGE_SESSION_KEYS = { ROOM: 'ROOM', MAIN: 'MAIN' }
-export type Message = {
-  kind: string
-  status: 'success' | 'error' | 'info' | 'warning'
-  text: string
-}
 const { getSession, commitSession, destroySession } = createCookieSessionStorage({
   cookie: {
     name: '__session',

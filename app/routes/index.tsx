@@ -1,4 +1,3 @@
-import { ErrorMessage } from '@hookform/error-message'
 import type { DataFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, useSubmit } from '@remix-run/react'
@@ -69,8 +68,6 @@ const Index = () => {
     setName('')
     nameError.hiddenError()
   }
-  const a = [...Object.values(RoomD.validator.payers)].some(fn => !fn(payers.values))
-
   const enterToNameAdd = domUtils.onEnter(nameAdd)
 
   const handleSubmit = () => {

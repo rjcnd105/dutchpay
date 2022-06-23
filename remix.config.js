@@ -8,7 +8,6 @@ module.exports = {
   // so we default back to the standard build output.
   server: process.env.VERCEL ? './server.js' : undefined,
   ignoredRouteFiles: ['**/.*'],
-  serverDependenciesToBundle: ['swiper', 'swiper/react', 'ssr-window', 'dom7'],
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "api/index.js",

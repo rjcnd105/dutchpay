@@ -54,8 +54,7 @@
     "rc-drawer": "^4.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router": "^6.3.0",
-    "swiper": "^8.2.4"
+    "react-router": "^6.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.5",

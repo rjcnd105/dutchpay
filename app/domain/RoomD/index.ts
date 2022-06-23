@@ -16,12 +16,13 @@ export namespace RoomD {
     },
   } as const
 
-  const nameLengthMax = singleErrorValidator((name: RoomModel['name']) => name.length <= 16, {
+  const nameLengthMax = singleErrorValidator((name: RoomModel['name']) => name.length <= 13, {
     type: ERROR_TYPE.name.최대글자수초과,
-    message: '16자까지 입력 가능해',
+    message: '13자까지 입력 가능해',
   })
-  const nameLengthMin = singleErrorValidator((name: RoomModel['name']) => name.length === 0, {
+  const nameLengthMin = singleErrorValidator((name: RoomModel['name']) => name.length > 0, {
     type: ERROR_TYPE.name.최소글자수미달,
+    message: '이름을 입력해줘',
   })
   const payerMax = singleErrorValidator((payerName: string[]) => payerName.length <= 10, {
     type: ERROR_TYPE.payers.최대인원초과,
@@ -32,7 +33,7 @@ export namespace RoomD {
   })
 
   export const validator = {
-    name: flow(stringLiftE, nameLengthMin, nameLengthMax, nameLengthMin),
+    name: flow(stringLiftE, nameLengthMax, nameLengthMin),
     payers: flow(stringArrLiftE, payerMin, payerMax),
   } as const
 

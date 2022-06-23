@@ -6,9 +6,9 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import { CrossCircle } from '~/components/ui/Icon'
 import domUtils from '~/utils/domUtils'
 
-type Props = ComponentPropsWithRef<'input'> & { borderNone?: boolean }
+type Props = ComponentPropsWithRef<'input'> & { hasClear: boolean }
 
-const Input = forwardRef<HTMLInputElement, Props>(({ type, borderNone, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, Props>(({ hasClear = true, className, ...props }, ref) => {
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement)
 
@@ -20,14 +20,16 @@ const Input = forwardRef<HTMLInputElement, Props>(({ type, borderNone, ...props 
   }, [])
 
   return (
-    <div className={clsx('ui_Input', borderNone && 'border-none')}>
-      <input ref={inputRef} type={type} {...props} required />
-      <div className="input-clear">
-        <button onClick={onClear}>
-          <CrossCircle className="fill-grey300" width={14} height={14} />
-        </button>
-      </div>
-    </div>
+    <>
+      <input className={clsx('ui_input', className)} ref={inputRef} {...props} required />
+      {hasClear && (
+        <div className="input-clear">
+          <button onClick={onClear}>
+            <CrossCircle className="fill-grey300" width={14} height={14} />
+          </button>
+        </div>
+      )}
+    </>
   )
 })
 

@@ -8,36 +8,31 @@
     28% { transform: rotate(0deg); }
 }
 
-.ui_Input {
-    @apply flex w-full overflow-hidden border-b-1 border-b-grey200 text-darkgrey300;
-
-    input {
-        @apply w-full bg-transparent transition-all px-[2px] focus-visible:outline-0;
-    }
+.ui_input {
+    @apply text-darkgrey300 w-full bg-transparent transition-all px-[2px] border-b-grey200 focus-visible:outline-0;
+}
 
 
-    .input-clear {
-        @apply min-w-32;
+.input-clear {
 
-        button {
-            @apply flex invisible justify-end items-center w-full h-full opacity-0;
-            transform: scale(.6s);
-            transition: transform .15s, opacity .08s ease-out, visibility 0s .15s;
-            visibility: hidden;
+    button {
+        @apply flex invisible justify-end items-center w-full h-full px-12 opacity-0;
+        transform: scale(.6s);
+        transition: transform .15s, opacity .08s ease-out, visibility 0s .15s;
+        visibility: hidden;
 
-            svg{
-                transition: fill .15s;
-            }
+        svg{
+            transition: fill .15s;
+        }
 
-            &:hover svg, &:focus svg {
-                animation: clear 1.8s infinite;
-            }
+        &:hover svg, &:focus svg {
+            animation: clear 1.8s infinite;
         }
     }
+}
 
-    input:valid ~ .input-clear button {
-        @apply visible opacity-100;
-        transition-delay: 0s, 0s, 0s;
-        transform: rotate(0deg);
-    }
+.ui_input:valid ~ .input-clear button {
+    @apply visible opacity-100;
+    transition-delay: 0s, 0s, 0s;
+    transform: rotate(0deg);
 }
