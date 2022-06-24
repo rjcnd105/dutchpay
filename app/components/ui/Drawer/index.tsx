@@ -4,9 +4,6 @@ import type { IPlacement } from 'rc-drawer/lib/IDrawerPropTypes'
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 
-import Button from '~/components/ui/Button'
-import SvgCross from '~/components/ui/Icon/Cross'
-
 type Props = {
   open: boolean
   onClose?: () => void

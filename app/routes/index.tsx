@@ -128,7 +128,7 @@ const Index = () => {
             <span className={clsx('text-darkgrey100', payerError.error && 'error')}>{payers.values.length}명</span>
             /10명
           </span>
-          <Button theme="solid/blue" onClick={handleSubmit} disabled={!!payerError.error}>
+          <Button theme="solid/blue" className="w-full" onClick={handleSubmit} disabled={!!payerError.error}>
             다음
           </Button>
         </footer>
