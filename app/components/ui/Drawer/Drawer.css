@@ -1,0 +1,32 @@
+
+:root {
+    --drawer-time: 0.36s;
+}
+
+.drawer {
+    &.drawer-open {
+        transition: transform var(--drawer-time) cubic-bezier(0.33, 1, 0.68, 1);
+        .drawer-mask {
+            transition: opacity var(--drawer-time) cubic-bezier(0.33, 1, 0.68, 1);
+        }
+    }
+
+    @apply backdrop-blur-0;
+    transition: backdrop-filter var(--drawer-time);
+
+    & > * {
+        transition: transform var(--drawer-time) cubic-bezier(0.33, 1, 0.68, 1), opacity var(--drawer-time) cubic-bezier(0.33, 1, 0.68, 1), box-shadow var(--drawer-time) cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    &.drawer-open {
+        @apply backdrop-blur-sm;
+    }
+    &.drawer-open .drawer-mask {
+        @apply opacity-40;
+        backdrop-filter: blur(4px);
+    }
+
+    .drawer-content-wrapper{
+        @apply rounded-t-[24px];
+    }
+}

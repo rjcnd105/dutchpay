@@ -9,7 +9,10 @@ import { Outlet, useParams } from 'react-router'
 
 import Icon from '~/components/ui/BgIcon'
 import Button from '~/components/ui/Button'
+import Drawer from '~/components/ui/Drawer'
 import { Plus } from '~/components/ui/Icon'
+import SvgClose from '~/components/ui/Icon/Close'
+import SvgCross from '~/components/ui/Icon/Cross'
 import SvgPen from '~/components/ui/Icon/Pen'
 import SvgPlus from '~/components/ui/Icon/Plus'
 import Input from '~/components/ui/Input'
@@ -94,6 +97,7 @@ export type OutletData = {
 export default function RoomBy() {
   const [controlledVisible, setControlledVisible] = useState(false)
   const submit = useSubmit()
+  const [addPayerMode, setAddPayerMode] = useState(false)
 
   const room = useLoaderData<AllRoomData>()
 
@@ -103,12 +107,6 @@ export default function RoomBy() {
   const newRoomNameError = useError(RoomD.validator.name(newRoomName))
 
   const outlet = useOutlet()
-
-  const handleSaveRoomName = useCallback(() => {
-    const formData = new FormData()
-    formData.set('_action', 'roomNameModify')
-    submit(formData, { method: 'patch' })
-  }, [])
 
   return outlet ? (
     <Outlet context={room} />
@@ -144,8 +142,8 @@ export default function RoomBy() {
             <input type="hidden" name="_action" value="roomNameModify" />
           </Form>
         ) : (
-          <div className="room-title">
-            <Button onClick={() => setRoomNameEditMode(true)}>
+          <div className="room-title flex justify-center">
+            <Button className="px-32 w-[max-content]" onClick={() => setRoomNameEditMode(true)}>
               <span className="text-primary500 underline underline-offset-1">{room.name}</span>
               <SvgPen className="stroke-grey300" />
             </Button>
@@ -154,7 +152,7 @@ export default function RoomBy() {
       </header>
       <nav className="min-h-56 overflow-x-scroll">
         <div className="flex gap-x-8 nav-contents pl-20">
-          <Button theme="ghost/lightblue" className="w-48">
+          <Button theme="ghost/lightblue" className="w-48" onClick={() => setAddPayerMode(true)}>
             <SvgPlus className="stroke-primary300" />
           </Button>
           {room.payers.map(payer => {
@@ -163,7 +161,7 @@ export default function RoomBy() {
               <Button
                 key={payer.id}
                 theme={isSelected ? 'chip/blue' : 'chip/lightgrey'}
-                className={clsx(isSelected && 'font-semibold')}
+                className={clsx(isSelected && 'font-semibold', 'px-8')}
                 onClick={() => setSelectedPayer(payer)}
                 hasClose={false}>
                 {payer.name}
@@ -172,6 +170,7 @@ export default function RoomBy() {
           })}
         </div>
       </nav>
+
       <main className="flex flex-col flex-auto">
         <div className="empty-pay-items flex flex-col flex-auto items-center justify-center">
           <img src="/images/main_illustrate.svg" alt="main_illustrate" />
@@ -181,6 +180,17 @@ export default function RoomBy() {
           </Button>
         </div>
       </main>
+
+      <Drawer open={addPayerMode} placement="bottom" onClose={() => setAddPayerMode(false)}>
+        <div className="h-[80vh] w-[100vw] rounded-t-[24px] py-[18px] px-[20px]">
+          <header className="drawer-head">
+            <Button className="w-[28px] h-[28px] px-0" onClick={() => setAddPayerMode(false)}>
+              <SvgCross width={28} height={28} />
+            </Button>
+          </header>
+        </div>
+      </Drawer>
+
       {roomNameEditMode && (
         <>
           <div className="dimm absolute z-10 inset-0 bg-black/40" tabIndex={-1} role="none" />

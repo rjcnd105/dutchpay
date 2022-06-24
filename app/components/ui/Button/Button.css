@@ -1,15 +1,12 @@
 .ui_Button {
-    @apply text-darkgrey300 min-w-max overflow-hidden;
+    @apply flex items-center justify-center min-w-max;
 
-    button {
-        @apply flex items-center justify-center px-12 h-full w-full;
-    }
 
 
 
     /* solid */
     &.solid {
-        button:disabled {
+        &:disabled {
             @apply bg-grey300 text-white;
         }
 
@@ -17,53 +14,50 @@
             @apply text-white;
         }
 
-        &.blue button {
+        &.blue  {
             @apply bg-primary400;
         }
-        &.darkgrey button {
+        &.darkgrey  {
             @apply bg-darkgrey200;
         }
-        &.subOrange button {
+        &.subOrange  {
             @apply bg-orange300;
         }
-        &.lightgrey button {
+        &.lightgrey  {
             @apply bg-lightgrey100;
         }
     }
 
     &.chip, &.ghost {
-        @apply min-h-[35px] h-[35px];
-        button {
-            @apply rounded-26;
-        }
+        @apply min-h-[35px] h-[35px] rounded-26;
     }
 
     /* chip */
     &.chip {
         &.white {}
         &.lightblue {}
-        &.blue button {
+        &.blue {
             @apply bg-primary400 text-white;
         }
-        &.lightgrey button {
+        &.lightgrey {
             @apply bg-lightgrey100;
         }
     }
 
     /* ghost */
     &.ghost {
-        button { @apply border-1; }
+        @apply border-1;
 
-        &.blue button{
+        &.blue {
             @apply text-primary200 border-primary300;
         }
-        &.lightblue button{
+        &.lightblue {
             @apply text-primary300 border-primary200;
         }
     }
 
     &.text {
-        button:disabled {
+        &:disabled {
             @apply text-grey100 ;
         }
     }

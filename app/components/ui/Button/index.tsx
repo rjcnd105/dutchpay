@@ -40,12 +40,10 @@ const Button = ({
 }: Props) => {
   const [t1, t2] = theme?.split('/') as [Kind, string]
   return (
-    <div className={clsx('ui_Button', 'flex items-center', t2 ? [t1, t2] : t1, sizeObj[size], className)}>
-      <button {...props}>
-        {children}
-        {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
-      </button>
-    </div>
+    <button className={clsx('ui_Button', t2 ? [t1, t2] : t1, sizeObj[size], className)} {...props}>
+      {children}
+      {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
+    </button>
   )
 }
 export default Button
