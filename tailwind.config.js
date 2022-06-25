@@ -20,6 +20,23 @@ module.exports = {
       minHeight: sizes,
       maxWidth: sizes,
       maxHeight: sizes,
+
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', visibility: 'hidden' },
+          '1%': { visibility: 'visible' },
+          '100%': { opacity: '1' },
+        },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '99%': { visibility: 'visible' },
+          '100%': { opacity: '0', visibility: 'hidden' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn .25s ease-out',
+        fadeOut: 'fadeIn .25s ease-out',
+      },
     },
     colors: {
       white: '#ffffff',

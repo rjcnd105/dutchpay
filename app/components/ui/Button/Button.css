@@ -6,9 +6,7 @@
 
     /* solid */
     &.solid {
-        &:disabled {
-            @apply bg-grey300 text-white;
-        }
+
 
         &.blue, &.darkgrey, &.subOrange, &.lightblue  {
             @apply text-white;
@@ -25,6 +23,10 @@
         }
         &.lightgrey  {
             @apply bg-lightgrey100;
+        }
+
+        &:disabled {
+            @apply bg-grey300 text-white;
         }
     }
 

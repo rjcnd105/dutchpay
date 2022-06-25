@@ -1,6 +1,6 @@
 import { useOutletContext } from 'react-router'
 
-import type { OutletData } from '../:roomId'
+import type { OutletData } from './'
 
 const result = () => {
   const data = useOutletContext<OutletData>()

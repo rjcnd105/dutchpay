@@ -15,15 +15,15 @@ import { PayerD } from '~/domain/PayerD'
 import { RoomD } from '~/domain/RoomD'
 import { useCheckboxState } from '~/hooks/useCheckboxState'
 import useError from '~/hooks/useError'
+import PayerForm from '~/routes/__components/__PayeyForm'
+import pathGenerator from '~/service/pathGenerator'
 import arrayUtils from '~/utils/arrayUtils'
 import { db } from '~/utils/db.server'
 import domUtils from '~/utils/domUtils'
 import stringUtils from '~/utils/stringUtils'
 import { foldValidatorS } from '~/utils/validation'
 
-export function loader({ request }: DataFunctionArgs) {
-  return null
-}
+export function loader({ request, params }: DataFunctionArgs) {}
 
 export async function action({ request }: DataFunctionArgs) {
   const form = await request.formData()
@@ -52,7 +52,7 @@ export async function action({ request }: DataFunctionArgs) {
     return room
   })
 
-  return redirect(`/${room.id}`)
+  return redirect(pathGenerator.room.addItem({ roomId: room.id }))
 }
 
 const Index = () => {
@@ -88,9 +88,10 @@ const Index = () => {
               setName(e.target.value)
               nameError.showError()
             }}
+            isInvalid={!!nameError.viewError}
             onKeyDown={enterToNameAdd}
             button={{
-              className: 'w-[64px] font-light',
+              className: 'min-w-[64px] font-light',
               children: '추가',
               onClick: nameAdd,
               disabled: !!nameError.error,
@@ -106,12 +107,13 @@ const Index = () => {
           <div id="names-wrap" className="flex flex-wrap mt-16 gap-x-8 gap-y-12 pb-16">
             {payers.values.map((name, i) => (
               <motion.div
-                key={`${name + i}`}
+                key={name}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.28, type: 'spring', bounce: 0.58 }}>
                 <Button
                   theme="chip/lightgrey"
+                  className="px-8 py-4"
                   type="button"
                   onClick={e => {
                     payers.remove(name)
@@ -133,6 +135,7 @@ const Index = () => {
           </Button>
         </footer>
       </div>
+      <PayerForm></PayerForm>
     </div>
   )
 }

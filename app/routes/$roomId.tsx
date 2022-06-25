@@ -1,9 +1,10 @@
-import { Popover } from '@headlessui/react'
+import { Popover, Portal } from '@headlessui/react'
 import type { DebtorForItem, Payer, PayItem, Room } from '@prisma/client'
 import type { DataFunctionArgs } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import { Form, useLoaderData, useOutlet, useSubmit } from '@remix-run/react'
 import clsx from 'clsx'
+import type { HTMLInputElement } from 'happy-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Outlet, useParams } from 'react-router'
 
@@ -19,6 +20,7 @@ import Input from '~/components/ui/Input'
 import { RoomD } from '~/domain/RoomD'
 import useError from '~/hooks/useError'
 import { message } from '~/model/Message'
+import pathGenerator from '~/service/pathGenerator'
 import { db } from '~/utils/db.server'
 import stringUtils from '~/utils/stringUtils'
 
@@ -48,7 +50,13 @@ const getAllRoomData = (roomId: Room['id']) =>
   })
 
 export async function loader({ request, params }: DataFunctionArgs) {
+  const url = new URL(request.url)
+
   const roomId = params.roomId
+
+  if (roomId && url.pathname === `/${params.roomId}`) {
+    return redirect(pathGenerator.room.addItem({ roomId }))
+  }
 
   if (!roomId) return redirect('/empty')
 
@@ -88,40 +96,44 @@ export async function action(args: DataFunctionArgs) {
   return null
 }
 
-export type OutletData = {
-  room: Room
-  payers: Payer[]
-  payItems: PayItem[]
-}
+export type OutletContextData = AllRoomData
 
 export default function RoomBy() {
-  const [controlledVisible, setControlledVisible] = useState(false)
-  const submit = useSubmit()
-  const [addPayerMode, setAddPayerMode] = useState(false)
-
   const room = useLoaderData<AllRoomData>()
-
-  const [roomNameEditMode, setRoomNameEditMode] = useState(false)
-  const [newRoomName, setNewRoomName] = useState(room.name)
-  const [selectedPayer, setSelectedPayer] = useState(room.payers[0])
-  const newRoomNameError = useError(RoomD.validator.name(newRoomName))
-
-  const outlet = useOutlet()
-
-  return outlet ? (
-    <Outlet context={room} />
-  ) : (
+  return (
     <div className="relative flex flex-col h-full">
-      <header className="relative z-20 bg-white">
-        {roomNameEditMode ? (
+      <RoomHeader room={room} />
+      <Outlet context={room} />
+    </div>
+  )
+}
+
+function RoomHeader({ room }: { room: AllRoomData }) {
+  const [roomNameEditMode, _setRoomNameEditMode] = useState(false)
+  const [newRoomName, setNewRoomName] = useState(room.name)
+  const newRoomNameError = useError(RoomD.validator.name(newRoomName))
+  const setRoomNameEditMode = (v: boolean) => {
+    _setRoomNameEditMode(v)
+
+    if (v)
+      requestAnimationFrame(() => (document.querySelector('input[name=roomName]') as HTMLInputElement | null)?.focus())
+
+    setNewRoomName(room.name)
+  }
+
+  return (
+    <header className="relative z-20 bg-white h-48">
+      {roomNameEditMode ? (
+        <div className="h-full">
           <Form
-            className="room-title-edit flex justify-between px-16"
+            className="room-title-edit flex h-full justify-between items-center px-12"
             method="patch"
             onSubmit={() => {
               setRoomNameEditMode(false)
             }}>
             <Button
               type="button"
+              className="h-[44px] min-w-[44px]"
               onClick={() => {
                 setRoomNameEditMode(false)
               }}>
@@ -135,68 +147,30 @@ export default function RoomBy() {
               value={newRoomName}
               onChange={e => setNewRoomName(e.target.value)}
             />
-            <Button type="submit" className="text-primary400" disabled={!!newRoomNameError.error}>
+            <Button type="submit" className="text-primary400 h-[44px] min-w-[44px]" disabled={!!newRoomNameError.error}>
               <span className="underline">저장</span>
             </Button>
             <input type="hidden" name="roomId" value={room.id} />
             <input type="hidden" name="_action" value="roomNameModify" />
           </Form>
-        ) : (
-          <div className="room-title flex justify-center">
-            <Button className="px-32 w-[max-content]" onClick={() => setRoomNameEditMode(true)}>
-              <span className="text-primary500 underline underline-offset-1">{room.name}</span>
-              <SvgPen className="stroke-grey300" />
-            </Button>
-          </div>
-        )}
-      </header>
-      <nav className="min-h-56 overflow-x-scroll">
-        <div className="flex gap-x-8 nav-contents pl-20">
-          <Button theme="ghost/lightblue" className="w-48" onClick={() => setAddPayerMode(true)}>
-            <SvgPlus className="stroke-primary300" />
-          </Button>
-          {room.payers.map(payer => {
-            const isSelected = payer.id === selectedPayer.id
-            return (
-              <Button
-                key={payer.id}
-                theme={isSelected ? 'chip/blue' : 'chip/lightgrey'}
-                className={clsx(isSelected && 'font-semibold', 'px-8')}
-                onClick={() => setSelectedPayer(payer)}
-                hasClose={false}>
-                {payer.name}
-              </Button>
-            )
-          })}
-        </div>
-      </nav>
 
-      <main className="flex flex-col flex-auto">
-        <div className="empty-pay-items flex flex-col flex-auto items-center justify-center">
-          <img src="/images/main_illustrate.svg" alt="main_illustrate" />
-          <p className="mt-16">등록한 내역이 없어!</p>
-          <Button className="mt-48 min-w-[112px]" theme="solid/subOrange">
-            <SvgPlus className="stroke-white"></SvgPlus>내역 추가
+          <Portal>
+            <div className="dimm absolute z-10 inset-0 bg-black/40 animate-fadeIn" tabIndex={-1} role="none" />
+            <div
+              className="blur-dimm absolute z-10 inset-0 backdrop-blur-sm animate-fadeIn"
+              tabIndex={-1}
+              role="none"
+            />
+          </Portal>
+        </div>
+      ) : (
+        <div className="room-title flex justify-center">
+          <Button className="px-32 w-[max-content]" onClick={() => setRoomNameEditMode(true)}>
+            <span className="text-primary500 underline underline-offset-1">{room.name}</span>
+            <SvgPen className="stroke-grey300" />
           </Button>
         </div>
-      </main>
-
-      <Drawer open={addPayerMode} placement="bottom" onClose={() => setAddPayerMode(false)}>
-        <div className="h-[80vh] w-[100vw] rounded-t-[24px] py-[18px] px-[20px]">
-          <header className="drawer-head">
-            <Button className="w-[28px] h-[28px] px-0" onClick={() => setAddPayerMode(false)}>
-              <SvgCross width={28} height={28} />
-            </Button>
-          </header>
-        </div>
-      </Drawer>
-
-      {roomNameEditMode && (
-        <>
-          <div className="dimm absolute z-10 inset-0 bg-black/40" tabIndex={-1} role="none" />
-          <div className="blur-dimm absolute z-10 inset-0 backdrop-blur-sm" tabIndex={-1} role="none" />
-        </>
       )}
-    </div>
+    </header>
   )
 }
