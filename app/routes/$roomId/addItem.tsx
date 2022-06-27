@@ -61,15 +61,18 @@ export default function addItem() {
       </div>
 
       <Drawer open={addPayerMode} placement="bottom" onClose={handleAddPayerClose}>
-        <div className="h-[80vh] w-[100vw] rounded-t-[24px] py-[18px] px-[20px]">
-          <header className="drawer-head">
+        <div className="flex flex-col h-[90vh] w-[100vw] rounded-t-[24px] py-[18px] px-[20px] max-h-[476px]">
+          <header className="drawer-head mb-8">
             <Button className="w-[28px] h-[28px] px-0" onClick={handleAddPayerClose}>
               <SvgCross width={28} height={28} />
             </Button>
           </header>
-          <div className="flex flex-col justify-between mt-8">
-            <PayerForm payers={tempPayers.values} onPayerAdd={tempPayers.add} onPayerRemove={tempPayers.remove} />
-          </div>
+          <PayerForm
+            payers={tempPayers.values}
+            onPayerAdd={tempPayers.add}
+            onPayerRemove={tempPayers.remove}
+            onSubmit={() => 0}
+          />
         </div>
       </Drawer>
     </>

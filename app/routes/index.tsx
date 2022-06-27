@@ -72,32 +72,21 @@ const Index = () => {
   }
   const enterToNameAdd = domUtils.onEnter(nameAdd)
 
-  const handleSubmit = () => {
+  const handleSubmit = (_payers: string[]) => {
     const formData = new FormData()
-    formData.set('names', payers.values.join(','))
+    formData.set('names', _payers.join(','))
     submit(formData, { method: 'delete' })
   }
 
   return (
-    <div className="flex justify-start pt-32 px-20 max-w-[375px] w-full mx-auto h-full max-h-[512px]">
-      <div className="flex flex-col w-full">
-        <label className="font-extralight text-title block mb-16">누구누구 정산할꺼야?</label>
-        <PayerForm
-          payers={payers.values}
-          onPayerAdd={name => payers.add(name)}
-          onPayerRemove={name => payers.remove(name)}
-        />
-
-        <footer className="mt-auto mb-16">
-          <span className="text-caption1 font-light mb-4 text-grey300">
-            <span className={clsx('text-darkgrey100', payerError.error && 'error')}>{payers.values.length}명</span>
-            /10명
-          </span>
-          <Button theme="solid/blue" className="w-full" onClick={handleSubmit} disabled={!!payerError.error}>
-            다음
-          </Button>
-        </footer>
-      </div>
+    <div className="flex flex-col pt-32 px-20 max-w-[375px] w-full mx-auto h-full max-h-[512px]">
+      <label className="font-extralight text-title block mb-16">누구누구 정산할꺼야?</label>
+      <PayerForm
+        payers={payers.values}
+        onPayerAdd={name => payers.add(name)}
+        onPayerRemove={name => payers.remove(name)}
+        onSubmit={handleSubmit}
+      />
     </div>
   )
 }

@@ -570,6 +570,9 @@ video {
 .mt-8 {
   margin-top: 8px;
 }
+.mb-8 {
+  margin-bottom: 8px;
+}
 .block {
   display: block;
 }
@@ -577,6 +580,11 @@ video {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+.inline-flex {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
 }
 .grid {
   display: grid;
@@ -605,8 +613,17 @@ video {
 .h-32 {
   height: 32px;
 }
+.h-\[90vh\] {
+  height: 90vh;
+}
 .max-h-\[512px\] {
   max-height: 512px;
+}
+.max-h-\[412px\] {
+  max-height: 412px;
+}
+.max-h-\[476px\] {
+  max-height: 476px;
 }
 .min-h-56 {
   min-height: 56px;
@@ -713,6 +730,9 @@ video {
 }
 .overflow-x-scroll {
   overflow-x: scroll;
+}
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 .rounded-8 {
   border-radius: 8px;
