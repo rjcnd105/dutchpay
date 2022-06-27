@@ -26,7 +26,7 @@ const ButtonInput = forwardRef<HTMLInputElement, Props>(({ button, isInvalid, ..
 
   return (
     <div className={clsx('ui_ButtonInput', isInvalid && '!border-warning')}>
-      <Input {...props} ref={inputRef} borderNone />
+      <Input {...props} ref={inputRef} />
       <Button theme="solid/darkgrey" size="sm" onClick={onClear} {...button} />
     </div>
   )

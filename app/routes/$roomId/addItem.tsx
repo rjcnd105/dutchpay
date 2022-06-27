@@ -8,6 +8,8 @@ import Button from '~/components/ui/Button'
 import Drawer from '~/components/ui/Drawer'
 import SvgCross from '~/components/ui/Icon/Cross'
 import SvgPlus from '~/components/ui/Icon/Plus'
+import { useCheckboxState } from '~/hooks/useCheckboxState'
+import PayerForm from '~/routes/__components/__PayeyForm'
 import type { OutletContextData } from '~/routes/$roomId'
 
 export const loader = (args: DataFunctionArgs) => {
@@ -16,8 +18,14 @@ export const loader = (args: DataFunctionArgs) => {
 
 export default function addItem() {
   const room = useOutletContext<OutletContextData>()
+  const tempPayers = useCheckboxState(room.payers.map(({ name }) => name))
   const [addPayerMode, setAddPayerMode] = useState(false)
   const [selectedPayer, setSelectedPayer] = useState(room.payers[0])
+
+  const handleAddPayerClose = () => {
+    setAddPayerMode(false)
+    tempPayers.reset()
+  }
 
   return (
     <>
@@ -52,14 +60,16 @@ export default function addItem() {
         </div>
       </div>
 
-      <Drawer open={addPayerMode} placement="bottom" onClose={() => setAddPayerMode(false)}>
+      <Drawer open={addPayerMode} placement="bottom" onClose={handleAddPayerClose}>
         <div className="h-[80vh] w-[100vw] rounded-t-[24px] py-[18px] px-[20px]">
           <header className="drawer-head">
-            <Button className="w-[28px] h-[28px] px-0" onClick={() => setAddPayerMode(false)}>
+            <Button className="w-[28px] h-[28px] px-0" onClick={handleAddPayerClose}>
               <SvgCross width={28} height={28} />
             </Button>
           </header>
-          <div></div>
+          <div className="flex flex-col justify-between mt-8">
+            <PayerForm payers={tempPayers.values} onPayerAdd={tempPayers.add} onPayerRemove={tempPayers.remove} />
+          </div>
         </div>
       </Drawer>
     </>
