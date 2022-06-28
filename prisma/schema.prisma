@@ -27,13 +27,15 @@ model Payer {
   roomId            String
   payItems          PayItem[]
   debtorForItems    DebtorForItem[]
+
+  @@unique([roomId, name])
 }
 
 model PayItem {
   id                Int             @id @default(autoincrement())
   room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId            String          @unique
-  name              String?         @db.VarChar(12)
+  name              String          @db.VarChar(8)
   amount            Int             @default(0)
   payer             Payer           @relation(fields: [payerId], references: [id])
   payerId           Int
@@ -43,7 +45,7 @@ model PayItem {
 
 model DebtorForItem {
   payItem           PayItem         @relation(fields: [payItemId], references: [id], onDelete: Cascade)
-  payItemId         Int             @unique
+  payItemId         Int
   debtor            Payer           @relation(fields: [debtorId], references: [id], onDelete: Cascade)
   debtorId          Int
   extraAmount       Int             @default(0)

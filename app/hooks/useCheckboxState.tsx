@@ -43,7 +43,6 @@ export function useCheckboxState(initialState: string[]) {
   const remove = useCallback((value: string) => dispatch({ type: 'REMOVE', value }), [])
   const clear = useCallback(() => dispatch({ type: 'CLEAR' }), [])
   const reset = useCallback(() => dispatch({ type: 'RESET', value: defaultState.current }), [])
-  const isChecked = useCallback((value: string) => checkSet.has(value), [])
 
-  return { values: checkArr, add, remove, clear, reset, isChecked }
+  return { values: checkArr, add, remove, clear, reset, has: checkSet.has }
 }

@@ -9,7 +9,7 @@ import domUtils from '~/utils/domUtils'
 import Button from '../Button'
 import Input from '../Input'
 
-type Props = ComponentPropsWithRef<'input'> & { button: ComponentPropsWithoutRef<'button'> } & {
+type Props = ComponentPropsWithoutRef<'input'> & { button?: ComponentPropsWithoutRef<'button'> } & {
   isInvalid?: boolean
 }
 
@@ -25,13 +25,12 @@ const ButtonInput = forwardRef<HTMLInputElement, Props>(({ button, isInvalid, ..
   }, [])
 
   return (
-    <div className={clsx('ui_ButtonInput', isInvalid && '!border-warning')}>
+    <div className={clsx('ui_ButtonInput', isInvalid && '!border-warning', 'gap-x-12')}>
       <Input {...props} ref={inputRef} />
-      <Button theme="solid/darkgrey" size="sm" onClick={onClear} {...button} />
+      {button && <Button theme="solid/darkgrey" size="sm" onClick={onClear} {...button} />}
     </div>
   )
 })
-
-ButtonInput.displayName = 'Input'
+ButtonInput.displayName = 'ButtonInput'
 
 export default ButtonInput

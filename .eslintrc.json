@@ -5,8 +5,8 @@
     "project": "./tsconfig.json",
     "ecmaVersion": "latest"
   },
-  "extends": ["@remix-run/eslint-config", "plugin:@typescript-eslint/recommended"],
   "plugins": ["@typescript-eslint", "react", "jsx-a11y", "prettier", "simple-import-sort"],
+  "extends": ["plugin:@typescript-eslint/recommended", "@remix-run/eslint-config"],
   "env": {
     "browser": true,
     "node": true

@@ -3,7 +3,9 @@ import type { DataFunctionArgs } from '@remix-run/node'
 import clsx from 'clsx'
 import { copy } from 'fp-ts/lib/Array'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import type { HTMLInputElement } from 'happy-dom'
+import type { MutableRefObject, RefObject } from 'react'
+import { Ref, useRef, useState } from 'react'
 
 import Button from '~/components/ui/Button'
 import ButtonInput from '~/components/ui/ButtonInput'
@@ -18,13 +20,15 @@ type Props = {
   onPayerAdd: (name: string) => void
   onPayerRemove: (name: string) => void
   onSubmit: (payers: Props['payers']) => void
+  inputRef?: RefObject<HTMLInputElement>
 }
 
 // - 기존에 추가되어있는 payer가 있을 수도 있고 없을 수도 있다.
 // - payer 추가, 삭제를 부모가 알 수 있어야 한다.
-export default function PayerForm({ payers, onPayerAdd, onPayerRemove, onSubmit }: Props) {
+export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef, onSubmit }: Props) {
   const [name, setName] = useState<string>('')
   const nameError = useError(PayerD.validator.name(name))
+
   function nameAdd() {
     if (nameError.error) return
     onPayerAdd(name)
@@ -53,6 +57,7 @@ export default function PayerForm({ payers, onPayerAdd, onPayerRemove, onSubmit 
             disabled: !!nameError.error,
           }}
           onFocus={nameError.hiddenError}
+          ref={inputRef}
         />
 
         <span className="flex text-caption1 font-light mt-4 text-right text-grey300">
