@@ -1,6 +1,7 @@
 import type { PayItem } from '@prisma/client'
 import { flow, pipe } from 'fp-ts/function'
 import * as E from 'fp-ts/lib/Either'
+import * as ReadonlyArray from 'fp-ts/lib/ReadonlyArray'
 
 import result from '~/routes/$roomId/result'
 import { numberLiftE, stringLiftE } from '~/utils/lift'
@@ -42,8 +43,14 @@ export namespace PayItemD {
   } as const
 
   export const utils = {
-    paySeparator: (str: string) => {
-      const [name, amount] = str.split(str)
+    /*
+     * @example
+     * payStrSeparator("택시/16,000")
+     * // -> Right<{ name: "택시", amount: 16000 }> | Left<{type: ..., message: ...}>
+     * */
+    payStrSeparator: (str: string) => {
+      const [name, _amount] = str.split('/')
+      const amount = _amount.replaceAll(',', '')
       const result = pipe(
         E.Do,
         E.apS('name', validator.name(name)),
@@ -51,10 +58,14 @@ export namespace PayItemD {
       )
       return result
     },
-    paySeparators: (strArr: string[]) => {
-      for (const str of strArr) {
-        const payItemData = utils.paySeparator(result)
-      }
+    /*
+     * @example
+     * payStrSeparators(["택시/16,000", "고기/57,4000"])
+     * // -> Right<[{ name: "택시", amount: 16000 }, { name: "고기", amount: 57400 }]> | Left<{type: ..., message: ...}>
+     * */
+    payStrSeparators: (strArr: string[]) => {
+      const separate = ReadonlyArray.separate(strArr.map(utils.payStrSeparator))
+      return separate.left.length > 0 ? E.left(separate.left[0]) : E.right(separate.right)
     },
   }
 }

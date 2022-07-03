@@ -27,7 +27,7 @@ const ButtonInput = forwardRef<HTMLInputElement, Props>(({ button, isInvalid, ..
   return (
     <div className={clsx('ui_ButtonInput', isInvalid && '!border-warning', 'gap-x-12')}>
       <Input {...props} ref={inputRef} />
-      {button && <Button theme="solid/darkgrey" size="sm" onClick={onClear} {...button} />}
+      {button && <Button theme="solid/darkgrey" type="button" size="sm" onClick={onClear} {...button} />}
     </div>
   )
 })

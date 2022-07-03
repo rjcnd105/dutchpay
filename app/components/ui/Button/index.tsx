@@ -40,7 +40,7 @@ const Button = ({
 }: Props) => {
   const themes = theme?.split('/') as [Kind, string | undefined]
   return (
-    <button className={clsx('ui_Button', themes, sizeObj[size], className)} {...props}>
+    <button className={clsx('ui_Button', themes, sizeObj[size], className)} type="button" {...props}>
       {children}
       {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
     </button>

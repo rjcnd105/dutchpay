@@ -31,4 +31,7 @@ export const makePathGenerator =
   (...params) =>
     generatePath(patternPath, ...params)
 
-const d = makePathGenerator(':roomId/new')
+export const additionSearchParams =
+  <SearchParams extends Record<string, string>>(path: string) =>
+  (searchParams: SearchParams) =>
+    [...Object.entries(searchParams)].reduce((pv, cv, i) => `${pv}${i === 0 ? '?' : '&'}${cv.join('=')}`, path)

@@ -13,8 +13,8 @@ import ButtonInput from '~/components/ui/ButtonInput'
 import { CrossCircle } from '~/components/ui/Icon'
 import { PayerD } from '~/domain/PayerD'
 import { RoomD } from '~/domain/RoomD'
-import { useCheckboxState } from '~/hooks/useCheckboxState'
 import useError from '~/hooks/useError'
+import { useSetState } from '~/hooks/useSetState'
 import PayerForm from '~/routes/__components/__PayeyForm'
 import pathGenerator from '~/service/pathGenerator'
 import arrayUtils from '~/utils/arrayUtils'
@@ -59,7 +59,7 @@ export async function action({ request }: DataFunctionArgs) {
 
 const Index = () => {
   const submit = useSubmit()
-  const payers = useCheckboxState([])
+  const payers = useSetState([])
 
   function handleSubmit(_payers: string[]) {
     const formData = new FormData()

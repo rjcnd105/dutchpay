@@ -1,10 +1,16 @@
 import { useOutletContext } from 'react-router'
 
-import type { OutletData } from './'
+import type { OutletContextData } from '~/routes/$roomId'
 
 const result = () => {
-  const data = useOutletContext<OutletData>()
+  const data = useOutletContext<OutletContextData>()
 
-  return <div></div>
+  console.log('result.tsx', 'data', data)
+
+  return (
+    <>
+      <div>zzz</div>
+    </>
+  )
 }
 export default result

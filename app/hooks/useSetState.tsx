@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useReducer, useRef } from 'react'
 
-type CheckReducerActions =
+type SetReducerActions =
   | {
       type: 'ADD' | 'REMOVE'
       value: string
@@ -8,7 +8,7 @@ type CheckReducerActions =
   | { type: 'RESET'; value: string[] }
   | { type: 'CLEAR' }
 
-function checkReducer(state: Set<string>, action: CheckReducerActions) {
+function setReducer(state: Set<string>, action: SetReducerActions) {
   switch (action.type) {
     case 'ADD': {
       const newSet = new Set(state)
@@ -34,15 +34,15 @@ function checkReducer(state: Set<string>, action: CheckReducerActions) {
   }
 }
 
-export function useCheckboxState(initialState: string[]) {
+export function useSetState(initialState: string[]) {
   const defaultState = useRef(initialState)
-  const [checkSet, dispatch] = useReducer(checkReducer, new Set(initialState))
-  const checkArr = useMemo(() => [...checkSet], [checkSet])
+  const [set, dispatch] = useReducer(setReducer, new Set(initialState))
+  const setArr = useMemo(() => [...set], [set])
 
   const add = useCallback((value: string) => dispatch({ type: 'ADD', value }), [])
   const remove = useCallback((value: string) => dispatch({ type: 'REMOVE', value }), [])
   const clear = useCallback(() => dispatch({ type: 'CLEAR' }), [])
   const reset = useCallback(() => dispatch({ type: 'RESET', value: defaultState.current }), [])
 
-  return { values: checkArr, add, remove, clear, reset, has: checkSet.has }
+  return { values: setArr, add, remove, clear, reset, has: set.has }
 }

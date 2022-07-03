@@ -14,7 +14,6 @@
 
 
 .input-clear {
-
     button {
         @apply flex invisible justify-end items-center w-full h-full px-12 opacity-0;
         transform: scale(.6s);
@@ -35,4 +34,7 @@
     @apply visible opacity-100;
     transition-delay: 0s, 0s, 0s;
     transform: rotate(0deg);
+}
+.rc-input-number-input {
+    width: 100%;
 }

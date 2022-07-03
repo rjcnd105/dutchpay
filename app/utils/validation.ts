@@ -31,6 +31,7 @@ export type Validator<A> = (a: A) => Validation<A>
 export type ValidatorS<K extends string> = {
   [key in K]: <A>(a: A) => Validation<A>
 }
+// 추후 zod 기반으로 교체
 /*
  * 모든 에러 검출시 사용
  */

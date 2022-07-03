@@ -3,7 +3,7 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@re
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import cssHasPseudo from 'css-has-pseudo/browser'
-import { StrictMode, useEffect } from 'react'
+import { StrictMode, useEffect, useLayoutEffect } from 'react'
 
 import styles from './styles/app.css'
 import pretendardCss from './styles/fonts/pretendard.css'
@@ -24,9 +24,11 @@ export const links: LinksFunction = () => [
 ]
 
 export default function App() {
-  useEffect(() => {
-    cssHasPseudo(document)
-  }, [])
+  typeof window !== 'undefined'
+    ? useLayoutEffect(() => {
+        cssHasPseudo(document)
+      }, [])
+    : () => null
   return (
     <html lang="en" className="font-Pretendard text-body2 text-darkgrey100">
       <head>

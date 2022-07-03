@@ -34,12 +34,11 @@ model Payer {
 model PayItem {
   id                Int             @id @default(autoincrement())
   room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId            String          @unique
+  roomId            String
   name              String          @db.VarChar(8)
   amount            Int             @default(0)
   payer             Payer           @relation(fields: [payerId], references: [id])
   payerId           Int
-  payDate           DateTime
   debtorForItems    DebtorForItem[]
 }
 
