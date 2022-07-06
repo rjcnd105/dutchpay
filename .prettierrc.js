@@ -2,7 +2,6 @@ module.exports = {
   bracketSpacing: true,
   bracketSameLine: true,
   tabWidth: 2,
-  semi: false,
   singleQuote: true,
   trailingComma: 'all',
   jsxSingleQuote: false,
@@ -10,4 +9,4 @@ module.exports = {
   printWidth: 120,
   endOfLine: 'lf',
   parser: 'typescript',
-}
+};

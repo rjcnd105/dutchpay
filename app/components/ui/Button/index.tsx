@@ -1,11 +1,10 @@
-import type { LinksFunction } from '@remix-run/react/routeModules'
-import clsx from 'clsx'
-import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from 'react'
+import clsx from 'clsx';
+import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from 'react';
 
-import { CrossCircle } from '../Icon'
-import css from './Button.css'
+import { CrossCircle } from '../Icon';
+import css from './Button.css';
 
-type Kind = 'solid' | 'ghost' | 'chip' | 'text'
+type Kind = 'solid' | 'ghost' | 'chip' | 'text';
 type Theme =
   | 'solid/blue'
   | 'solid/subOrange'
@@ -16,19 +15,19 @@ type Theme =
   | 'chip/white'
   | 'chip/lightblue'
   | 'chip/blue'
-  | 'chip/lightgrey'
+  | 'chip/lightgrey';
 
-type Size = 'md' | 'sm'
+type Size = 'md' | 'sm';
 type Props = ComponentPropsWithRef<'button'> & {
-  theme?: Theme
-  size?: 'md' | 'sm'
-  hasClose?: boolean
-}
+  theme?: Theme;
+  size?: 'md' | 'sm';
+  hasClose?: boolean;
+};
 
 const sizeObj: Record<Size, string> = {
   md: 'h-48 rounded-8',
   sm: 'h-32 text-caption1 rounded-4',
-} as const
+} as const;
 
 const Button = ({
   theme = 'text',
@@ -38,12 +37,12 @@ const Button = ({
   hasClose = theme?.includes('chip'),
   ...props
 }: Props) => {
-  const themes = theme?.split('/') as [Kind, string | undefined]
+  const themes = theme?.split('/') as [Kind, string | undefined];
   return (
     <button className={clsx('ui_Button', themes, sizeObj[size], className)} type="button" {...props}>
       {children}
       {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
     </button>
-  )
-}
-export default Button
+  );
+};
+export default Button;

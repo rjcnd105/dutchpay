@@ -1,48 +1,42 @@
-import { LinksFunction } from '@remix-run/react/routeModules'
-import clsx from 'clsx'
-import type { InputNumberProps } from 'rc-input-number'
-import InputNumber from 'rc-input-number'
-import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from 'react'
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
+import clsx from 'clsx';
+import type { InputNumberProps } from 'rc-input-number';
+import InputNumber from 'rc-input-number';
+import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 
-import { CrossCircle } from '~/components/ui/Icon'
-import domUtils from '~/utils/domUtils'
+import { CrossCircle } from '~/components/ui/Icon';
+import domUtils from '~/utils/domUtils';
 
 interface CommonProps {
-  hasClear?: boolean
-  hasUnderline?: boolean
-  wrapClassName?: ComponentPropsWithoutRef<'div'>['className']
+  hasClear?: boolean;
+  hasUnderline?: boolean;
+  wrapClassName?: ComponentPropsWithoutRef<'div'>['className'];
 }
 interface InputType extends ComponentPropsWithoutRef<'input'>, CommonProps {}
 interface NumberInputType extends InputNumberProps, CommonProps {
-  type: 'money'
+  type: 'money';
 }
 
-type InputProps = InputType | NumberInputType
+type InputProps = InputType | NumberInputType;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ hasUnderline = false, hasClear = true, wrapClassName, className, ...props }, ref) => {
-    const inputRef = useRef<HTMLInputElement>(null)
-    useImperativeHandle(ref, () => inputRef.current as HTMLInputElement)
+    const inputRef = useRef<HTMLInputElement>(null);
+    useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
     const onClear = useCallback(() => {
       if (inputRef.current) {
-        inputRef.current.focus()
-        domUtils.inputChangeTrigger(inputRef.current, '')
+        inputRef.current.focus();
+        domUtils.inputChangeTrigger(inputRef.current, '');
       }
-    }, [])
+    }, []);
 
     return (
-      <div
-        className={clsx(
-          'relative flex flex-auto items-center',
-          hasUnderline && 'border-b-1 border-b-grey200',
-          wrapClassName,
-        )}>
+      <div className={clsx('ui_input', hasUnderline && 'border-b-1 border-b-grey200', wrapClassName)}>
         {props.type === 'money' ? (
           <InputNumber
+            className={clsx('w-full', hasClear && 'pr-32', className)}
             formatter={value => (value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
-            className={clsx('ui_input w-full', hasClear && 'pr-32', className)}
             required
             ref={inputRef}
             step={100}
@@ -52,7 +46,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...(props as NumberInputType)}></InputNumber>
         ) : (
           <input
-            className={clsx('ui_input w-full', hasClear && 'pr-32', className)}
+            className={clsx('w-full', hasClear && 'pr-32', className)}
             ref={inputRef}
             {...(props as InputType)}
             required
@@ -67,10 +61,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </button>
         )}
       </div>
-    )
+    );
   },
-)
+);
 
-Input.displayName = 'Input'
+Input.displayName = 'Input';
 
-export default Input
+export default Input;

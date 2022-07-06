@@ -25,6 +25,7 @@ model Payer {
   name              String          @db.VarChar(6)
   room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId            String
+  BankAccountNumber String          @default("")
   payItems          PayItem[]
   debtorForItems    DebtorForItem[]
 
@@ -47,6 +48,7 @@ model DebtorForItem {
   payItemId         Int
   debtor            Payer           @relation(fields: [debtorId], references: [id], onDelete: Cascade)
   debtorId          Int
+  debit             Boolean         @default(true)
   extraAmount       Int             @default(0)
 
   @@id([payItemId, debtorId])

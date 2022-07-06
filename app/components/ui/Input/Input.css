@@ -9,7 +9,12 @@
 }
 
 .ui_input {
-    @apply text-darkgrey300 w-full bg-transparent transition-all px-[2px] border-b-grey200 focus-visible:outline-0;
+    @apply relative flex flex-auto items-center;
+
+    input {
+        @apply text-darkgrey300 w-full bg-transparent transition-all px-[2px] ring-0 focus-visible:outline-0;
+    }
+
 }
 
 
@@ -28,9 +33,10 @@
             animation: clear 1.8s infinite;
         }
     }
+
 }
 
-.ui_input:valid ~ .input-clear button {
+.ui_input input:valid ~ .input-clear button {
     @apply visible opacity-100;
     transition-delay: 0s, 0s, 0s;
     transform: rotate(0deg);

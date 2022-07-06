@@ -1,0 +1,11 @@
+.page_room_addItem-panel {
+    visibility: hidden;
+    transform: translateY(100%);
+    transition: .3s transform cubic-bezier(0.33, 1, 0.68, 1), 0s visibility .3s;
+
+    &.active {
+        visibility: visible;
+        transform: translateY(0);
+        transition: .3s transform cubic-bezier(0.33, 1, 0.68, 1);
+    }
+}
