@@ -762,6 +762,9 @@ video {
   -moz-column-gap: 12px;
        column-gap: 12px;
 }
+.overflow-hidden {
+  overflow: hidden;
+}
 .overflow-x-scroll {
   overflow-x: scroll;
 }

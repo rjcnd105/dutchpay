@@ -285,7 +285,7 @@ export default function addItem() {
         setSelectedPayerId={setSelectedPayerId}
       />
 
-      <div className="relative flex flex-col flex-auto ">
+      <div className="relative flex flex-col flex-auto overflow-hidden">
         <div className="empty-pay-items flex flex-col flex-auto items-center justify-center">
           <img className="w-[205px] h-[178px]" src="/images/main_illustrate.svg" alt="main_illustrate" />
           <p className="mt-16">등록한 내역이 없어!</p>

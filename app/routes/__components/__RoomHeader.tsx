@@ -1,33 +1,32 @@
-import { Portal } from '@headlessui/react'
-import { Form } from '@remix-run/react'
-import { useState } from 'react'
+import { Portal } from '@headlessui/react';
+import { Form } from '@remix-run/react';
+import { useState } from 'react';
 
-import Button from '~/components/ui/Button'
-import SvgPen from '~/components/ui/Icon/Pen'
-import Input from '~/components/ui/Input'
-import Spacer from '~/components/ui/Spacer'
-import { RoomD } from '~/domain/RoomD'
-import useError from '~/hooks/useError'
+import Button from '~/components/ui/Button';
+import SvgPen from '~/components/ui/Icon/Pen';
+import Input from '~/components/ui/Input';
+import Spacer from '~/components/ui/Spacer';
+import { RoomD } from '~/domain/RoomD';
+import useError from '~/hooks/useError';
 
-import type { AllRoomData } from '../$roomId'
+import type { AllRoomData } from '../$roomId';
 
 export type RoomHeaderProps = {
-  room: AllRoomData
-  Left?: ({ room }: { room?: AllRoomData }) => JSX.Element
-  Right?: ({ room }: { room?: AllRoomData }) => JSX.Element
-}
+  room: AllRoomData;
+  Left?: ({ room }: { room?: AllRoomData }) => JSX.Element;
+  Right?: ({ room }: { room?: AllRoomData }) => JSX.Element;
+};
 export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
-  const [roomNameEditMode, _setRoomNameEditMode] = useState(false)
-  const [newRoomName, setNewRoomName] = useState(room.name)
-  const newRoomNameError = useError(RoomD.validator.name(newRoomName))
+  const [roomNameEditMode, _setRoomNameEditMode] = useState(false);
+  const [newRoomName, setNewRoomName] = useState(room.name);
+  const newRoomNameError = useError(RoomD.validator.name(newRoomName));
   const setRoomNameEditMode = (v: boolean) => {
-    _setRoomNameEditMode(v)
+    _setRoomNameEditMode(v);
 
-    if (v)
-      requestAnimationFrame(() => (document.querySelector('input[name=roomName]') as HTMLInputElement | null)?.focus())
+    if (v) setTimeout(() => (document.querySelector('input[name=roomName]') as HTMLInputElement | null)?.focus(), 100);
 
-    setNewRoomName(room.name)
-  }
+    setNewRoomName(room.name);
+  };
 
   return (
     <header className="relative z-20 bg-white h-48">
@@ -37,13 +36,13 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
             className="room-title-edit flex h-full items-center px-12"
             method="patch"
             onSubmit={() => {
-              setRoomNameEditMode(false)
+              setRoomNameEditMode(false);
             }}>
             <Button
               type="button"
               className="h-[44px] min-w-[44px]"
               onClick={() => {
-                setRoomNameEditMode(false)
+                setRoomNameEditMode(false);
               }}>
               취소
             </Button>
@@ -82,5 +81,5 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
         </div>
       )}
     </header>
-  )
+  );
 }
