@@ -1,6 +1,4 @@
 {
-  "build": {
-  },
   "github": {
     "enabled": false,
     "silent": true
