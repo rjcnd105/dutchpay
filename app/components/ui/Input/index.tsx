@@ -53,10 +53,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         )}
         {hasClear && (
-          <button
-            type="button"
-            className="absolute flex right-0 top-1/2 -translate-y-1/2 items-center justify-end w-32 h-32"
-            onClick={onClear}>
+          <button type="button" className="input-clear" onClick={onClear}>
             <CrossCircle className="fill-grey300" width={14} height={14} />
           </button>
         )}

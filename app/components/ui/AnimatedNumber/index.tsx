@@ -4,27 +4,32 @@ import { useEffect, useRef } from 'react';
 
 import NumberUtils from '~/utils/numberUtils';
 
-type Props = ComponentPropsWithRef<'span'> & { value: number | string; comma?: boolean };
+type Props = ComponentPropsWithRef<'span'> & { value: number; comma?: boolean };
 
+function parseValue(value: number, comma?: boolean) {
+  return comma ? NumberUtils.thousandsSeparators(value) : value;
+}
 function AnimatedNumber({ value, comma, children, ...props }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(0);
-  const springValue = useSpring(motionValue, { duration: 500 });
+  const motionValue = useMotionValue(parseValue(value, comma));
+  const springValue = useSpring(motionValue, { duration: 450 });
+  console.log('index.tsx', 'motionValue', motionValue);
 
   useEffect(() => {
-    motionValue.set(typeof value === 'number' ? value : Number(value));
-  }, [motionValue, value]);
+    console.log('index.tsx', 'motionValue!', motionValue);
+    motionValue.set(value);
+  }, [value]);
 
-  useEffect(
-    () =>
-      springValue.onChange(latest => {
-        if (ref.current) {
-          const showValue = latest.toFixed(0);
-          ref.current.textContent = comma ? NumberUtils.thousandsSeparators(showValue) : showValue;
-        }
-      }),
-    [springValue],
-  );
+  useEffect(() => {
+    const subscribe = springValue.onChange(latest => {
+      const latestNumber = Number(latest);
+      if (ref.current) {
+        const showValue = latestNumber.toFixed(0);
+        ref.current.textContent = comma ? NumberUtils.thousandsSeparators(showValue) : showValue;
+      }
+    });
+    return subscribe;
+  }, [springValue]);
 
   return (
     <span ref={ref} {...props}>

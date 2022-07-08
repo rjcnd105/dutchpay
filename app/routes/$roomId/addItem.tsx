@@ -24,8 +24,9 @@ import type { SetState } from '~/hooks/useSetState';
 import { useSetState } from '~/hooks/useSetState';
 import type { Message } from '~/model/Message';
 import { isSuccessMessage, message } from '~/model/Message';
-import PayerForm from '~/routes/__components/__PayerForm';
-import PayerSelectNavigation from '~/routes/__components/__PayerSelectNavigation';
+import __InputBankAccountModal from '~/routes/__components/__BankAccountRegistrationModal';
+import __PayerForm from '~/routes/__components/__PayerForm';
+import __PayerSelectNavigation from '~/routes/__components/__PayerSelectNavigation';
 import RoomHeader from '~/routes/__components/__RoomHeader';
 import type { AllRoomData, OutletContextData } from '~/routes/$roomId';
 import pathGenerator from '~/service/pathGenerator';
@@ -100,6 +101,8 @@ export default function addItem() {
   const actionData = useActionData<Message>();
   const addPayItemInputRef = useRef<HTMLInputElement>(null);
   const addPayItemScrollRef = useRef<HTMLDivElement>(null);
+
+  const [isBankAccountOpen, setIsBankAccountOpen] = useState(false);
 
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
 
@@ -184,7 +187,7 @@ export default function addItem() {
           </Button>
         )}
       />
-      <PayerSelectNavigation
+      <__PayerSelectNavigation
         onNewPayer={() => setIsModifyPayerMode(true)}
         payers={room.payers}
         selectedPayerId={selectedPayerId}
@@ -217,12 +220,10 @@ export default function addItem() {
             <div>
               <div className="mb-16">
                 <strong className="font-bold text-heading text-darkgrey300">
-                  <AnimatedNumber value={payerTotalMount} comma>
-                    0
-                  </AnimatedNumber>
+                  <AnimatedNumber value={payerTotalMount} comma />
                   <span className="ml-4">원</span>
                 </strong>
-                <Button className="pr-8" size="sm">
+                <Button className="pr-8" size="sm" onClick={() => setIsBankAccountOpen(true)}>
                   <SvgPlusSquare className="stroke-grey300" />
                   <span className="text-grey300 ml-[2px]">계좌 추가</span>
                 </Button>
@@ -290,6 +291,13 @@ export default function addItem() {
         </div>
       </div>
 
+      {selectedPayerData && (
+        <__InputBankAccountModal
+          open={isBankAccountOpen}
+          onClose={() => setIsBankAccountOpen(false)}
+          payer={selectedPayerData}
+        />
+      )}
       <PayerAddDrawer
         isOpen={isModifyPayerMode}
         onClose={() => setIsModifyPayerMode(false)}
@@ -329,7 +337,7 @@ const PayerAddDrawer = ({ previousPayerNames, isOpen, onSubmit, onClose }: Payer
             <SvgCross width={28} height={28} />
           </Button>
         </header>
-        <PayerForm
+        <__PayerForm
           payers={tempPayers.state}
           onPayerAdd={handleAdd}
           onPayerRemove={tempPayers.remove}

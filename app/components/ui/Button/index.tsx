@@ -9,9 +9,9 @@ type Theme =
   | 'solid/blue'
   | 'solid/subOrange'
   | 'solid/darkgrey'
-  | 'text/blue5'
-  | 'text/darkgrey2'
-  | 'text/darkgrey1'
+  | 'solid/white'
+  | 'solid/warning'
+  | 'text'
   | 'ghost/blue'
   | 'ghost/lightblue'
   | 'chip/white'
@@ -34,7 +34,7 @@ const sizeObj: Record<Size, string> = {
 } as const;
 
 const Button = ({
-  theme = 'text/darkgrey2',
+  theme = 'text',
   size = 'md',
   className,
   children,
@@ -49,7 +49,7 @@ const Button = ({
       className={clsx('ui_Button', themes, sizeObj[size], !clickable && 'none-clickable', className)}
       type="button"
       {...props}>
-      {isLoading ? <span>loading</span>: children}
+      {isLoading ? <span>loading</span> : children}
       {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
     </button>
   );

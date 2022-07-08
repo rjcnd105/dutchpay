@@ -7,8 +7,14 @@
         @apply text-darkgrey300 w-full bg-transparent transition-all px-[2px] ring-0 outline-none;
     }
 
-    button {
-        @apply flex justify-end max-w-40 justify-end items-center;
+    .input-clear {
+        @apply absolute flex invisible right-0 top-0 justify-end items-center w-32 h-full;
+        transition: visibility 0s 0.17s;
+        svg {
+            @apply opacity-0;
+            transition: all .17s cubic-bezier(0.33, 1, 0.68, 1);
+            transform: scale(.5) rotate(-180deg);
+        }
 
 
         &:hover, &:focus-within {
@@ -20,10 +26,16 @@
 
 
 
-.ui_input input:valid ~ .input-clear button {
-    @apply visible opacity-100;
-    transition-delay: 0s, 0s, 0s;
-    transform: rotate(0deg);
+.ui_input input:valid + .input-clear {
+    @apply visible;
+    transition: visibility 0s;
+
+    svg {
+        @apply opacity-100;
+        transform: scale(1) rotate(0);
+    }
+
+
 }
 .rc-input-number-input {
     width: 100%;

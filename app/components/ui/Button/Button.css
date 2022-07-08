@@ -23,8 +23,14 @@
         }
         &.subOrange  {
             @apply bg-orange300;
-
         }
+        &.white  {
+            @apply bg-white;
+        }
+        &.warning  {
+            @apply bg-warning;
+        }
+
         &.lightgrey  {
             @apply bg-lightgrey100;
         }

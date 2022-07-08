@@ -110,6 +110,7 @@ module.exports = {
     borderRadius: {
       4: '4px',
       8: '8px',
+      12: '12px',
       26: '26px',
     },
   },
