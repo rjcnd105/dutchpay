@@ -11,6 +11,7 @@ function AnimatedNumber({ value, comma, children, ...props }: Props) {
   const motionValue = useMotionValue(value);
   const springValue = useSpring(motionValue, { duration: 450 });
 
+  console.log('index.tsx', '', motionValue);
   useEffect(() => {
     motionValue.set(value);
   }, [value]);
@@ -23,12 +24,13 @@ function AnimatedNumber({ value, comma, children, ...props }: Props) {
         ref.current.textContent = comma ? NumberUtils.thousandsSeparators(showValue) : showValue;
       }
     });
+
     return subscribe;
   }, [springValue]);
 
   return (
     <span ref={ref} {...props}>
-      {children}
+      {comma ? NumberUtils.thousandsSeparators(motionValue.get()) : motionValue.get()}
     </span>
   );
 }
