@@ -1,12 +1,12 @@
 import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { Form, useSubmit } from '@remix-run/react';
+import { Form, useFetcher, useSubmit } from '@remix-run/react';
 import clsx from 'clsx';
 import { isRight } from 'fp-ts/lib/Either';
 import { flow, pipe } from 'fp-ts/lib/function';
 import { motion } from 'framer-motion';
 import type { KeyboardEventHandler } from 'react';
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, useTransition } from 'react';
 
 import Button from '~/components/ui/Button';
 import ButtonInput from '~/components/ui/ButtonInput';
@@ -30,6 +30,7 @@ export function loader({ request, params }: DataFunctionArgs) {
 
 export async function action({ request }: DataFunctionArgs) {
   const formData = getStringFormData(await request.formData(), ['names']);
+  const transition = useTransition();
 
   if (formData.names === '')
     return {
@@ -54,13 +55,13 @@ export async function action({ request }: DataFunctionArgs) {
 }
 
 const Index = () => {
-  const submit = useSubmit();
+  const fetcher = useFetcher();
   const payers = useSetState([]);
 
   function handleSubmit(_payers: string[]) {
     const formData = new FormData();
     formData.set('names', _payers.join(','));
-    submit(formData, { method: 'delete' });
+    fetcher.submit(formData, { action: '/api/createRoom', method: 'post' });
   }
 
   return (

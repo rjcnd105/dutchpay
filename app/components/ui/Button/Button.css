@@ -2,11 +2,13 @@
     @apply flex items-center justify-center min-w-max;
 
 
+    &:focus-visible, &:hover {
+        filter: saturate(1.2) brightness(.92);
+    }
 
 
     /* solid */
     &.solid {
-
 
         &.blue, &.darkgrey, &.subOrange, &.lightblue  {
             @apply text-white;
@@ -14,12 +16,14 @@
 
         &.blue  {
             @apply bg-primary400;
+
         }
         &.darkgrey  {
             @apply bg-darkgrey200;
         }
         &.subOrange  {
             @apply bg-orange300;
+
         }
         &.lightgrey  {
             @apply bg-lightgrey100;
@@ -59,9 +63,30 @@
     }
 
     &.text {
+        &:focus-visible, &:hover {
+            filter: saturate(2) brightness(.8);
+        }
+
         &:disabled {
-            @apply text-grey100 ;
+            @apply text-grey100;
+
+            svg {
+                @apply stroke-grey100;
+            }
         }
     }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &.none-clickable {
+        cursor: default;
+
+        &:focus-visible, &:hover {
+            filter: none;
+        }
+    }
+
 
 }

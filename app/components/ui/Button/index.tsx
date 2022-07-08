@@ -9,7 +9,9 @@ type Theme =
   | 'solid/blue'
   | 'solid/subOrange'
   | 'solid/darkgrey'
-  | 'text'
+  | 'text/blue5'
+  | 'text/darkgrey2'
+  | 'text/darkgrey1'
   | 'ghost/blue'
   | 'ghost/lightblue'
   | 'chip/white'
@@ -22,6 +24,8 @@ type Props = ComponentPropsWithRef<'button'> & {
   theme?: Theme;
   size?: 'md' | 'sm';
   hasClose?: boolean;
+  clickable?: boolean;
+  isLoading?: boolean;
 };
 
 const sizeObj: Record<Size, string> = {
@@ -30,17 +34,22 @@ const sizeObj: Record<Size, string> = {
 } as const;
 
 const Button = ({
-  theme = 'text',
+  theme = 'text/darkgrey2',
   size = 'md',
   className,
   children,
   hasClose = theme?.includes('chip'),
+  clickable = true,
+  isLoading = false,
   ...props
 }: Props) => {
   const themes = theme?.split('/') as [Kind, string | undefined];
   return (
-    <button className={clsx('ui_Button', themes, sizeObj[size], className)} type="button" {...props}>
-      {children}
+    <button
+      className={clsx('ui_Button', themes, sizeObj[size], !clickable && 'none-clickable', className)}
+      type="button"
+      {...props}>
+      {isLoading ? <span>loading</span>: children}
       {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
     </button>
   );

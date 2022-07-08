@@ -1,11 +1,10 @@
 import { Portal } from '@headlessui/react';
-import { Form } from '@remix-run/react';
+import { Form, useFetcher } from '@remix-run/react';
 import { useState } from 'react';
 
 import Button from '~/components/ui/Button';
 import SvgPen from '~/components/ui/Icon/Pen';
 import Input from '~/components/ui/Input';
-import Spacer from '~/components/ui/Spacer';
 import { RoomD } from '~/domain/RoomD';
 import useError from '~/hooks/useError';
 
@@ -17,6 +16,7 @@ export type RoomHeaderProps = {
   Right?: ({ room }: { room?: AllRoomData }) => JSX.Element;
 };
 export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
+  const fetcher = useFetcher();
   const [roomNameEditMode, _setRoomNameEditMode] = useState(false);
   const [newRoomName, setNewRoomName] = useState(room.name);
   const newRoomNameError = useError(RoomD.validator.name(newRoomName));
@@ -32,7 +32,8 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
     <header className="relative z-20 bg-white h-48">
       {roomNameEditMode ? (
         <div className="h-full">
-          <Form
+          <fetcher.Form
+            action="/api/roomNameModify"
             className="room-title-edit flex h-full items-center px-12"
             method="patch"
             onSubmit={() => {
@@ -40,7 +41,7 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
             }}>
             <Button
               type="button"
-              className="h-[44px] min-w-[44px]"
+              className="h-[44px] min-w-[44px] text-darkgrey300"
               onClick={() => {
                 setRoomNameEditMode(false);
               }}>
@@ -56,10 +57,10 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
               onChange={e => setNewRoomName(e.target.value)}
             />
             <Button type="submit" className="text-primary400 h-[44px] min-w-[44px]" disabled={!!newRoomNameError.error}>
-              <span className="underline">저장</span>
+              <span className="underline underline-offset-1">저장</span>
             </Button>
-            <input type="hidden" name="_action" value="roomNameModify" />
-          </Form>
+            <input type="hidden" name="roomId" value={room.id} />
+          </fetcher.Form>
 
           <Portal>
             <div className="dimm absolute z-10 inset-0 bg-black/40 animate-fadeIn" tabIndex={-1} role="none" />
@@ -73,7 +74,7 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
       ) : (
         <div className="room-title flex justify-between px-12">
           <div className="flex flex-1">{Left && <Left room={room} />}</div>
-          <Button className="px-32 w-[max-content]" onClick={() => setRoomNameEditMode(true)}>
+          <Button className="px-32 w-[max-content]" theme="text/blue5" onClick={() => setRoomNameEditMode(true)}>
             <span className="text-primary500 underline underline-offset-1">{room.name}</span>
             <SvgPen className="stroke-grey300" />
           </Button>

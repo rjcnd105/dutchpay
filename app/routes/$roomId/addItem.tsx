@@ -3,12 +3,15 @@ import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useActionData, useFetcher, useLocation, useOutlet, useSearchParams, useSubmit } from '@remix-run/react';
 import clsx from 'clsx';
+import equal from 'fast-deep-equal';
 import { isRight } from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
+import * as ReadonlyArray from 'fp-ts/lib/ReadonlyArray';
 import { produce } from 'immer';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from 'react';
 import { useOutletContext } from 'react-router';
 
+import AnimatedNumber from '~/components/ui/AnimatedNumber';
 import Button from '~/components/ui/Button';
 import ButtonInput from '~/components/ui/ButtonInput';
 import Drawer from '~/components/ui/Drawer';
@@ -31,109 +34,6 @@ import { db } from '~/utils/db.server';
 import domUtils from '~/utils/domUtils';
 import numberUtils from '~/utils/numberUtils';
 import { getStringFormData } from '~/utils/remixUtils';
-
-export function loader(args: DataFunctionArgs) {
-  return null;
-}
-
-export async function action({ request, params }: DataFunctionArgs) {
-  const form = await request.formData();
-  const roomId = params.roomId;
-
-  if (!roomId) throw Error('roomId가 없습니다.');
-
-  switch (form.get('_action')) {
-    case 'putPayers': {
-      const { names, previousNames } = getStringFormData(form, ['names', 'previousNames']);
-      const [nameSet, previousNameSet] = [new Set(names.split(',')), new Set(previousNames.split(','))];
-      const addPayers = [...nameSet].filter(name => !previousNameSet.has(name));
-      const deletePayers = [...previousNameSet].filter(name => !nameSet.has(name));
-      await db.$transaction([
-        db.payer.deleteMany({
-          where: {
-            roomId,
-            name: {
-              in: deletePayers,
-            },
-          },
-        }),
-        db.payer.createMany({ data: addPayers.map(name => ({ roomId, name })) }),
-      ]);
-      return message({
-        kind: 'putPayers',
-        status: 'success',
-        text: '',
-      });
-    }
-    case 'putPayItems': {
-      const { payerPayData } = getStringFormData(form, ['payerPayData']);
-      const data: AllRoomData['payers'] = JSON.parse(payerPayData);
-
-      const roomPayItems = await db.room.findUnique({ where: { id: roomId } }).payItems();
-      if (roomPayItems === null) throw Error('room을 찾을 수 없습니다.');
-
-      const roomPayItemHashMap = new Map(roomPayItems.map(payItem => [payItem.id, payItem]));
-
-      const { upsertItems, deleteIds } = (function () {
-        const upsertItems: PayItem[] = [];
-        const deleteIds: Array<PayItem['id']> = [];
-
-        for (const payer of data) {
-          const [upsertPayItems, deletePayItemIds] = payer.payItems.reduce(
-            ([_upsertItems, _deleteIds], payItem) => {
-              if (payItem.name.trim() === '' && payItem.amount === 0) {
-                if (roomPayItemHashMap.has(payItem.id)) _deleteIds.push(payItem.id);
-              } else {
-                _upsertItems.push(payItem);
-              }
-
-              return [_upsertItems, _deleteIds];
-            },
-            [upsertItems, deleteIds],
-          );
-          upsertItems.concat(upsertPayItems);
-          deleteIds.concat(deletePayItemIds);
-        }
-        return { upsertItems, deleteIds };
-      })();
-
-      await db.$transaction([
-        ...upsertItems.map(({ id, name, amount, roomId, payerId }) =>
-          db.payItem.upsert({
-            where: {
-              id,
-            },
-            create: {
-              name,
-              amount,
-              roomId,
-              payerId,
-              debtorForItems: {
-                create: data.map(payer => ({
-                  debtorId: payer.id,
-                })),
-              },
-            },
-            update: {
-              name,
-              amount,
-            },
-          }),
-        ),
-        db.payItem.deleteMany({
-          where: {
-            id: {
-              in: deleteIds,
-            },
-          },
-        }),
-      ]);
-      return redirect(pathGenerator.room.result({ roomId }));
-    }
-  }
-
-  return null;
-}
 
 type PayItemFormReducer =
   | {
@@ -194,10 +94,12 @@ const payItemFormReducer = produce((draft: PayItemFormData, action: PayItemFormR
 });
 
 export default function addItem() {
-  const submit = useSubmit();
+  const fetcher = useFetcher();
+
   const room = useOutletContext<OutletContextData>();
   const actionData = useActionData<Message>();
   const addPayItemInputRef = useRef<HTMLInputElement>(null);
+  const addPayItemScrollRef = useRef<HTMLDivElement>(null);
 
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
 
@@ -213,14 +115,15 @@ export default function addItem() {
     () => selectedPayerData?.payItems.reduce((pv, cv) => pv + cv.amount, 0) ?? 0,
     [selectedPayerData],
   );
-
   // 결제 내역 저장
   function handlePayItemSubmit() {
     const formData = new FormData();
-    formData.set('_action', 'putPayItems');
+    formData.set('roomId', room.id);
     formData.set('payerPayData', JSON.stringify(payerData));
 
-    submit(formData, { method: 'put' });
+    console.log('addItem.tsx', '결제내역저장');
+
+    fetcher.submit(formData, { action: '/api/putPayItems', method: 'put', replace: true });
   }
 
   // Payer 저장
@@ -228,19 +131,19 @@ export default function addItem() {
     if (!selectedPayerId) throw Error('payerId가 없습니다.');
 
     const formData = new FormData();
-    formData.set('_action', 'putPayers');
+    formData.set('roomId', room.id);
     formData.set('payerId', `${selectedPayerId}`);
     formData.set('previousNames', previousPayerNames.join(','));
     formData.set('names', payerNames.join(','));
-    submit(formData, { method: 'put' });
+    fetcher.submit(formData, { action: '/api/putPayers', method: 'put', replace: true });
     setIsModifyPayerMode(false);
   };
 
+  // 기존에 selected 되어있던 payer을 삭제한 경우 다시 새로운 payers[0]을 selected
   useEffect(() => {
     if (!actionData || !room) return;
     switch (actionData.kind) {
       case 'putPayers': {
-        // 기존에 선택되어있던 payer을 삭제한 경우 다시 payers[0]을 선택
         if (isSuccessMessage(actionData) && !room.payers.some(payer => payer.id === selectedPayerId)) {
           setSelectedPayerId(room.payers[0].id);
         }
@@ -253,16 +156,19 @@ export default function addItem() {
     if (!selectedPayerId) setSelectedPayerId(room.payers[0].id);
   }, []);
 
-  function addEmpty10Items(roomId: Room['id'], id: Payer['id']) {
-    payerDataDispatch({ type: 'EMPTY_ADDS', value: { payerId: id, roomId }, length: 10 });
-  }
-
   function handlePayItemAdd() {
     const result = PayItemD.utils.payStrSeparator(payItemSeparate);
     if (isRight(result)) {
       const { name, amount } = result.right;
       payerDataDispatch({ type: 'ADD', value: { name, amount, payerId: selectedPayerId, roomId: room.id } });
       setPayItemSeparate('');
+      setTimeout(() => {
+        console.log('addItem.tsx', 'addPayItemPanelRef', addPayItemScrollRef);
+        addPayItemScrollRef.current?.scrollTo({
+          top: addPayItemScrollRef.current.clientHeight,
+          behavior: 'smooth',
+        });
+      }, 200);
     }
   }
 
@@ -273,7 +179,7 @@ export default function addItem() {
       <RoomHeader
         room={room}
         Right={({ room }) => (
-          <Button className="w-44 h-44 underline text-primary400" onClick={handlePayItemSubmit}>
+          <Button className="w-44 h-44 text-primary400  underline underline-offset-1" onClick={handlePayItemSubmit}>
             저장
           </Button>
         )}
@@ -292,20 +198,28 @@ export default function addItem() {
           <Button
             className="mt-48 min-w-[112px]"
             theme="solid/subOrange"
-            onClick={() => addEmpty10Items(room.id, selectedPayerId)}>
+            onClick={() =>
+              payerDataDispatch({
+                type: 'EMPTY_ADDS',
+                value: { payerId: selectedPayerId, roomId: room.id },
+                length: 10,
+              })
+            }>
             <SvgPlus className="stroke-white" /> 내역 추가
           </Button>
         </div>
         <div
           className={clsx(
-            'page_room_addItem-panel absolute inset-0 flex flex-col justify-between bg-white overflow-y-scroll',
+            'page_room_addItem-panel absolute inset-0 flex flex-col justify-between bg-white overflow-y-hidden',
             selectedPayerData && selectedPayerData.payItems.length > 0 && 'active',
           )}>
-          <div className="w-full px-20 py-12 overflow-y-scroll" key={selectedPayerId}>
+          <div className="w-full px-20 py-12 overflow-y-scroll" key={selectedPayerId} ref={addPayItemScrollRef}>
             <div>
               <div className="mb-16">
                 <strong className="font-bold text-heading text-darkgrey300">
-                  {numberUtils.thousandsSeparators(payerTotalMount)}
+                  <AnimatedNumber value={payerTotalMount} comma>
+                    0
+                  </AnimatedNumber>
                   <span className="ml-4">원</span>
                 </strong>
                 <Button className="pr-8" size="sm">
@@ -350,8 +264,16 @@ export default function addItem() {
             </div>
 
             <div>
-              <Button className="mx-auto" onClick={() => addEmpty10Items(room.id, selectedPayerId)}>
-                <SvgPlus className="stroke-grey300" />빈 라인 10개 추가
+              <Button
+                className="mx-auto"
+                onClick={() =>
+                  payerDataDispatch({
+                    type: 'EMPTY_ADDS',
+                    value: { payerId: selectedPayerId, roomId: room.id },
+                    length: 10,
+                  })
+                }>
+                <SvgPlus className="stroke-grey300" />빈 내역 10개 추가
               </Button>
             </div>
           </div>

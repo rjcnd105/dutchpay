@@ -30,7 +30,8 @@ const __PayerSelectNavigation = ({
               theme={isSelected ? 'chip/blue' : 'chip/lightgrey'}
               className={clsx(isSelected && 'font-semibold', 'px-8')}
               onClick={() => setSelectedPayerId(payer.id)}
-              hasClose={false}>
+              hasClose={false}
+              clickable={!isSelected}>
               {payer.name}
             </Button>
           );

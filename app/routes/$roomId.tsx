@@ -1,5 +1,5 @@
 import { Popover, Portal } from '@headlessui/react';
-import type { DebtorForItem, Payer, PayItem, Room } from '@prisma/client';
+import type { Payer, PayItem, Room } from '@prisma/client';
 import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData, useLocation, useNavigate, useOutlet, useSubmit } from '@remix-run/react';
@@ -28,7 +28,7 @@ import stringUtils from '~/utils/stringUtils';
 
 export type AllRoomData = Room & {
   payers: Array<Payer & { payItems: PayItem[] }>;
-  payItems: Array<PayItem & { debtorForItems: DebtorForItem[] }>;
+  payItems: Array<PayItem>;
 };
 
 const getAllRoomData = (roomId: Room['id']) =>
@@ -45,7 +45,6 @@ const getAllRoomData = (roomId: Room['id']) =>
       payItems: {
         include: {
           payer: true,
-          debtorForItems: true,
         },
       },
     },
@@ -55,9 +54,9 @@ export async function loader({ request, params }: DataFunctionArgs) {
   const url = new URL(request.url);
 
   const roomId = params.roomId;
-  const payerId = url.searchParams.get('payerId');
 
-  if (roomId && payerId && url.pathname === `/${params.roomId}`) {
+  if (roomId && `/${params.roomId}/`.includes(url.pathname)) {
+    console.log('$roomId.tsx', '!');
     const path = pathGenerator.room.addItem({ roomId });
     return redirect(path);
   }
@@ -67,40 +66,6 @@ export async function loader({ request, params }: DataFunctionArgs) {
   const roomAllData = await getAllRoomData(roomId);
 
   return roomAllData ?? redirect('/empty');
-}
-
-export async function action(args: DataFunctionArgs) {
-  const { request, params } = args;
-  const { roomId } = params;
-
-  if (!roomId) return;
-
-  const form = await request.formData();
-  const _action = form.get('_action');
-
-  if (!stringUtils.isNotEmptyStr(_action)) return;
-
-  switch (_action) {
-    case 'roomNameModify': {
-      const roomName = form.get('roomName');
-
-      if (!stringUtils.isNotEmptyStr(roomName) || !stringUtils.isNotEmptyStr(roomId)) return;
-
-      return {
-        _action: 'roomNameModify',
-        data: await db.room.update({
-          where: {
-            id: roomId,
-          },
-          data: {
-            name: roomName,
-          },
-        }),
-      };
-    }
-  }
-
-  return null;
 }
 
 export type OutletContextData = AllRoomData;
