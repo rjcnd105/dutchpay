@@ -140,5 +140,9 @@ export async function action({ request, params }: DataFunctionArgs) {
       ]);
       return redirect(pathGenerator.room.result({ roomId }));
     }
+    // 은행 계좌 입력
+    case 'inputBankAccount': {
+      const { payerId, bankAccount } = getStringFormData(form, ['payerId', 'bankAccount']);
+    }
   }
 }

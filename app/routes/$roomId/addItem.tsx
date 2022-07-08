@@ -24,7 +24,7 @@ import type { SetState } from '~/hooks/useSetState';
 import { useSetState } from '~/hooks/useSetState';
 import type { Message } from '~/model/Message';
 import { isSuccessMessage, message } from '~/model/Message';
-import __InputBankAccountModal from '~/routes/__components/__BankAccountRegistrationModal';
+import __BankAccountInputModal from '~/routes/__components/__BankAccountInputModal';
 import __PayerForm from '~/routes/__components/__PayerForm';
 import __PayerSelectNavigation from '~/routes/__components/__PayerSelectNavigation';
 import RoomHeader from '~/routes/__components/__RoomHeader';
@@ -292,7 +292,7 @@ export default function addItem() {
       </div>
 
       {selectedPayerData && (
-        <__InputBankAccountModal
+        <__BankAccountInputModal
           open={isBankAccountOpen}
           onClose={() => setIsBankAccountOpen(false)}
           payer={selectedPayerData}

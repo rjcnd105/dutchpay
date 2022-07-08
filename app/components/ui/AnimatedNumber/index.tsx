@@ -6,17 +6,12 @@ import NumberUtils from '~/utils/numberUtils';
 
 type Props = ComponentPropsWithRef<'span'> & { value: number; comma?: boolean };
 
-function parseValue(value: number, comma?: boolean) {
-  return comma ? NumberUtils.thousandsSeparators(value) : value;
-}
 function AnimatedNumber({ value, comma, children, ...props }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(parseValue(value, comma));
+  const motionValue = useMotionValue(value);
   const springValue = useSpring(motionValue, { duration: 450 });
-  console.log('index.tsx', 'motionValue', motionValue);
 
   useEffect(() => {
-    console.log('index.tsx', 'motionValue!', motionValue);
     motionValue.set(value);
   }, [value]);
 
