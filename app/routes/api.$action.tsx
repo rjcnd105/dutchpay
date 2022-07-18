@@ -3,6 +3,7 @@ import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import equal from 'fast-deep-equal';
 
+import { PayItemD } from '~/domain/PayItemD';
 import { message } from '~/model/Message';
 import type { AllRoomData } from '~/routes/$roomId';
 import pathGenerator from '~/service/pathGenerator';
@@ -79,6 +80,74 @@ export async function action({ request, params }: DataFunctionArgs) {
         text: '',
       });
     }
+    case 'addPayItem': {
+      const { roomId, payerId, name, amount } = getStringFormData(form, ['roomId', 'payerId', 'name', 'amount']);
+      return db.$transaction([
+        db.payItem.create({
+          data: {
+            roomId,
+            payerId: Number(payerId),
+            name,
+            amount: Number(amount),
+          },
+        }),
+        db.payer.update({
+          where: {
+            id: Number(payerId),
+          },
+          data: {
+            paymentItemLastUpdatedDate: new Date(),
+          },
+        }),
+      ]);
+    }
+    case 'removePayItem': {
+      const { payerId, payItemId } = getStringFormData(form, ['payerId', 'payItemId']);
+      return db.$transaction([
+        db.payItem.delete({
+          where: {
+            id: Number(payItemId),
+          },
+        }),
+        db.payer.update({
+          where: {
+            id: Number(payerId),
+          },
+          data: {
+            paymentItemLastUpdatedDate: new Date(),
+          },
+        }),
+      ]);
+    }
+    case 'modifyPayItem': {
+      const { payerId, payItemId, name, amount } = getStringFormData(form, ['payerId', 'payItemId', 'name', 'amount']);
+      return db.$transaction([
+        db.payItem.update({
+          where: {
+            id: Number(payItemId),
+          },
+          data: {
+            name,
+            amount: Number(amount),
+          },
+        }),
+        db.payer.update({
+          where: {
+            id: Number(payerId),
+          },
+          data: {
+            paymentItemLastUpdatedDate: new Date(),
+          },
+        }),
+      ]);
+    }
+
+    // 은행 계좌 입력
+    case 'inputBankAccount': {
+      const { payerId, bankAccount } = getStringFormData(form, ['payerId', 'bankAccount']);
+    }
+
+    // -- duplicated --
     // PayerItem Put
     case 'putPayItems': {
       const { roomId, payerPayData } = getStringFormData(form, ['roomId', 'payerPayData']);
@@ -139,10 +208,6 @@ export async function action({ request, params }: DataFunctionArgs) {
         ),
       ]);
       return redirect(pathGenerator.room.result({ roomId }));
-    }
-    // 은행 계좌 입력
-    case 'inputBankAccount': {
-      const { payerId, bankAccount } = getStringFormData(form, ['payerId', 'bankAccount']);
     }
   }
 }
