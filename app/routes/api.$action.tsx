@@ -1,6 +1,7 @@
-import type { PayItem } from '@prisma/client';
+import type { Payer, PayItem, Room } from '@prisma/client';
 import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
+import type { FetcherWithComponents, FormMethod } from '@remix-run/react';
 import equal from 'fast-deep-equal';
 
 import { PayItemD } from '~/domain/PayItemD';
@@ -9,6 +10,62 @@ import type { AllRoomData } from '~/routes/$roomId';
 import pathGenerator from '~/service/pathGenerator';
 import { db } from '~/utils/db.server';
 import { getStringFormData } from '~/utils/remixUtils';
+
+export type ApiDataType = {
+  createRoom: {
+    names: Array<Room['name']>;
+  };
+  roomNameModify: {
+    room: Pick<Room, 'id' | 'name'>;
+  };
+  putPayers: {
+    roomId: Room['id'];
+    payerNames: Array<Payer['name']>;
+  };
+  addPayItem: {
+    roomId: Room['id'];
+    payerId: Payer['id'];
+    payItem: Pick<PayItem, 'name' | 'amount'>;
+  };
+  modifyPayItem: {
+    payerId: Payer['id'];
+    payItem: Pick<PayItem, 'id' | 'name' | 'amount'>;
+  };
+  removePayItem: {
+    roomId: Room['id'];
+    payItemId: PayItem['id'];
+  };
+  inputBankAccount: {
+    payer: Pick<Payer, 'id' | 'BankAccountNumber'>;
+  };
+};
+
+const apiMethod: Record<keyof ApiDataType, FormMethod> = {
+  createRoom: 'post',
+  roomNameModify: 'patch',
+  putPayers: 'put',
+  addPayItem: 'post',
+  modifyPayItem: 'patch',
+  removePayItem: 'delete',
+  inputBankAccount: 'patch',
+} as const;
+
+export function callApi<K extends keyof ApiDataType>(action: keyof ApiDataType, data: ApiDataType[K]) {
+  const props = {
+    method: apiMethod[action],
+    action: `/api/${action}`,
+  };
+  return {
+    props,
+    submit<T>(fetcher: FetcherWithComponents<T>, data: ApiDataType[K]) {
+      const formData = new FormData();
+      formData.set('data', JSON.stringify(data));
+      fetcher.submit(formData, props);
+    },
+  };
+}
+
+export function receiveApi() {}
 
 export async function action({ request, params }: DataFunctionArgs) {
   const form = await request.formData();
