@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import equal from 'fast-deep-equal';
 import * as E from 'fp-ts/lib/Either';
 import { isRight } from 'fp-ts/lib/Either';
+import { flow } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/lib/Option';
 import * as ReadonlyArray from 'fp-ts/lib/ReadonlyArray';
 import { produce } from 'immer';
@@ -109,19 +110,20 @@ export default function addItem() {
 
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
 
-  const [selectedPayerId, setSelectedPayerId] = useState(room.payers[0].id);
-  const [beginEditedPayItem, setBeginEditedPayItem] = useState<PayItem | null>(null);
+  const [selectedPayerId, _setSelectedPayerId] = useState(room.payers[0].id);
+  const [beginEditedPayItem, _setBeginEditedPayItem] = useState<PayItem | null>(null);
   const [payItemSeparate, _setPayItemSeparate] = useState('');
   const payItemResult = useMemo(() => PayItemD.utils.payStrSeparator(payItemSeparate), [payItemSeparate]);
   const payItemError = useError(payItemResult);
 
-  function setPayItemSeparate(s: string) {
-    payItemError.hiddenError();
-    _setPayItemSeparate(s);
+  function setBeginEditedPayItem(item: typeof beginEditedPayItem) {
+    _setBeginEditedPayItem(item);
+    setPayItemSeparate(item ? `${item.name}/${item.amount}` : '');
   }
+  const setSelectedPayerId = flow(_setSelectedPayerId, () => setBeginEditedPayItem(null));
+  const setPayItemSeparate = flow(_setPayItemSeparate, payItemError.hiddenError);
 
   const [payerData, payerDataDispatch] = useReducer(payItemFormReducer, room.payers);
-
   // 선택된 Payer의 데이터
   const selectedPayerData = useMemo(
     () => payerData.find(payer => payer.id === selectedPayerId),
@@ -246,16 +248,17 @@ export default function addItem() {
 
               <div className="px-8 pt-8">
                 {selectedPayerData?.payItems.map(payItem => {
+                  const isEditedItem = payItem.id === beginEditedPayItem?.id;
                   return (
                     <div key={payItem.id} className="flex h-44 border-b-1 border-b-lightgrey200 text-darkgrey300">
                       <Button
                         className={clsx(
                           'flex flex-auto text-body2 hover:font-semibold',
-                          payItem.id === beginEditedPayItem?.id && 'font-semibold text-primary400',
+                          isEditedItem && 'font-semibold text-primary400',
                         )}
                         size="sm"
                         onClick={() => {
-                          setBeginEditedPayItem(payItem);
+                          setBeginEditedPayItem(isEditedItem ? null : payItem);
                         }}>
                         <span>{payItem.name}</span>
                         <span className="ml-auto underline underline-offset-1">
@@ -272,7 +275,7 @@ export default function addItem() {
             </div>
           </div>
           <div className="shadow-100 px-20 py-12 bg-white">
-            <p className="text-caption1 text-darkgrey100 mb-4 font-light">금액/사용처 예) 택시/12,000</p>
+            <p className="text-caption1 text-darkgrey100 mb-4 font-light">입력 예) 택시/12,000</p>
             <ButtonInput
               button={{ children: '추가', className: 'min-w-64', onClick: handlePayItemAdd }}
               value={payItemSeparate}
@@ -281,7 +284,9 @@ export default function addItem() {
               ref={addPayItemInputRef}
             />
             <p className="flex text-caption1 font-light">
-              <span className="text-warning">{payItemError.viewError?.message}</span>
+              <span className="text-warning">
+                {payItemError.viewError?.message && '위 가이드와 같은 형식으로 입력 부탁해!'}
+              </span>
               <span className="ml-auto">
                 <span className={clsx(payItemError.viewError ? 'text-warning' : 'text-darkgrey100')}>
                   {E.isRight(payItemResult) ? payItemResult.right.name.length : 0}
