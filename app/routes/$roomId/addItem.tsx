@@ -143,6 +143,7 @@ export default function addItem() {
       format(new Date(selectedPayerData?.paymentItemLastUpdatedDate), 'yy.MM.dd HH:mm'),
     [selectedPayerData?.paymentItemLastUpdatedDate],
   );
+
   // 결제 내역 저장
   function handlePayItemSubmit() {
     const formData = new FormData();
@@ -277,7 +278,12 @@ export default function addItem() {
           <div className="shadow-100 px-20 py-12 bg-white">
             <p className="text-caption1 text-darkgrey100 mb-4 font-light">입력 예) 택시/12,000</p>
             <ButtonInput
-              button={{ children: '추가', className: 'min-w-64', onClick: handlePayItemAdd }}
+              button={{
+                className: 'min-w-64',
+                ...(beginEditedPayItem
+                  ? { children: '수정', onClick: handlePayItemAdd }
+                  : { children: '추가', onClick: handlePayItemAdd }),
+              }}
               value={payItemSeparate}
               onChange={e => setPayItemSeparate(e.target.value)}
               onKeyDown={handleEnter}
