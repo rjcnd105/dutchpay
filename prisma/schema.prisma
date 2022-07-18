@@ -28,6 +28,7 @@ model Payer {
   BankAccountNumber String          @default("")
   payItems          PayItem[]       @relation("payerPayItem")
   exceptedItems     PayItem[]       @relation("excepted")
+  paymentItemLastUpdatedDate    DateTime    @default(now())
 
   @@unique([roomId, name])
 }

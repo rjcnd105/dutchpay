@@ -74,7 +74,7 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
       ) : (
         <div className="room-title flex justify-between px-12">
           <div className="flex flex-1">{Left && <Left room={room} />}</div>
-          <Button className="px-32 w-[max-content]" theme="text/blue5" onClick={() => setRoomNameEditMode(true)}>
+          <Button className="px-32 w-[max-content]" theme="text" onClick={() => setRoomNameEditMode(true)}>
             <span className="text-primary500 underline underline-offset-1">{room.name}</span>
             <SvgPen className="stroke-grey300" />
           </Button>

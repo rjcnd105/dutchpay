@@ -1,9 +1,7 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import cssHasPseudo from 'css-has-pseudo/browser';
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData } from '@remix-run/react';
 import { StrictMode, useEffect, useLayoutEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import styles from './styles/app.css';
 import pretendardCss from './styles/fonts/pretendard.css';
@@ -26,11 +24,6 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
-  typeof window !== 'undefined'
-    ? useLayoutEffect(() => {
-        cssHasPseudo(document);
-      }, [])
-    : () => null;
   return (
     <html lang="en" className="font-Pretendard text-body2 text-darkgrey100">
       <head>
@@ -39,6 +32,7 @@ export default function App() {
       </head>
       <body>
         <Outlet />
+        <ToastContainer position="bottom-left" autoClose={3500} closeOnClick pauseOnFocusLoss draggable />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

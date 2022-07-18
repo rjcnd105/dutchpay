@@ -1,3 +1,4 @@
+@import "node_modules/react-toastify/dist/ReactToastify.min.css";
 @import "rc-drawer/assets/index.css";
 
 html, body {

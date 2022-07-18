@@ -3,7 +3,9 @@ import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { Form, useActionData, useFetcher, useLocation, useOutlet, useSearchParams, useSubmit } from '@remix-run/react';
 import clsx from 'clsx';
+import { format } from 'date-fns';
 import equal from 'fast-deep-equal';
+import * as E from 'fp-ts/lib/Either';
 import { isRight } from 'fp-ts/lib/Either';
 import * as O from 'fp-ts/lib/Option';
 import * as ReadonlyArray from 'fp-ts/lib/ReadonlyArray';
@@ -20,6 +22,7 @@ import SvgPlus from '~/components/ui/Icon/Plus';
 import SvgPlusSquare from '~/components/ui/Icon/PlusSquare';
 import Input from '~/components/ui/Input';
 import { PayItemD } from '~/domain/PayItemD';
+import useError from '~/hooks/useError';
 import type { SetState } from '~/hooks/useSetState';
 import { useSetState } from '~/hooks/useSetState';
 import type { Message } from '~/model/Message';
@@ -107,16 +110,36 @@ export default function addItem() {
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
 
   const [selectedPayerId, setSelectedPayerId] = useState(room.payers[0].id);
-  const [payItemSeparate, setPayItemSeparate] = useState('');
+  const [beginEditedPayItem, setBeginEditedPayItem] = useState<PayItem | null>(null);
+  const [payItemSeparate, _setPayItemSeparate] = useState('');
+  const payItemResult = useMemo(() => PayItemD.utils.payStrSeparator(payItemSeparate), [payItemSeparate]);
+  const payItemError = useError(payItemResult);
+
+  function setPayItemSeparate(s: string) {
+    payItemError.hiddenError();
+    _setPayItemSeparate(s);
+  }
 
   const [payerData, payerDataDispatch] = useReducer(payItemFormReducer, room.payers);
+
+  // 선택된 Payer의 데이터
   const selectedPayerData = useMemo(
     () => payerData.find(payer => payer.id === selectedPayerId),
     [selectedPayerId, payerData],
   );
+
+  // 아이템들의 총액
   const payerTotalMount = useMemo(
     () => selectedPayerData?.payItems.reduce((pv, cv) => pv + cv.amount, 0) ?? 0,
     [selectedPayerData],
+  );
+
+  // 마지막 업데이트
+  const lastUpdateDateStr = useMemo(
+    () =>
+      selectedPayerData?.paymentItemLastUpdatedDate &&
+      format(new Date(selectedPayerData?.paymentItemLastUpdatedDate), 'yy.MM.dd HH:mm'),
+    [selectedPayerData?.paymentItemLastUpdatedDate],
   );
   // 결제 내역 저장
   function handlePayItemSubmit() {
@@ -172,6 +195,8 @@ export default function addItem() {
           behavior: 'smooth',
         });
       }, 200);
+    } else {
+      payItemError.showError();
     }
   }
 
@@ -195,87 +220,55 @@ export default function addItem() {
       />
 
       <div className="relative flex flex-col flex-auto overflow-hidden">
-        <div className="empty-pay-items flex flex-col flex-auto items-center justify-center">
-          <img className="w-[205px] h-[178px]" src="/images/main_illustrate.svg" alt="main_illustrate" />
-          <p className="mt-16">등록한 내역이 없어!</p>
-          <Button
-            className="mt-48 min-w-[112px]"
-            theme="solid/subOrange"
-            onClick={() =>
-              payerDataDispatch({
-                type: 'EMPTY_ADDS',
-                value: { payerId: selectedPayerId, roomId: room.id },
-                length: 10,
-              })
-            }>
-            <SvgPlus className="stroke-white" /> 내역 추가
-          </Button>
-        </div>
-        <div
-          className={clsx(
-            'page_room_addItem-panel absolute inset-0 flex flex-col justify-between bg-white overflow-y-hidden',
-            selectedPayerData && selectedPayerData.payItems.length > 0 && 'active',
-          )}>
-          <div className="w-full px-20 py-12 overflow-y-scroll" key={selectedPayerId} ref={addPayItemScrollRef}>
+        <div className="flex flex-auto flex-col justify-between bg-lightgrey100 overflow-y-hidden">
+          <div className="w-full px-16 py-12 overflow-y-scroll" key={selectedPayerId} ref={addPayItemScrollRef}>
             <div>
-              <div className="mb-16">
-                <strong className="font-bold text-heading text-darkgrey300">
-                  <AnimatedNumber value={payerTotalMount} comma />
-                  <span className="ml-4">원</span>
-                </strong>
-                <Button className="pr-8" size="sm" onClick={() => setIsBankAccountOpen(true)}>
-                  <SvgPlusSquare className="stroke-grey300" />
-                  <span className="text-grey300 ml-[2px]">계좌 추가</span>
-                </Button>
-              </div>
-              {selectedPayerData?.payItems.map(payItem => {
-                return (
-                  <div key={payItem.id} className="flex gap-x-24 mb-24">
-                    <Input
-                      key={`${payItem.id}-name`}
-                      defaultValue={payItem.name}
-                      name="item-name"
-                      wrapClassName="basis-[176px]"
-                      type="text"
-                      placeholder="사용처"
-                      onBlur={e => {
-                        payerDataDispatch({ type: 'SET', value: { ...payItem, name: e.target.value.trim() } });
-                      }}
-                      hasUnderline
-                    />
-                    <Input
-                      key={`${payItem.id}-amount`}
-                      defaultValue={payItem.amount}
-                      name="item-amount"
-                      wrapClassName="basis-[135px]"
-                      placeholder="금액"
-                      type="money"
-                      onBlur={e => {
-                        console.log('addItem.tsx', 'e.target.value', e.target['ariaValueNow']);
-                        payerDataDispatch({
-                          type: 'SET',
-                          value: { ...payItem, amount: Number(e.target['ariaValueNow']) },
-                        });
-                      }}
-                      hasUnderline
-                    />
+              <div className="flex mb-16 px-8">
+                <>
+                  <div>
+                    <strong className="font-bold text-heading text-darkgrey300">
+                      <AnimatedNumber value={payerTotalMount} comma />
+                      <span className="ml-4">원</span>
+                    </strong>
+                    <Button className="text-caption1 pr-8" size="sm" onClick={() => setIsBankAccountOpen(true)}>
+                      <SvgPlusSquare className="stroke-grey300" />
+                      <span className="text-grey300 ml-[2px]">계좌 추가</span>
+                    </Button>
                   </div>
-                );
-              })}
-            </div>
+                  <span className="ml-auto mt-auto text-right text-caption3 font-light">
+                    마지막 업데이트
+                    <br />
+                    {lastUpdateDateStr}
+                  </span>
+                </>
+              </div>
+              <hr className="border-1 border-darkgrey300" />
 
-            <div>
-              <Button
-                className="mx-auto"
-                onClick={() =>
-                  payerDataDispatch({
-                    type: 'EMPTY_ADDS',
-                    value: { payerId: selectedPayerId, roomId: room.id },
-                    length: 10,
-                  })
-                }>
-                <SvgPlus className="stroke-grey300" />빈 내역 10개 추가
-              </Button>
+              <div className="px-8 pt-8">
+                {selectedPayerData?.payItems.map(payItem => {
+                  return (
+                    <div key={payItem.id} className="flex h-44 border-b-1 border-b-lightgrey200 text-darkgrey300">
+                      <Button
+                        className={clsx(
+                          'flex flex-auto text-body2 hover:font-semibold',
+                          payItem.id === beginEditedPayItem?.id && 'font-semibold text-primary400',
+                        )}
+                        size="sm"
+                        onClick={() => {
+                          setBeginEditedPayItem(payItem);
+                        }}>
+                        <span>{payItem.name}</span>
+                        <span className="ml-auto underline underline-offset-1">
+                          {numberUtils.thousandsSeparators(payItem.amount)}
+                        </span>
+                      </Button>
+                      <Button className="min-w-32 stroke-darkgrey100 hover:stroke-darkgrey200" size="sm">
+                        <SvgCross width={16} height={16}></SvgCross>
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
           <div className="shadow-100 px-20 py-12 bg-white">
@@ -287,6 +280,15 @@ export default function addItem() {
               onKeyDown={handleEnter}
               ref={addPayItemInputRef}
             />
+            <p className="flex text-caption1 font-light">
+              <span className="text-warning">{payItemError.viewError?.message}</span>
+              <span className="ml-auto">
+                <span className={clsx(payItemError.viewError ? 'text-warning' : 'text-darkgrey100')}>
+                  {E.isRight(payItemResult) ? payItemResult.right.name.length : 0}
+                </span>
+                /8
+              </span>
+            </p>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.1.4 | MIT License | https://tailwindcss.com
+! tailwindcss v3.1.6 | MIT License | https://tailwindcss.com
 *//*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
@@ -526,12 +526,6 @@ video {
   bottom: 0;
   left: 0;
 }
-.right-0 {
-  right: 0;
-}
-.top-1\/2 {
-  top: 50%;
-}
 .z-20 {
   z-index: 20;
 }
@@ -561,35 +555,29 @@ video {
 .mb-16 {
   margin-bottom: 16px;
 }
-.mt-16 {
-  margin-top: 16px;
-}
-.mt-48 {
-  margin-top: 48px;
-}
 .ml-4 {
   margin-left: 4px;
 }
 .ml-\[2px\] {
   margin-left: 2px;
 }
-.mb-24 {
-  margin-bottom: 24px;
-}
-.mb-4 {
-  margin-bottom: 4px;
-}
-.mb-8 {
-  margin-bottom: 8px;
-}
-.mt-4 {
-  margin-top: 4px;
-}
 .ml-auto {
   margin-left: auto;
 }
 .mt-auto {
   margin-top: auto;
+}
+.mb-8 {
+  margin-bottom: 8px;
+}
+.mb-4 {
+  margin-bottom: 4px;
+}
+.mt-4 {
+  margin-top: 4px;
+}
+.mt-16 {
+  margin-top: 16px;
 }
 .ml-8 {
   margin-left: 8px;
@@ -614,8 +602,8 @@ video {
 .h-44 {
   height: 44px;
 }
-.h-\[178px\] {
-  height: 178px;
+.h-36 {
+  height: 36px;
 }
 .h-\[90vh\] {
   height: 90vh;
@@ -641,6 +629,12 @@ video {
 .min-h-56 {
   min-height: 56px;
 }
+.min-h-48 {
+  min-height: 48px;
+}
+.min-h-32 {
+  min-height: 32px;
+}
 .w-\[240px\] {
   width: 240px;
 }
@@ -649,9 +643,6 @@ video {
 }
 .w-44 {
   width: 44px;
-}
-.w-\[205px\] {
-  width: 205px;
 }
 .w-\[100vw\] {
   width: 100vw;
@@ -667,12 +658,6 @@ video {
   width: -moz-max-content;
   width: max-content;
 }
-.w-32 {
-  width: 32px;
-}
-.min-w-\[112px\] {
-  min-width: 112px;
-}
 .min-w-64 {
   min-width: 64px;
 }
@@ -684,6 +669,9 @@ video {
 }
 .min-w-\[44px\] {
   min-width: 44px;
+}
+.min-w-32 {
+  min-width: 32px;
 }
 .max-w-\[375px\] {
   max-width: 375px;
@@ -702,10 +690,6 @@ video {
 }
 .basis-\[135px\] {
   flex-basis: 135px;
-}
-.-translate-y-1\/2 {
-  --tw-translate-y: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .scale-95 {
   --tw-scale-x: .95;
@@ -754,9 +738,6 @@ video {
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-.grid-cols-\[2\] {
-  grid-template-columns: 2;
-}
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -780,13 +761,6 @@ video {
 }
 .gap-16 {
   gap: 16px;
-}
-.gap-8 {
-  gap: 8px;
-}
-.gap-x-24 {
-  -moz-column-gap: 24px;
-       column-gap: 24px;
 }
 .gap-x-8 {
   -moz-column-gap: 8px;
@@ -824,8 +798,15 @@ video {
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
 }
+.border-1 {
+  border-width: 1px;
+}
 .border-b-1 {
   border-bottom-width: 1px;
+}
+.border-darkgrey300 {
+  --tw-border-opacity: 1;
+  border-color: rgba(28, 28, 28, var(--tw-border-opacity));
 }
 .\!border-warning {
   --tw-border-opacity: 1 !important;
@@ -835,6 +816,10 @@ video {
   --tw-border-opacity: 1;
   border-bottom-color: rgba(212, 212, 218, var(--tw-border-opacity));
 }
+.border-b-lightgrey200 {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgba(238, 238, 241, var(--tw-border-opacity));
+}
 .bg-darkgrey200 {
   --tw-bg-opacity: 1;
   background-color: rgba(76, 77, 78, var(--tw-bg-opacity));
@@ -843,8 +828,15 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
+.bg-lightgrey100 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(245, 245, 249, var(--tw-bg-opacity));
+}
 .bg-black\/40 {
   background-color: rgba(0, 0, 0, 0.4);
+}
+.bg-opacity-0 {
+  --tw-bg-opacity: 0;
 }
 .fill-grey200 {
   fill: #D4D4DA;
@@ -852,14 +844,14 @@ video {
 .fill-grey300 {
   fill: #BCBCC1;
 }
-.stroke-white {
-  stroke: #ffffff;
-}
 .stroke-grey300 {
   stroke: #BCBCC1;
 }
 .stroke-primary300 {
   stroke: #96A5FF;
+}
+.stroke-darkgrey100 {
+  stroke: #8D8D92;
 }
 .p-16 {
   padding: 16px;
@@ -874,9 +866,17 @@ video {
   padding-left: 20px;
   padding-right: 20px;
 }
+.px-16 {
+  padding-left: 16px;
+  padding-right: 16px;
+}
 .py-12 {
   padding-top: 12px;
   padding-bottom: 12px;
+}
+.px-8 {
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .py-\[18px\] {
   padding-top: 18px;
@@ -889,10 +889,6 @@ video {
 .px-0 {
   padding-left: 0;
   padding-right: 0;
-}
-.px-8 {
-  padding-left: 8px;
-  padding-right: 8px;
 }
 .py-4 {
   padding-top: 4px;
@@ -912,6 +908,9 @@ video {
 .pr-8 {
   padding-right: 8px;
 }
+.pt-12 {
+  padding-top: 12px;
+}
 .pb-16 {
   padding-bottom: 16px;
 }
@@ -920,6 +919,12 @@ video {
 }
 .pr-32 {
   padding-right: 32px;
+}
+.pb-8 {
+  padding-bottom: 8px;
+}
+.pt-8 {
+  padding-top: 8px;
 }
 .text-center {
   text-align: center;
@@ -938,6 +943,9 @@ video {
 }
 .text-heading {
   font-size: 32px;
+}
+.text-caption3 {
+  font-size: 9px;
 }
 .text-caption1 {
   font-size: 14px;
@@ -981,6 +989,10 @@ video {
 .text-black {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 0, var(--tw-text-opacity));
+}
+.text-warning {
+  --tw-text-opacity: 1;
+  color: rgba(251, 98, 88, var(--tw-text-opacity));
 }
 .underline {
   -webkit-text-decoration-line: underline;
@@ -1028,4 +1040,32 @@ video {
 }
 .ease-in {
   transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+.hover\:bg-lightgrey200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(238, 238, 241, var(--tw-bg-opacity));
+}
+.hover\:bg-opacity-40:hover {
+  --tw-bg-opacity: 0.4px;
+}
+.hover\:stroke-darkgrey200:hover {
+  stroke: #4C4D4E;
+}
+.hover\:font-bold:hover {
+  font-weight: 700;
+}
+.hover\:font-semibold:hover {
+  font-weight: 600;
+}
+.hover\:bg-blend-color-burn:hover {
+  background-blend-mode: color-burn;
+}
+.hover\:backdrop-blur-sm:hover {
+  --tw-backdrop-blur: blur(4px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+.hover\:backdrop-filter:hover {
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+          backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }

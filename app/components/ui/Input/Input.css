@@ -4,7 +4,7 @@
     @apply relative flex flex-auto items-center;
 
     input {
-        @apply text-darkgrey300 w-full bg-transparent transition-all px-[2px] ring-0 outline-none;
+        @apply text-darkgrey300 w-full bg-transparent transition-all ring-0 outline-none;
     }
 
     .input-clear {

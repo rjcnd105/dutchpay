@@ -7,6 +7,7 @@ const sizes = {
   20: '20px',
   24: '24px',
   32: '32px',
+  36: '36px',
   40: '40px',
   44: '44px',
   48: '48px',
@@ -79,6 +80,7 @@ module.exports = {
       body2: '16px',
       caption1: '14px',
       caption2: '12px',
+      caption3: '9px',
     },
     fontWeight: {
       bold: '700',
@@ -106,6 +108,7 @@ module.exports = {
     borderWidth: {
       0: '0',
       1: '1px',
+      2: '2px',
     },
     borderRadius: {
       4: '4px',

@@ -29,8 +29,8 @@ type Props = ComponentPropsWithRef<'button'> & {
 };
 
 const sizeObj: Record<Size, string> = {
-  md: 'h-48 rounded-8',
-  sm: 'h-32 text-caption1 rounded-4',
+  md: 'min-h-48 rounded-8',
+  sm: 'min-h-32 rounded-4',
 } as const;
 
 const Button = ({
