@@ -1,44 +1,32 @@
-import type { Payer, PayItem, Room } from '@prisma/client';
-import type { DataFunctionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
-import { Form, useActionData, useFetcher, useLocation, useOutlet, useSearchParams, useSubmit } from '@remix-run/react';
+import type { Payer, PayItem } from '@prisma/client';
+import { useActionData, useFetcher } from '@remix-run/react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import equal from 'fast-deep-equal';
 import * as E from 'fp-ts/lib/Either';
 import { isRight } from 'fp-ts/lib/Either';
 import { flow } from 'fp-ts/lib/function';
-import * as O from 'fp-ts/lib/Option';
-import * as ReadonlyArray from 'fp-ts/lib/ReadonlyArray';
 import { produce } from 'immer';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useTransition } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router';
 
 import AnimatedNumber from '~/components/ui/AnimatedNumber';
 import Button from '~/components/ui/Button';
 import ButtonInput from '~/components/ui/ButtonInput';
-import Drawer from '~/components/ui/Drawer';
 import SvgCross from '~/components/ui/Icon/Cross';
-import SvgPlus from '~/components/ui/Icon/Plus';
 import SvgPlusSquare from '~/components/ui/Icon/PlusSquare';
-import Input from '~/components/ui/Input';
 import { PayItemD } from '~/domain/PayItemD';
 import useError from '~/hooks/useError';
-import type { SetState } from '~/hooks/useSetState';
-import { useSetState } from '~/hooks/useSetState';
 import type { Message } from '~/model/Message';
-import { isSuccessMessage, message } from '~/model/Message';
+import { isSuccessMessage } from '~/model/Message';
 import __BankAccountInputModal from '~/routes/__components/__BankAccountInputModal';
-import __PayerForm from '~/routes/__components/__PayerForm';
+import type { PayerModifyDrawerProps } from '~/routes/__components/__PayerFormDrawer';
+import PayerFormDrawer from '~/routes/__components/__PayerFormDrawer';
 import __PayerSelectNavigation from '~/routes/__components/__PayerSelectNavigation';
 import RoomHeader from '~/routes/__components/__RoomHeader';
 import type { AllRoomData, OutletContextData } from '~/routes/$roomId';
-import pathGenerator from '~/service/pathGenerator';
-import { MapValue } from '~/types/utils';
-import { db } from '~/utils/db.server';
+import { useCallApi } from '~/service/api';
 import domUtils from '~/utils/domUtils';
 import numberUtils from '~/utils/numberUtils';
-import { getStringFormData } from '~/utils/remixUtils';
 
 type PayItemFormReducer =
   | {
@@ -116,6 +104,11 @@ export default function addItem() {
   const payItemResult = useMemo(() => PayItemD.utils.payStrSeparator(payItemSeparate), [payItemSeparate]);
   const payItemError = useError(payItemResult);
 
+  const callPayItemCreateApi = useCallApi('payItem/create', 'post');
+  const callPayItemDeleteApi = useCallApi('payItem/delete', 'delete');
+  const callPayItemUpdateApi = useCallApi('payItem/update', 'patch');
+  const callPayerPutApi = useCallApi('payer/put', 'put');
+
   function setBeginEditedPayItem(item: typeof beginEditedPayItem) {
     _setBeginEditedPayItem(item);
     setPayItemSeparate(item ? `${item.name}/${item.amount}` : '');
@@ -123,11 +116,10 @@ export default function addItem() {
   const setSelectedPayerId = flow(_setSelectedPayerId, () => setBeginEditedPayItem(null));
   const setPayItemSeparate = flow(_setPayItemSeparate, payItemError.hiddenError);
 
-  const [payerData, payerDataDispatch] = useReducer(payItemFormReducer, room.payers);
   // 선택된 Payer의 데이터
   const selectedPayerData = useMemo(
-    () => payerData.find(payer => payer.id === selectedPayerId),
-    [selectedPayerId, payerData],
+    () => room.payers.find(payer => payer.id === selectedPayerId),
+    [selectedPayerId, room.payers],
   );
 
   // 아이템들의 총액
@@ -144,29 +136,17 @@ export default function addItem() {
     [selectedPayerData?.paymentItemLastUpdatedDate],
   );
 
-  // 결제 내역 저장
-  function handlePayItemSubmit() {
-    const formData = new FormData();
-    formData.set('roomId', room.id);
-    formData.set('payerPayData', JSON.stringify(payerData));
-
-    console.log('addItem.tsx', '결제내역저장');
-
-    fetcher.submit(formData, { action: '/api/putPayItems', method: 'put', replace: true });
-  }
-
   // Payer 저장
   const handlePayerSubmit: PayerModifyDrawerProps['onSubmit'] = (previousPayerNames, payerNames) => {
     if (!selectedPayerId) throw Error('payerId가 없습니다.');
-
-    const formData = new FormData();
-    formData.set('roomId', room.id);
-    formData.set('payerId', `${selectedPayerId}`);
-    formData.set('previousNames', previousPayerNames.join(','));
-    formData.set('names', payerNames.join(','));
-    fetcher.submit(formData, { action: '/api/putPayers', method: 'put', replace: true });
+    callPayerPutApi.submit(fetcher, { roomId: room.id, payerNames: payerNames });
     setIsModifyPayerMode(false);
   };
+
+  // PayerId가 없을시 세팅해줌.
+  useEffect(() => {
+    if (!selectedPayerId) setSelectedPayerId(room.payers[0].id);
+  }, []);
 
   // 기존에 selected 되어있던 payer을 삭제한 경우 다시 새로운 payers[0]을 selected
   useEffect(() => {
@@ -180,19 +160,12 @@ export default function addItem() {
     }
   }, [room]);
 
-  // PayerId가 없을시 세팅해줌.
-  useEffect(() => {
-    if (!selectedPayerId) setSelectedPayerId(room.payers[0].id);
-  }, []);
-
-  function handlePayItemAdd() {
+  function handlePayItemCreate() {
     const result = PayItemD.utils.payStrSeparator(payItemSeparate);
     if (isRight(result)) {
-      const { name, amount } = result.right;
-      payerDataDispatch({ type: 'ADD', value: { name, amount, payerId: selectedPayerId, roomId: room.id } });
+      callPayItemCreateApi.submit(fetcher, { roomId: room.id, payerId: selectedPayerId, payItem: result.right });
       setPayItemSeparate('');
       setTimeout(() => {
-        console.log('addItem.tsx', 'addPayItemPanelRef', addPayItemScrollRef);
         addPayItemScrollRef.current?.scrollTo({
           top: addPayItemScrollRef.current.clientHeight,
           behavior: 'smooth',
@@ -203,13 +176,16 @@ export default function addItem() {
     }
   }
 
-  const handleEnter = domUtils.onEnter(handlePayItemAdd);
+  function handlePayItemDelete() {}
+  function handlePayItemUpdate() {}
+
+  const handleEnter = domUtils.onEnter(handlePayItemCreate);
 
   return (
     <>
       <RoomHeader
         room={room}
-        Right={({ room }) => (
+        Right={() => (
           <Button className="w-44 h-44 text-primary400  underline underline-offset-1" onClick={handlePayItemSubmit}>
             저장
           </Button>
@@ -281,8 +257,8 @@ export default function addItem() {
               button={{
                 className: 'min-w-64',
                 ...(beginEditedPayItem
-                  ? { children: '수정', onClick: handlePayItemAdd }
-                  : { children: '추가', onClick: handlePayItemAdd }),
+                  ? { children: '수정', onClick: handlePayItemCreate }
+                  : { children: '추가', onClick: handlePayItemCreate }),
               }}
               value={payItemSeparate}
               onChange={e => setPayItemSeparate(e.target.value)}
@@ -311,7 +287,7 @@ export default function addItem() {
           payer={selectedPayerData}
         />
       )}
-      <PayerAddDrawer
+      <PayerFormDrawer
         isOpen={isModifyPayerMode}
         onClose={() => setIsModifyPayerMode(false)}
         previousPayerNames={room.payers.map(({ name }) => name)}
@@ -320,44 +296,3 @@ export default function addItem() {
     </>
   );
 }
-
-type PayerModifyDrawerProps = {
-  previousPayerNames: string[];
-  onSubmit: (previousPayerNames: Array<Payer['name']>, payerNames: Array<Payer['name']>) => void;
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-const PayerAddDrawer = ({ previousPayerNames, isOpen, onSubmit, onClose }: PayerModifyDrawerProps) => {
-  const tempPayers = useSetState(previousPayerNames);
-  const ref = useRef<HTMLInputElement>(null);
-
-  function handleAdd(name: string) {
-    tempPayers.add(name);
-    ref.current?.focus();
-  }
-
-  useEffect(() => {
-    if (isOpen) requestAnimationFrame(() => ref.current?.focus());
-    else tempPayers.reset();
-  }, [isOpen]);
-
-  return (
-    <Drawer open={isOpen} placement="bottom" onClose={onClose}>
-      <div className="flex flex-col h-[90vh] w-[100vw] rounded-t-[24px] py-[18px] px-[20px] max-h-[476px]">
-        <header className="drawer-head mb-8">
-          <Button className="w-[28px] h-[28px] px-0" onClick={onClose}>
-            <SvgCross width={28} height={28} />
-          </Button>
-        </header>
-        <__PayerForm
-          payers={tempPayers.state}
-          onPayerAdd={handleAdd}
-          onPayerRemove={tempPayers.remove}
-          onSubmit={() => onSubmit(tempPayers.defaultState, tempPayers.state)}
-          inputRef={ref}
-        />
-      </div>
-    </Drawer>
-  );
-};

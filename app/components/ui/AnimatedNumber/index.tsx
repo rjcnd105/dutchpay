@@ -11,7 +11,6 @@ function AnimatedNumber({ value, comma, children, ...props }: Props) {
   const motionValue = useMotionValue(value);
   const springValue = useSpring(motionValue, { duration: 450 });
 
-  console.log('index.tsx', '', motionValue);
   useEffect(() => {
     motionValue.set(value);
   }, [value]);

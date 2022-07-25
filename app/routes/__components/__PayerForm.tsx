@@ -19,12 +19,11 @@ type Props = {
   onPayerRemove: (name: string) => void;
   onSubmit: (payers: Props['payers']) => void;
   inputRef?: RefObject<HTMLInputElement>;
-  isLoading?: boolean;
 };
 
 // - 기존에 추가되어있는 payer가 있을 수도 있고 없을 수도 있다.
 // - payer 추가, 삭제를 부모가 알 수 있어야 한다.
-export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef, onSubmit, isLoading }: Props) {
+export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef, onSubmit }: Props) {
   const [name, setName] = useState<string>('');
   const nameError = useError(PayerD.validator.name(name));
 

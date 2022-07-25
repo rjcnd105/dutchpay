@@ -16,6 +16,7 @@ import { RoomD } from '~/domain/RoomD';
 import useError from '~/hooks/useError';
 import { useSetState } from '~/hooks/useSetState';
 import PayerForm from '~/routes/__components/__PayerForm';
+import { useCallApi } from '~/service/api';
 import pathGenerator from '~/service/pathGenerator';
 import arrayUtils from '~/utils/arrayUtils';
 import { db } from '~/utils/db.server';
@@ -57,11 +58,10 @@ export async function action({ request }: DataFunctionArgs) {
 const Index = () => {
   const fetcher = useFetcher();
   const payers = useSetState([]);
+  const callApi = useCallApi('room/create', 'post');
 
   function handleSubmit(_payers: string[]) {
-    const formData = new FormData();
-    formData.set('names', _payers.join(','));
-    fetcher.submit(formData, { action: '/api/createRoom', method: 'post' });
+    callApi.submit(fetcher, { names: _payers });
   }
 
   return (

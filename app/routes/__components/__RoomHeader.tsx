@@ -1,5 +1,6 @@
 import { Portal } from '@headlessui/react';
-import { Form, useFetcher } from '@remix-run/react';
+import type { Room } from '@prisma/client';
+import { useFetcher } from '@remix-run/react';
 import { useState } from 'react';
 
 import Button from '~/components/ui/Button';
@@ -8,12 +9,10 @@ import Input from '~/components/ui/Input';
 import { RoomD } from '~/domain/RoomD';
 import useError from '~/hooks/useError';
 
-import type { AllRoomData } from '../$roomId';
-
 export type RoomHeaderProps = {
-  room: AllRoomData;
-  Left?: ({ room }: { room?: AllRoomData }) => JSX.Element;
-  Right?: ({ room }: { room?: AllRoomData }) => JSX.Element;
+  room: Pick<Room, 'id' | 'name'>;
+  Left?: () => JSX.Element;
+  Right?: () => JSX.Element;
 };
 export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
   const fetcher = useFetcher();
@@ -73,12 +72,12 @@ export default function RoomHeader({ room, Left, Right }: RoomHeaderProps) {
         </div>
       ) : (
         <div className="room-title flex justify-between px-12">
-          <div className="flex flex-1">{Left && <Left room={room} />}</div>
+          <div className="flex flex-1">{Left && <Left />}</div>
           <Button className="px-32 w-[max-content]" theme="text" onClick={() => setRoomNameEditMode(true)}>
             <span className="text-primary500 underline underline-offset-1">{room.name}</span>
             <SvgPen className="stroke-grey300" />
           </Button>
-          <div className="flex flex-1 justify-end">{Right && <Right room={room} />}</div>
+          <div className="flex flex-1 justify-end">{Right && <Right />}</div>
         </div>
       )}
     </header>

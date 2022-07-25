@@ -25,7 +25,7 @@ model Payer {
   name              String          @db.VarChar(6)
   room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId            String
-  BankAccountNumber String          @default("")
+  bankAccountNumber String          @default("")
   payItems          PayItem[]       @relation("payerPayItem")
   exceptedItems     PayItem[]       @relation("excepted")
   paymentItemLastUpdatedDate    DateTime    @default(now())
