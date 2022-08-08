@@ -1,8 +1,10 @@
 import type { Room } from '@prisma/client';
+import { redirect } from '@remix-run/node';
 import type { Method } from 'app/service/api';
 import { apiAction } from 'app/service/api';
 
 import { message } from '~/model/Message';
+import pathGenerator from '~/service/pathGenerator';
 import { db } from '~/utils/db.server';
 
 const API_NAME = 'room/create';
@@ -15,7 +17,7 @@ type Props = {
 };
 
 const api = {
-  [API_NAME]({ names }: Props) {
+  async [API_NAME]({ names }: Props) {
     if (names.length === 0) {
       return message({
         status: 'error',
@@ -23,7 +25,7 @@ const api = {
       });
     }
 
-    return db.room.create({
+    const room = await db.room.create({
       data: {
         name: '정산',
         payers: {
@@ -33,6 +35,7 @@ const api = {
         },
       },
     });
+    return redirect(pathGenerator.room.addItem({ roomId: room.id }));
   },
 };
 

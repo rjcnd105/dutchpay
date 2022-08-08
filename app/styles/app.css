@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.1.6 | MIT License | https://tailwindcss.com
+! tailwindcss v3.1.8 | MIT License | https://tailwindcss.com
 *//*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
@@ -570,14 +570,14 @@ video {
 .mb-4 {
   margin-bottom: 4px;
 }
-.mb-8 {
-  margin-bottom: 8px;
-}
 .mt-4 {
   margin-top: 4px;
 }
 .mt-16 {
   margin-top: 16px;
+}
+.mb-8 {
+  margin-bottom: 8px;
 }
 .ml-8 {
   margin-left: 8px;
@@ -602,6 +602,9 @@ video {
 .h-44 {
   height: 44px;
 }
+.h-\[112px\] {
+  height: 112px;
+}
 .h-\[90vh\] {
   height: 90vh;
 }
@@ -613,6 +616,9 @@ video {
 }
 .h-\[44px\] {
   height: 44px;
+}
+.h-20 {
+  height: 20px;
 }
 .max-h-\[512px\] {
   max-height: 512px;
@@ -628,6 +634,9 @@ video {
 }
 .min-h-32 {
   min-height: 32px;
+}
+.min-h-\[112px\] {
+  min-height: 112px;
 }
 .w-\[240px\] {
   width: 240px;
@@ -863,6 +872,10 @@ video {
   padding-left: 8px;
   padding-right: 8px;
 }
+.py-4 {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
 .py-\[18px\] {
   padding-top: 18px;
   padding-bottom: 18px;
@@ -874,10 +887,6 @@ video {
 .px-0 {
   padding-left: 0;
   padding-right: 0;
-}
-.py-4 {
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 .px-12 {
   padding-left: 12px;

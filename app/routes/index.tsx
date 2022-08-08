@@ -1,29 +1,14 @@
 import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { Form, useFetcher, useSubmit } from '@remix-run/react';
-import clsx from 'clsx';
-import { isRight } from 'fp-ts/lib/Either';
-import { flow, pipe } from 'fp-ts/lib/function';
-import { motion } from 'framer-motion';
-import type { KeyboardEventHandler } from 'react';
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, useTransition } from 'react';
+import { useFetcher } from '@remix-run/react';
+import { useTransition } from 'react';
 
-import Button from '~/components/ui/Button';
-import ButtonInput from '~/components/ui/ButtonInput';
-import { CrossCircle } from '~/components/ui/Icon';
-import { PayerD } from '~/domain/PayerD';
-import { RoomD } from '~/domain/RoomD';
-import useError from '~/hooks/useError';
 import { useSetState } from '~/hooks/useSetState';
 import PayerForm from '~/routes/__components/__PayerForm';
 import { useCallApi } from '~/service/api';
 import pathGenerator from '~/service/pathGenerator';
-import arrayUtils from '~/utils/arrayUtils';
 import { db } from '~/utils/db.server';
-import domUtils from '~/utils/domUtils';
 import { getStringFormData } from '~/utils/remixUtils';
-import stringUtils from '~/utils/stringUtils';
-import { foldValidatorS } from '~/utils/validation';
 
 export function loader({ request, params }: DataFunctionArgs) {
   return null;

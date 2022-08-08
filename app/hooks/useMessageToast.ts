@@ -8,6 +8,7 @@ import { isMessage } from '~/model/Message';
 const useMessageToast = (toastMessageKinds: string[]) => {
   const toastKindSet = useMemo(() => new Set(toastMessageKinds), [toastMessageKinds]);
   const actionData = useActionData<unknown | Message>();
+
   useEffect(() => {
     if (!actionData && !isMessage(actionData)) return;
     if (toastKindSet.has((actionData as Message).kind)) {

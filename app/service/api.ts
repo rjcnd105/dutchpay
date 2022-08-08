@@ -26,6 +26,8 @@ export const useCallApi = <K extends ApiFnKeys>(action: K, method: ApiMethod[K])
     return {
       props,
       submit<T>(fetcher: FetcherWithComponents<T>, data: ApiProps[K], opt?: SubmitOptions) {
+        console.log('api.ts', 'useCallApi', data);
+
         const formData = new FormData();
         formData.set('data', superjson.stringify(data));
         fetcher.submit(formData, { ...props, ...opt });
@@ -39,6 +41,7 @@ export function receiveApi<K extends ApiFnKeys>(action: K, formData: FormData) {
     throw Error(`[API] ${action} - receive: data를 정상적으로 가져오지 못했습니다.`);
   }
   const data: ApiProps[K] = superjson.parse(stringData);
+  console.log('api.ts', 'receiveApi', data);
   return data;
 }
 

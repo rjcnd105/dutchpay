@@ -28,5 +28,6 @@ export type IdentifiableString<T> = T extends string ? (string extends T ? false
 type C<A> = { [K in keyof A]: A[K] };
 
 export type Optional<A, B extends keyof A> = C<Omit<A, B> & { [K in B]?: A[K] }>;
+export type PartRequired<A, B extends keyof A> = C<Omit<A, B> & { [K in B]-?: A[K] }>;
 
 export type ExtractProps<T> = T extends ComponentType<infer P> ? P : T;

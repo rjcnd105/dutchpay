@@ -20,7 +20,10 @@ interface NumberInputType extends InputNumberProps, CommonProps {
 type InputProps = InputType | NumberInputType;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ hasUnderline = false, hasClear = true, wrapClassName, className, ...props }, ref) => {
+  (
+    { hasUnderline = false, hasClear = true, wrapClassName, className, ...props },
+    ref,
+  ) => {
     const inputRef = useRef<HTMLInputElement>(null);
     useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
@@ -32,11 +35,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     }, []);
 
     return (
-      <div className={clsx('ui_input', hasUnderline && 'border-b-1 border-b-grey200', wrapClassName)}>
+      <div
+        className={clsx(
+          'ui_input',
+          hasUnderline && 'border-b-1 border-b-grey200',
+          wrapClassName,
+        )}>
         {props.type === 'money' ? (
           <InputNumber
             className={clsx('w-full', hasClear && 'pr-32', className)}
-            formatter={value => (value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '')}
+            formatter={value =>
+              value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''
+            }
             required
             ref={inputRef}
             step={100}
@@ -48,8 +58,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             className={clsx('w-full', hasClear && 'pr-32', className)}
             ref={inputRef}
-            {...(props as InputType)}
             required
+            {...(props as InputType)}
           />
         )}
         {hasClear && (
