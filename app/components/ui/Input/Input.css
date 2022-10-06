@@ -9,6 +9,7 @@
 
     .input-clear {
         @apply absolute flex invisible right-0 top-0 justify-end items-center w-32 h-full;
+
         transition: visibility 0s 0.17s;
         svg {
             @apply opacity-0;

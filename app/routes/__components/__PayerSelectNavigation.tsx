@@ -3,6 +3,7 @@ import clsx from 'clsx';
 
 import Button from '~/components/ui/Button';
 import SvgPlus from '~/components/ui/Icon/Plus';
+import { useCallback } from 'react';
 
 export type PayerSelectNavigationProps = {
   onNewPayer: () => void;
@@ -19,7 +20,7 @@ const __PayerSelectNavigation = ({
   return (
     <nav className="min-h-56 overflow-x-scroll">
       <div className="flex gap-x-8 nav-contents pl-20">
-        <Button theme="ghost/lightblue" className="w-48" onClick={onNewPayer}>
+        <Button theme="ghost/lightblue" className="min-w-48" onClick={onNewPayer}>
           <SvgPlus className="stroke-primary300" />
         </Button>
         {payers.map(payer => {

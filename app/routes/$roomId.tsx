@@ -1,8 +1,14 @@
 import type { Payer, PayItem, Room } from '@prisma/client';
-import type { DataFunctionArgs } from '@remix-run/node';
+import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { useLoaderData, useLocation, useOutlet } from '@remix-run/react';
-import { Outlet, useParams } from 'react-router';
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useMatches,
+  useOutlet,
+  useParams,
+} from '@remix-run/react';
 
 import RoomHeader from '~/routes/__components/__RoomHeader';
 import pathGenerator from '~/service/pathGenerator';
@@ -21,7 +27,11 @@ const getAllRoomData = (roomId: Room['id']) =>
     include: {
       payers: {
         include: {
-          payItems: true,
+          payItems: {
+            orderBy: {
+              id: 'asc',
+            },
+          },
         },
       },
       payItems: {
@@ -50,16 +60,24 @@ export async function loader({ request, params }: DataFunctionArgs) {
   return roomAllData ?? redirect('/empty');
 }
 
+export type Loader = typeof loader;
+type MyLoaderData = SerializeFrom<typeof loader>;
+
 export type OutletContextData = AllRoomData;
 
 export default function RoomBy() {
   const room = useLoaderData<AllRoomData>();
+  const matches = useMatches();
+  console.log('$roomId.tsx', 'matches', matches);
+
   const location = useLocation();
   const { roomId } = useParams();
 
   return (
     <div className="relative flex flex-col h-full">
-      {roomId && !location.pathname.includes(pathGenerator.room.addItem({ roomId })) && <RoomHeader room={room} />}
+      {roomId && !location.pathname.includes(pathGenerator.room.addItem({ roomId })) && (
+        <RoomHeader roomName={room.name} roomId={room.id} />
+      )}
       <Outlet context={room} />
     </div>
   );

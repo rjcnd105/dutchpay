@@ -1,10 +1,8 @@
 import type { Payer } from '@prisma/client';
-import type { DataFunctionArgs } from '@remix-run/node';
 import clsx from 'clsx';
-import { copy } from 'fp-ts/lib/Array';
 import { motion } from 'framer-motion';
-import type { MutableRefObject, RefObject } from 'react';
-import { Ref, useRef, useState } from 'react';
+import type { RefObject } from 'react';
+import { useState } from 'react';
 
 import Button from '~/components/ui/Button';
 import ButtonInput from '~/components/ui/ButtonInput';
@@ -23,7 +21,13 @@ type Props = {
 
 // - 기존에 추가되어있는 payer가 있을 수도 있고 없을 수도 있다.
 // - payer 추가, 삭제를 부모가 알 수 있어야 한다.
-export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef, onSubmit }: Props) {
+export default function PayerForm({
+  payers,
+  onPayerAdd,
+  onPayerRemove,
+  inputRef,
+  onSubmit,
+}: Props) {
   const [name, setName] = useState<string>('');
   const nameError = useError(PayerD.validator.name(name));
 
@@ -33,11 +37,12 @@ export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef,
     setName('');
     nameError.hiddenError();
   }
+
   const enterToNameAdd = domUtils.onEnter(nameAdd);
   const payerError = useError(RoomD.validator.payers(payers));
 
   return (
-    <div className="flex flex-col flex-auto justify-between">
+    <div className="flex flex-col flex-auto justify-between ">
       <div className="flex flex-col flex-auto">
         <ButtonInput
           placeholder="정산할 사람 이름"
@@ -59,8 +64,16 @@ export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef,
         />
 
         <span className="flex text-caption1 font-light mt-4 text-right text-grey300">
-          {nameError.viewError && <span className="error">{nameError.viewError.message}</span>}
-          <span className={clsx('text-darkgrey100 ml-auto', nameError.viewError && 'error')}>{name.length}</span>
+          {nameError.viewError && (
+            <span className="text-warning">{nameError.viewError.message}</span>
+          )}
+          <span
+            className={clsx(
+              'text-darkgrey100 ml-auto',
+              nameError.viewError && 'text-warning',
+            )}>
+            {name.length}
+          </span>
           /6
         </span>
         <div id="names-wrap" className="relative flex-auto ">
@@ -89,10 +102,16 @@ export default function PayerForm({ payers, onPayerAdd, onPayerRemove, inputRef,
       </div>
       <footer className="mt-auto mb-16">
         <span className="text-caption1 font-light mb-4 text-grey300">
-          <span className={clsx('text-darkgrey100', payerError.error && 'error')}>{payers.length}명</span>
+          <span className={clsx('text-darkgrey100', payerError.error && 'error')}>
+            {payers.length}명
+          </span>
           /10명
         </span>
-        <Button theme="solid/blue" className="w-full" onClick={() => onSubmit(payers)} disabled={!!payerError.error}>
+        <Button
+          theme="solid/blue"
+          className="w-full"
+          onClick={() => onSubmit(payers)}
+          disabled={!!payerError.error}>
           다음
         </Button>
       </footer>

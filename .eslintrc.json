@@ -1,26 +1,24 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "./tsconfig.json",
-    "ecmaVersion": "latest"
-  },
-  "plugins": ["@typescript-eslint", "react", "jsx-a11y", "prettier", "simple-import-sort"],
-  "extends": ["plugin:@typescript-eslint/recommended", "@remix-run/eslint-config"],
+  "plugins": ["react", "@typescript-eslint", "jsx-a11y", "simple-import-sort"],
+  "extends": ["plugin:@typescript-eslint/recommended", "plugin:jsx-a11y/recommended","@remix-run/eslint-config", "prettier"],
   "env": {
     "browser": true,
     "node": true
   },
-  "ignorePatterns": ["*.config.ts", "*.config.js"],
+  "ignorePatterns": [
+    "node_modules/*",
+    "*.config.ts",
+    "*.config.js"
+  ],
   "rules": {
-    "prettier/prettier": "warn",
     "react/jsx-pascal-case": "off",
+    "react/destructuring-assignment": "off",
     "react/function-component-definition": "off",
     "react/prop-types": "off",
     "no-multi-assign": "off",
     "no-unused-vars": "warn",
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error",
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",

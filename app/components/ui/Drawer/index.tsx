@@ -1,8 +1,6 @@
-import type DrawerWrapper from 'rc-drawer';
 import RcDrawer from 'rc-drawer';
 import type { IPlacement } from 'rc-drawer/lib/IDrawerPropTypes';
 import type { ReactNode } from 'react';
-import { useEffect, useRef } from 'react';
 
 type Props = {
   open: boolean;
@@ -12,7 +10,12 @@ type Props = {
 };
 const Drawer = ({ open, onClose, placement, children }: Props) => {
   return (
-    <RcDrawer open={open} placement={placement} onClose={onClose} handler={null} level={null}>
+    <RcDrawer
+      open={open}
+      placement={placement}
+      onClose={onClose}
+      handler={null}
+      level={null}>
       {children}
     </RcDrawer>
   );

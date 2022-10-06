@@ -1,7 +1,6 @@
-import { generatePath } from 'react-router';
-import type { ParamParseKey } from 'react-router/lib/router';
-
 import type { IdentifiableString } from '~/types/utils';
+import type { ParamParseKey } from 'react-router';
+import { generatePath } from 'react-router';
 
 // ParamParseKey는 :로 시작하는 동적 라우트 키 값의 이름을 뽑아온다.
 // ParamParseKey<"/:userName/aaa/:blogId/edit"> -> 'userName' | 'blogId'
@@ -35,5 +34,8 @@ export const additionSearchParams =
   <SearchParams extends Record<string, string>>(path: string) =>
   (searchParams?: SearchParams) =>
     searchParams
-      ? [...Object.entries(searchParams)].reduce((pv, cv, i) => `${pv}${i === 0 ? '?' : '&'}${cv.join('=')}`, path)
+      ? [...Object.entries(searchParams)].reduce(
+          (pv, cv, i) => `${pv}${i === 0 ? '?' : '&'}${cv.join('=')}`,
+          path,
+        )
       : path;

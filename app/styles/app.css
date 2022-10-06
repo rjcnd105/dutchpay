@@ -62,8 +62,9 @@ Add the correct text decoration in Chrome, Edge, and Safari.
 */
 
 abbr:where([title]) {
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
+  text-decoration: underline;
+  -webkit-text-decoration: underline dotted currentColor;
+          text-decoration: underline dotted currentColor;
 }
 
 /*
@@ -415,53 +416,6 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
-::-webkit-backdrop {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0,0,0,0);
-  --tw-ring-shadow: 0 0 rgba(0,0,0,0);
-  --tw-shadow: 0 0 rgba(0,0,0,0);
-  --tw-shadow-colored: 0 0 rgba(0,0,0,0);
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-}
-
 ::backdrop {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -602,8 +556,8 @@ video {
 .h-44 {
   height: 44px;
 }
-.h-\[112px\] {
-  height: 112px;
+.h-20 {
+  height: 20px;
 }
 .h-\[90vh\] {
   height: 90vh;
@@ -617,14 +571,14 @@ video {
 .h-\[44px\] {
   height: 44px;
 }
-.h-20 {
-  height: 20px;
-}
 .max-h-\[512px\] {
   max-height: 512px;
 }
 .max-h-\[476px\] {
   max-height: 476px;
+}
+.min-h-\[112px\] {
+  min-height: 112px;
 }
 .min-h-56 {
   min-height: 56px;
@@ -635,17 +589,14 @@ video {
 .min-h-32 {
   min-height: 32px;
 }
-.min-h-\[112px\] {
-  min-height: 112px;
-}
 .w-\[240px\] {
   width: 240px;
 }
 .w-full {
   width: 100%;
 }
-.w-44 {
-  width: 44px;
+.w-56 {
+  width: 56px;
 }
 .w-\[100vw\] {
   width: 100vw;
@@ -653,25 +604,25 @@ video {
 .w-\[28px\] {
   width: 28px;
 }
-.w-48 {
-  width: 48px;
-}
 .w-\[max-content\] {
-  width: -webkit-max-content;
   width: -moz-max-content;
+  width: -webkit-max-content;
   width: max-content;
 }
 .min-w-32 {
   min-width: 32px;
 }
-.min-w-64 {
-  min-width: 64px;
-}
 .min-w-\[328px\] {
   min-width: 328px;
 }
+.min-w-64 {
+  min-width: 64px;
+}
 .min-w-\[64px\] {
   min-width: 64px;
+}
+.min-w-48 {
+  min-width: 48px;
 }
 .min-w-\[44px\] {
   min-width: 44px;
@@ -698,21 +649,6 @@ video {
   --tw-scale-y: 1;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-@-webkit-keyframes fadeIn {
-
-  0% {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  1% {
-    visibility: visible;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
 @keyframes fadeIn {
 
   0% {
@@ -729,8 +665,7 @@ video {
   }
 }
 .animate-fadeIn {
-  -webkit-animation: fadeIn .25s ease-out;
-          animation: fadeIn .25s ease-out;
+  animation: fadeIn .25s ease-out;
 }
 .grid-cols-5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -958,10 +893,6 @@ video {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
-.text-primary400 {
-  --tw-text-opacity: 1;
-  color: rgba(78, 103, 248, var(--tw-text-opacity));
-}
 .text-darkgrey300 {
   --tw-text-opacity: 1;
   color: rgba(28, 28, 28, var(--tw-text-opacity));
@@ -969,6 +900,10 @@ video {
 .text-grey300 {
   --tw-text-opacity: 1;
   color: rgba(188, 188, 193, var(--tw-text-opacity));
+}
+.text-primary400 {
+  --tw-text-opacity: 1;
+  color: rgba(78, 103, 248, var(--tw-text-opacity));
 }
 .text-warning {
   --tw-text-opacity: 1;
@@ -983,8 +918,7 @@ video {
   color: rgba(0, 0, 0, var(--tw-text-opacity));
 }
 .underline {
-  -webkit-text-decoration-line: underline;
-          text-decoration-line: underline;
+  text-decoration-line: underline;
 }
 .underline-offset-1 {
   text-underline-offset: 1px;
@@ -999,7 +933,6 @@ video {
   --tw-shadow: 0px -4px 12px rgba(0, 0, 0, 0.05);
   --tw-shadow-colored: 0px -4px 12px var(--tw-shadow-color);
   box-shadow: 0 0 rgba(0,0,0,0), 0 0 rgba(0,0,0,0), var(--tw-shadow);
-  box-shadow: 0 0 rgba(0,0,0,0), 0 0 rgba(0,0,0,0), var(--tw-shadow);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0,0,0,0)), var(--tw-ring-shadow, 0 0 rgba(0,0,0,0)), var(--tw-shadow);
 }
 .filter {
@@ -1011,9 +944,9 @@ video {
           backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .transition {
-  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }

@@ -27,7 +27,7 @@ const api = {
       }),
       db.payer.update({
         where: {
-          id,
+          id: payerId,
         },
         data: {
           paymentItemLastUpdatedDate: new Date(),
