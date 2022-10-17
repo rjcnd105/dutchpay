@@ -25,9 +25,11 @@ export const useCallApi = <K extends ApiFnKeys>(action: K, method: ApiMethod[K])
     };
     return {
       props,
-      submit<T>(fetcher: FetcherWithComponents<T>, data: ApiProps[K], opt?: SubmitOptions) {
-        console.log('api.ts', 'useCallApi', data);
-
+      submit<T>(
+        fetcher: FetcherWithComponents<T>,
+        data: ApiProps[K],
+        opt?: SubmitOptions,
+      ) {
         const formData = new FormData();
         formData.set('data', superjson.stringify(data));
         fetcher.submit(formData, { ...props, ...opt });
@@ -35,8 +37,10 @@ export const useCallApi = <K extends ApiFnKeys>(action: K, method: ApiMethod[K])
     };
   }, [action]);
 
+const isSuperjson = (data: any): data is { json: any } => data && data.json;
 export function receiveApi<K extends ApiFnKeys>(action: K, formData: FormData) {
   const stringData = formData.get('data');
+  console.log('receiveApi', action, stringData);
   if (typeof stringData !== 'string') {
     throw Error(`[API] ${action} - receive: data를 정상적으로 가져오지 못했습니다.`);
   }
@@ -47,5 +51,8 @@ export function receiveApi<K extends ApiFnKeys>(action: K, formData: FormData) {
 
 export const apiAction =
   <R, K extends ApiFnKeys>(API_NAME: K, fn: (p: ApiProps[K]) => R) =>
-  async ({ request }: DataFunctionArgs) =>
-    fn(receiveApi(API_NAME, await request.formData()));
+  async ({ request }: DataFunctionArgs) => {
+    const formData = await request.formData();
+    console.log('apiAction', 'formData', { ...formData });
+    return fn(receiveApi(API_NAME, formData));
+  };

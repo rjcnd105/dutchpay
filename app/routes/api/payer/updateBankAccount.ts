@@ -13,7 +13,11 @@ type Props = {
 };
 
 const api = {
-  [API_NAME]({ payer: { id, bankAccountNumber } }: Props) {
+  [API_NAME](p: Props) {
+    console.log('updateBankAccount.ts', 'p', p);
+    const {
+      payer: { id, bankAccountNumber },
+    } = p;
     return db.payer.update({
       where: {
         id,

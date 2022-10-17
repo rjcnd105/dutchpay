@@ -46,7 +46,6 @@ type PayItemFormReducer =
 type PayItemFormData = AllRoomData['payers'];
 
 export default function AddItem() {
-  console.log('addItem.tsx', '!!!');
   const fetcher = useFetcher();
 
   const room = useOutletContext<OutletContextData>();
@@ -254,6 +253,7 @@ export default function AddItem() {
           open={isBankAccountOpen}
           onClose={() => setIsBankAccountOpen(false)}
           payer={selectedPayerData}
+          onSubmit={() => setIsBankAccountOpen(false)}
         />
       )}
       <PayerFormDrawer
