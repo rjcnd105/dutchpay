@@ -68,7 +68,6 @@ export type OutletContextData = AllRoomData;
 export default function RoomBy() {
   const room = useLoaderData<AllRoomData>();
   const matches = useMatches();
-  console.log('$roomId.tsx', 'matches', matches);
 
   const location = useLocation();
   const { roomId } = useParams();

@@ -1,29 +1,31 @@
-import type { Payer } from '@prisma/client';
+import type { Payer, PayItem, Room } from '@prisma/client';
 import type { Method } from 'app/service/api';
 import { apiAction } from 'app/service/api';
 
 import { db } from '~/utils/db.server';
 
-const API_NAME = 'payer/updateBankAccount';
+const API_NAME = 'payItem/exceptPayer';
 type API_NAME = typeof API_NAME;
 
-type ApiMethod = Method<'patch'>;
+type ApiMethod = Method<'post'>;
+
 type Props = {
-  payer: Pick<Payer, 'id' | 'bankAccountNumber'>;
+  payerId: Payer['id'];
+  payItemId: PayItem['id'];
 };
 
 const api = {
-  [API_NAME](p: Props) {
-    console.log('updateBankAccount.ts', 'p', p);
-    const {
-      payer: { id, bankAccountNumber },
-    } = p;
-    return db.payer.update({
+  [API_NAME]({ payerId, payItemId }: Props) {
+    return db.payItem.update({
       where: {
-        id,
+        id: payItemId,
       },
       data: {
-        bankAccountNumber,
+        exceptedPayers: {
+          connect: {
+            id: payerId,
+          },
+        },
       },
     });
   },
