@@ -2,7 +2,7 @@ import type { Payer, PayItem, Room } from '@prisma/client';
 import { Link, useActionData, useFetcher, useOutletContext } from '@remix-run/react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import { flow } from 'fp-ts/lib/function';
+import { flow } from 'fp-ts/function';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import AnimatedNumber from '~/components/ui/AnimatedNumber';
@@ -28,6 +28,7 @@ export async function loader() {
   console.log('additem loader', '');
   return null;
 }
+
 type PayItemFormReducer =
   | {
       type: 'SET' | 'REMOVE';
@@ -179,12 +180,22 @@ export default function AddItem() {
                       <AnimatedNumber value={payerTotalMount} comma />
                       <span className="ml-4">원</span>
                     </strong>
+
                     <Button
                       className="text-caption1 pr-8"
                       size="sm"
                       onClick={() => setIsBankAccountOpen(true)}>
-                      <SvgPlusSquare className="stroke-grey300" />
-                      <span className="text-grey300 ml-[2px]">계좌 추가</span>
+                      {selectedPayerData &&
+                      selectedPayerData.bankAccountNumber.length > 0 ? (
+                        <span className="text-grey300 ml-[2px]">
+                          {selectedPayerData.bankAccountNumber}
+                        </span>
+                      ) : (
+                        <>
+                          <SvgPlusSquare className="stroke-grey300" />
+                          <span className="text-grey300 ml-[2px]">계좌 추가</span>
+                        </>
+                      )}
                     </Button>
                   </div>
                   <span className="ml-auto mt-auto text-right text-caption3 font-light">

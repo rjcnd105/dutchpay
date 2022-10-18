@@ -27,6 +27,7 @@ const __BankAccountInputModal = ({ payer, onSubmit, ...dialogProps }: Props) => 
           <Input
             name="bankAccountNumber"
             placeholder="60530104068879 국민"
+            defaultValue={payer.bankAccountNumber}
             hasUnderline
             ref={bankAccountRef}
           />

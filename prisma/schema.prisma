@@ -2,9 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["interactiveTransactions"]
-   output = "../node_modules/.prisma/client"
+  output          = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -13,34 +13,34 @@ datasource db {
 }
 
 model Room {
-  id                String          @id @unique @default(cuid())
-  name              String          @db.VarChar(13) @default("정산")
-  createdAt         DateTime        @default(now())
-  expiryDate        DateTime        @default(now())
-  payers            Payer[]
-  payItems          PayItem[]
+  id         String    @id @unique @default(cuid())
+  name       String    @default("정산") @db.VarChar(13)
+  createdAt  DateTime  @default(now())
+  expiryDate DateTime  @default(now())
+  payers     Payer[]
+  payItems   PayItem[]
 }
 
 model Payer {
-  id                Int             @id @default(autoincrement())
-  name              String          @db.VarChar(6)
-  room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId            String
-  bankAccountNumber String          @default("")
-  payItems          PayItem[]       @relation("payerPayItem")
-  exceptedItems     PayItem[]       @relation("excepted")
-  paymentItemLastUpdatedDate    DateTime    @default(now())
+  id                         Int       @id @default(autoincrement())
+  name                       String    @db.VarChar(6)
+  room                       Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId                     String
+  bankAccountNumber          String    @default("")
+  payItems                   PayItem[] @relation("payerPayItem")
+  exceptedItems              PayItem[] @relation("excepted")
+  paymentItemLastUpdatedDate DateTime  @default(now())
 
   @@unique([roomId, name])
 }
 
 model PayItem {
-  id                Int             @id @default(autoincrement())
-  room              Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId            String
-  name              String          @db.VarChar(8)
-  amount            Int             @default(0)
-  payer             Payer           @relation("payerPayItem",fields: [payerId], references: [id])
-  payerId           Int
-  exceptedPayers    Payer[]         @relation("excepted")
+  id             Int     @id @default(autoincrement())
+  room           Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId         String
+  name           String  @db.VarChar(8)
+  amount         Int     @default(0)
+  payer          Payer   @relation("payerPayItem", fields: [payerId], references: [id])
+  payerId        Int
+  exceptedPayers Payer[] @relation("excepted")
 }

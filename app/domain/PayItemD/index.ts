@@ -1,14 +1,11 @@
 import type { PayItem } from '@prisma/client';
 import { flow, pipe } from 'fp-ts/function';
-import * as E from 'fp-ts/lib/Either';
-import * as ReadonlyArray from 'fp-ts/lib/ReadonlyArray';
-import * as S from 'fp-ts/lib/string';
-
-import result from '~/routes/$roomId/result';
+import * as E from 'fp-ts/Either';
+import * as ReadonlyArray from 'fp-ts/ReadonlyArray';
 import { isNil } from '~/utils/common';
-import { numberLiftE, stringLiftE } from '~/utils/lift';
+import { stringLiftE } from '~/utils/lift';
 import type { Error } from '~/utils/validation';
-import { singleErrorValidator, SingleValidation } from '~/utils/validation';
+import { singleErrorValidator } from '~/utils/validation';
 
 export namespace PayItemD {
   export const ERROR_TYPE = {
