@@ -44,12 +44,12 @@ type PayItemFormReducer =
       length: number;
     };
 
-type PayItemFormData = AllRoomData['payers'];
-
 export default function AddItem() {
   const fetcher = useFetcher();
 
   const room = useOutletContext<OutletContextData>();
+  if (!room) return null;
+
   const actionData = useActionData<Message>();
   const addPayItemInputRef = useRef<HTMLInputElement>(null);
   const addPayItemScrollRef = useRef<HTMLDivElement>(null);
@@ -152,14 +152,13 @@ export default function AddItem() {
 
   const onNewPayer = useCallback(() => setIsModifyPayerMode(true), []);
 
-  const HeaderRight = useMemo(
-    () => <GoCalculatePageButton roomId={room.id} />,
-    [room.id],
-  );
-
   return (
     <>
-      <RoomHeader roomName={room.name} roomId={room.id} Right={HeaderRight} />
+      <RoomHeader
+        roomName={room.name}
+        roomId={room.id}
+        Right={<GoCalculatePageButton roomId={room.id} />}
+      />
       <__PayerSelectNavigation
         onNewPayer={onNewPayer}
         payers={room.payers}
@@ -174,36 +173,34 @@ export default function AddItem() {
             ref={addPayItemScrollRef}>
             <div>
               <div className="flex mb-16 px-8">
-                <>
-                  <div>
-                    <strong className="font-bold text-heading text-darkgrey300">
-                      <AnimatedNumber value={payerTotalMount} comma />
-                      <span className="ml-4">원</span>
-                    </strong>
+                <div>
+                  <strong className="font-bold text-heading text-darkgrey300">
+                    <AnimatedNumber value={payerTotalMount} comma />
+                    <span className="ml-4">원</span>
+                  </strong>
 
-                    <Button
-                      className="text-caption1 pr-8"
-                      size="sm"
-                      onClick={() => setIsBankAccountOpen(true)}>
-                      {selectedPayerData &&
-                      selectedPayerData.bankAccountNumber.length > 0 ? (
-                        <span className="text-grey300 ml-[2px]">
-                          {selectedPayerData.bankAccountNumber}
-                        </span>
-                      ) : (
-                        <>
-                          <SvgPlusSquare className="stroke-grey300" />
-                          <span className="text-grey300 ml-[2px]">계좌 추가</span>
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  <span className="ml-auto mt-auto text-right text-caption3 font-light">
-                    마지막 업데이트
-                    <br />
-                    {lastUpdateDateStr}
-                  </span>
-                </>
+                  <Button
+                    className="text-caption1 pr-8"
+                    size="sm"
+                    onClick={() => setIsBankAccountOpen(true)}>
+                    {selectedPayerData &&
+                    selectedPayerData.bankAccountNumber.length > 0 ? (
+                      <span className="text-grey300 ml-[2px]">
+                        {selectedPayerData.bankAccountNumber}
+                      </span>
+                    ) : (
+                      <>
+                        <SvgPlusSquare className="stroke-grey300" />
+                        <span className="text-grey300 ml-[2px]">계좌 추가</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+                <span className="ml-auto mt-auto text-right text-caption3 font-light">
+                  마지막 업데이트
+                  <br />
+                  {lastUpdateDateStr}
+                </span>
               </div>
               <hr className="border-1 border-darkgrey300" />
 
@@ -280,7 +277,7 @@ export default function AddItem() {
 const GoCalculatePageButton = ({ roomId }: { roomId: Room['id'] }) => (
   <Link
     to={pathGenerator.room.calculate({ roomId })}
-    className="flex justify-center items-center w-56 h-44 text-primary400 underline underline-offset-1">
+    className="flex justify-center items-center w-56 h-44 text-primary400 underline underline-offset-[2px]">
     정산하기
   </Link>
 );

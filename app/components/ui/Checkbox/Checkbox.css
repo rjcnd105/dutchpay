@@ -1,0 +1,26 @@
+.ui_Checkbox {
+    @apply flex items-center justify-center min-w-max;
+
+    transition: 0.1s all;
+
+    &:focus-visible, &:hover {
+        filter: brightness(.92);
+    }
+
+
+    &:active {
+        filter: brightness(0.87);
+    }
+
+    &:disabled {
+        cursor: default;
+
+        &:hover,
+        &:focus-visible,
+        &:active {
+            transform: none;
+            filter: none;
+        }
+    }
+
+}

@@ -2,7 +2,7 @@ import type { Payer } from '@prisma/client';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import type { RefObject } from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import Button from '~/components/ui/Button';
 import ButtonInput from '~/components/ui/ButtonInput';
@@ -28,6 +28,7 @@ export default function PayerForm({
   inputRef,
   onSubmit,
 }: Props) {
+  const isHasPreviousPayer = useMemo(() => payers.length > 0, []);
   const [name, setName] = useState<string>('');
   const nameError = useError(PayerD.validator.name(name));
 
@@ -112,7 +113,7 @@ export default function PayerForm({
           className="w-full"
           onClick={() => onSubmit(payers)}
           disabled={!!payerError.error}>
-          다음
+          {isHasPreviousPayer ? '저장하기' : '다음'}
         </Button>
       </footer>
     </div>

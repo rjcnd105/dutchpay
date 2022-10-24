@@ -1,8 +1,13 @@
-import type { SVGProps } from 'react'
-import * as React from 'react'
-
+import * as React from 'react';
+import { SVGProps } from 'react';
 const SvgCoins = (props: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" width={24} height={24} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg
+    width={24}
+    height={24}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    {...props}>
     <path
       d="M21.143 13.143v3.428c0 1.486-3.582 3.429-8 3.429s-8-1.943-8-3.428v-2.858"
       stroke="#000"
@@ -29,6 +34,5 @@ const SvgCoins = (props: SVGProps<SVGSVGElement>) => (
       strokeLinejoin="round"
     />
   </svg>
-)
-
-export default SvgCoins
+);
+export default SvgCoins;

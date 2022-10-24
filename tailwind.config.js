@@ -13,8 +13,9 @@ const sizes = {
   48: '48px',
   56: '56px',
   64: '64px',
-}
+};
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./app/**/*.{ts,tsx,jsx,js}'],
   theme: {
@@ -118,4 +119,4 @@ module.exports = {
     },
   },
   plugins: [require('@tailwindcss/line-clamp')],
-}
+};

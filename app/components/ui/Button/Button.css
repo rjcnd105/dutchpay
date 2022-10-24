@@ -1,11 +1,28 @@
 .ui_Button {
     @apply flex items-center justify-center min-w-max;
 
+    transition: 0.1s all;
 
     &:focus-visible, &:hover {
         filter: saturate(1.2) brightness(.92);
     }
 
+
+    &:active {
+        transform: translateY(1.5px);
+        filter: brightness(0.87);
+    }
+
+    &:disabled {
+        cursor: default;
+
+        &:hover,
+        &:focus-visible,
+        &:active {
+            transform: none;
+            filter: none;
+        }
+    }
 
     /* solid */
     &.solid {

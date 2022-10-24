@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from 'react';
 
 import { CrossCircle } from '../Icon';
-import css from './Button.css';
 
 type Kind = 'solid' | 'ghost' | 'chip' | 'text';
 type Theme =
@@ -46,7 +45,13 @@ const Button = ({
   const themes = theme?.split('/') as [Kind, string | undefined];
   return (
     <button
-      className={clsx('ui_Button', themes, sizeObj[size], !clickable && 'none-clickable', className)}
+      className={clsx(
+        'ui_Button',
+        themes,
+        sizeObj[size],
+        !clickable && 'none-clickable',
+        className,
+      )}
       type="button"
       {...props}>
       {isLoading ? <span>loading</span> : children}

@@ -51,7 +51,7 @@ const Index = () => {
 
   return (
     <div className="flex flex-col pt-32 px-20 max-w-[375px] w-full mx-auto h-full max-h-[512px]">
-      <label className="font-extralight text-title block mb-16">누구누구 정산할꺼야?</label>
+      <span className="font-extralight text-title block mb-16">누구누구 정산할꺼야?</span>
       <PayerForm
         payers={payers.state}
         onPayerAdd={name => payers.add(name)}

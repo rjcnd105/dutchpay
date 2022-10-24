@@ -1,6 +1,12 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useActionData } from '@remix-run/react';
-import { StrictMode, useEffect, useLayoutEffect } from 'react';
+import {
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+} from '@remix-run/react';
 import { ToastContainer } from 'react-toastify';
 
 import styles from './styles/app.css';
@@ -25,14 +31,22 @@ export const links: LinksFunction = () => [
 
 export default function App() {
   return (
-    <html lang="en" className="font-Pretendard text-body2 text-darkgrey100">
+    <html lang="en" className="font-Pretendard text-body2 text-darkgrey300">
       <head>
         <Meta />
         <Links />
       </head>
       <body>
         <Outlet />
-        <ToastContainer position="bottom-left" autoClose={3500} closeOnClick pauseOnFocusLoss draggable />
+        <ToastContainer
+          position="bottom-left"
+          autoClose={3000}
+          closeButton={false}
+          closeOnClick
+          pauseOnFocusLoss
+          draggable
+          hideProgressBar
+        />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

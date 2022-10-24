@@ -1,4 +1,4 @@
-import type { Payer, PayItem, Room } from '@prisma/client';
+import type { Room } from '@prisma/client';
 import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import {
@@ -6,18 +6,10 @@ import {
   useLoaderData,
   useLocation,
   useMatches,
-  useOutlet,
   useParams,
 } from '@remix-run/react';
-
-import RoomHeader from '~/routes/__components/__RoomHeader';
 import pathGenerator from '~/service/pathGenerator';
 import { db } from '~/utils/db.server';
-
-export type AllRoomData = Room & {
-  payers: Array<Payer & { payItems: PayItem[] }>;
-  payItems: Array<PayItem>;
-};
 
 const getAllRoomData = (roomId: Room['id']) =>
   db.room.findUnique({
@@ -37,10 +29,12 @@ const getAllRoomData = (roomId: Room['id']) =>
       payItems: {
         include: {
           payer: true,
+          exceptedPayers: true,
         },
       },
     },
   });
+export type AllRoomData = Awaited<ReturnType<typeof getAllRoomData>>;
 
 export async function loader({ request, params }: DataFunctionArgs) {
   const url = new URL(request.url);
@@ -73,10 +67,10 @@ export default function RoomBy() {
   const { roomId } = useParams();
 
   return (
-    <div className="relative flex flex-col h-full">
-      {roomId && !location.pathname.includes(pathGenerator.room.addItem({ roomId })) && (
-        <RoomHeader roomName={room.name} roomId={room.id} />
-      )}
+    <div className="relative flex flex-col h-full overflow-hidden">
+      {/*{roomId && !location.pathname.includes(pathGenerator.room.addItem({ roomId })) && (*/}
+      {/*  <RoomHeader roomName={room.name} roomId={room.id} />*/}
+      {/*)}*/}
       <Outlet context={room} />
     </div>
   );
