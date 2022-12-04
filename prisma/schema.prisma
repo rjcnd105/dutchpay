@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  previewFeatures = []
 }
 
 datasource db {
@@ -21,25 +21,35 @@ model Room {
 }
 
 model Payer {
-  id                         Int       @id @default(autoincrement())
-  name                       String    @db.VarChar(6)
-  room                       Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  id                         Int                         @id @default(autoincrement())
+  name                       String                      @db.VarChar(6)
+  room                       Room                        @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId                     String
-  bankAccountNumber          String    @default("")
-  payItems                   PayItem[] @relation("payerPayItem")
-  exceptedItems              PayItem[] @relation("excepted")
-  paymentItemLastUpdatedDate DateTime  @default(now())
+  bankAccountNumber          String                      @default("")
+  payItems                   PayItem[]                   @relation("payerPayItem")
+  paymentItemLastUpdatedDate DateTime                    @default(now())
+  exceptedItems              ExceptedPayItemsForPayers[]
 
   @@unique([roomId, name])
 }
 
 model PayItem {
-  id             Int     @id @default(autoincrement())
-  room           Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  id             Int                         @id @default(autoincrement())
+  room           Room                        @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId         String
-  name           String  @db.VarChar(8)
-  amount         Int     @default(0)
-  payer          Payer   @relation("payerPayItem", fields: [payerId], references: [id])
+  name           String                      @db.VarChar(8)
+  amount         Int                         @default(0)
+  payer          Payer                       @relation("payerPayItem", fields: [payerId], references: [id])
   payerId        Int
-  exceptedPayers Payer[] @relation("excepted")
+  exceptedPayers ExceptedPayItemsForPayers[]
+}
+
+model ExceptedPayItemsForPayers {
+  payer     Payer   @relation(fields: [payerId], references: [id])
+  payerId   Int
+  payItem   PayItem @relation(fields: [payItemId], references: [id])
+  payItemId Int
+
+  @@id([payerId, payItemId])
+  @@unique([payerId, payItemId])
 }

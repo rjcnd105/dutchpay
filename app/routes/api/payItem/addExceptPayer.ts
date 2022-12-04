@@ -1,10 +1,10 @@
-import type { Payer, PayItem, Room } from '@prisma/client';
+import type { Payer, PayItem } from '@prisma/client';
 import type { Method } from 'app/service/api';
 import { apiAction } from 'app/service/api';
 
 import { db } from '~/utils/db.server';
 
-const API_NAME = 'payItem/exceptPayer';
+const API_NAME = 'payItem/addExceptPayer';
 type API_NAME = typeof API_NAME;
 
 type ApiMethod = Method<'post'>;
@@ -14,20 +14,16 @@ type Props = {
   payItemId: PayItem['id'];
 };
 
-const api = {
-  [API_NAME]({ payerId, payItemId }: Props) {
-    return db.payItem.update({
-      where: {
-        id: payItemId,
+export const api = {
+  async [API_NAME](props: Props) {
+
+    return db.exceptedPayItemsForPayers.upsert({
+      where:{
+        payerId_payItemId: props
       },
-      data: {
-        exceptedPayers: {
-          connect: {
-            id: payerId,
-          },
-        },
-      },
-    });
+      update: {},
+      create: props
+    })
   },
 };
 

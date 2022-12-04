@@ -6,7 +6,7 @@ module.exports = {
   trailingComma: 'all',
   jsxSingleQuote: false,
   arrowParens: 'avoid',
-  printWidth: 90,
+  printWidth: 80,
   endOfLine: 'lf',
   parser: 'typescript',
 };

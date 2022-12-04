@@ -1,5 +1,5 @@
 .ui_Checkbox {
-    @apply flex items-center justify-center min-w-max;
+    @apply flex flex-col items-center justify-center min-w-max w-full h-full;
 
     transition: 0.1s all;
 

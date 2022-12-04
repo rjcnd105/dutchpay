@@ -1,7 +1,6 @@
 import type { DataFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
-import { useTransition } from 'react';
 
 import { useSetState } from '~/hooks/useSetState';
 import PayerForm from '~/routes/__components/__PayerForm';
@@ -16,7 +15,6 @@ export function loader({ request, params }: DataFunctionArgs) {
 
 export async function action({ request }: DataFunctionArgs) {
   const formData = getStringFormData(await request.formData(), ['names']);
-  const transition = useTransition();
 
   if (formData.names === '')
     return {

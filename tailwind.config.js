@@ -54,6 +54,7 @@ module.exports = {
       darkgrey200: '#4C4D4E',
       darkgrey300: '#1C1C1C',
 
+      primary50: '#EFEFF6',
       primary100: '#EAEDFF',
       primary200: '#DBE0FF',
       primary300: '#96A5FF',

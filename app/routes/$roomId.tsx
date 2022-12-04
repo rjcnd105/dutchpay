@@ -24,6 +24,7 @@ const getAllRoomData = (roomId: Room['id']) =>
               id: 'asc',
             },
           },
+          exceptedItems: true
         },
       },
       payItems: {
@@ -34,6 +35,7 @@ const getAllRoomData = (roomId: Room['id']) =>
       },
     },
   });
+
 export type AllRoomData = Awaited<ReturnType<typeof getAllRoomData>>;
 
 export async function loader({ request, params }: DataFunctionArgs) {
@@ -42,12 +44,12 @@ export async function loader({ request, params }: DataFunctionArgs) {
   const roomId = params.roomId;
 
   if (roomId && `/${params.roomId}/`.includes(url.pathname)) {
-    console.log('$roomId.tsx', '!');
     const path = pathGenerator.room.addItem({ roomId });
     return redirect(path);
   }
 
   if (!roomId) return redirect('/empty');
+
 
   const roomAllData = await getAllRoomData(roomId);
 
