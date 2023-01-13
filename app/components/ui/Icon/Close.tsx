@@ -7,6 +7,7 @@ const SvgClose = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
+    viewBox="0 0 24 24"
     {...props}>
     <path
       d="m8.572 8.571 6.857 6.858M15.429 8.571 8.572 15.43"

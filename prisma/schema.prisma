@@ -28,7 +28,7 @@ model Payer {
   bankAccountNumber          String                      @default("")
   payItems                   PayItem[]                   @relation("payerPayItem")
   paymentItemLastUpdatedDate DateTime                    @default(now())
-  exceptedItems              ExceptedPayItemsForPayers[]
+  exceptedItems              PayItemForPayer[]
 
   @@unique([roomId, name])
 }
@@ -41,14 +41,17 @@ model PayItem {
   amount         Int                         @default(0)
   payer          Payer                       @relation("payerPayItem", fields: [payerId], references: [id])
   payerId        Int
-  exceptedPayers ExceptedPayItemsForPayers[]
+  exceptedPayers PayItemForPayer[]
 }
 
-model ExceptedPayItemsForPayers {
-  payer     Payer   @relation(fields: [payerId], references: [id])
-  payerId   Int
-  payItem   PayItem @relation(fields: [payItemId], references: [id])
-  payItemId Int
+
+model PayItemForPayer {
+  payer        Payer   @relation(fields: [payerId], references: [id], onDelete: Cascade)
+  payerId      Int
+  payItem      PayItem @relation(fields: [payItemId], references: [id], onDelete: Cascade)
+  payItemId    Int
+  whetherToPay Boolean @default(false)
+  extraAmount       Int      @default(0)
 
   @@id([payerId, payItemId])
   @@unique([payerId, payItemId])

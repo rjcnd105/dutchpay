@@ -1,5 +1,10 @@
 import type { Payer, PayItem, Room } from '@prisma/client';
-import { Link, useActionData, useFetcher, useOutletContext } from '@remix-run/react';
+import {
+  Link,
+  useActionData,
+  useFetcher,
+  useOutletContext,
+} from '@remix-run/react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { flow } from 'fp-ts/function';
@@ -29,8 +34,7 @@ export async function loader() {
   return null;
 }
 
-
-export default function AddItem() {
+export default function addItem() {
   const fetcher = useFetcher();
 
   const room = useOutletContext<OutletContextData>();
@@ -55,12 +59,16 @@ export default function AddItem() {
   const callPayItemUpdateApi = useCallApi('payItem/update', 'patch');
   const callPayerPutApi = useCallApi('payer/put', 'put');
 
-  const setSelectedPayerId = flow(_setSelectedPayerId, () => _setEditedPayItem(null));
+  const setSelectedPayerId = flow(_setSelectedPayerId, () =>
+    _setEditedPayItem(null),
+  );
 
   // edit PayItem 선택
   const setEditedPayItem = useCallback((editPayItem: typeof editedPayItem) => {
     _setEditedPayItem(editPayItem);
-    setEditedPayItemInputValue(PayItemD.utils.makePayStrSeparators(editPayItem));
+    setEditedPayItemInputValue(
+      PayItemD.utils.makePayStrSeparators(editPayItem),
+    );
   }, []);
 
   // 선택된 Payer의 데이터
@@ -71,7 +79,8 @@ export default function AddItem() {
 
   // 아이템들의 총액
   const payerTotalMount = useMemo(
-    () => selectedPayerData?.payItems.reduce((pv, cv) => pv + cv.amount, 0) ?? 0,
+    () =>
+      selectedPayerData?.payItems.reduce((pv, cv) => pv + cv.amount, 0) ?? 0,
     [selectedPayerData],
   );
 
@@ -79,7 +88,10 @@ export default function AddItem() {
   const lastUpdateDateStr = useMemo(
     () =>
       selectedPayerData?.paymentItemLastUpdatedDate &&
-      format(new Date(selectedPayerData?.paymentItemLastUpdatedDate), 'yy.MM.dd HH:mm'),
+      format(
+        new Date(selectedPayerData?.paymentItemLastUpdatedDate),
+        'yy.MM.dd HH:mm',
+      ),
     [selectedPayerData?.paymentItemLastUpdatedDate],
   );
 
@@ -89,7 +101,10 @@ export default function AddItem() {
     payerNames,
   ) => {
     if (!selectedPayerId) throw Error('payerId가 없습니다.');
-    callPayerPutApi.submit(fetcher, { roomId: room.id, payerNames: payerNames });
+    callPayerPutApi.submit(fetcher, {
+      roomId: room.id,
+      payerNames: payerNames,
+    });
     setIsModifyPayerMode(false);
   };
 
@@ -127,7 +142,8 @@ export default function AddItem() {
   const handlePayItemDelete = useCallback(
     (data: ApiProps['payItem/delete']) => {
       callPayItemDeleteApi.submit(fetcher, data);
-      if (editedPayItem && editedPayItem.id === data.payItemId) _setEditedPayItem(null);
+      if (editedPayItem && editedPayItem.id === data.payItemId)
+        _setEditedPayItem(null);
     },
     [editedPayItem],
   );
@@ -151,46 +167,46 @@ export default function AddItem() {
         selectedPayerId={selectedPayerId}
         setSelectedPayerId={setSelectedPayerId}
       />
-      <div className='relative flex flex-col flex-auto overflow-hidden'>
-        <div className='flex flex-auto flex-col justify-between bg-lightgrey100 overflow-y-hidden'>
+      <div className="relative flex flex-col flex-auto overflow-hidden">
+        <div className="flex flex-auto flex-col justify-between bg-lightgrey100 overflow-y-hidden">
           <div
-            className='w-full px-16 py-12 overflow-y-scroll'
+            className="w-full px-16 py-12 overflow-y-scroll"
             key={selectedPayerId}
             ref={addPayItemScrollRef}>
             <div>
-              <div className='flex mb-16 px-8'>
+              <div className="flex mb-16 px-8">
                 <div>
-                  <strong className='font-bold text-heading text-darkgrey300'>
+                  <strong className="font-bold text-heading text-darkgrey300">
                     <AnimatedNumber value={payerTotalMount} comma />
-                    <span className='ml-4'>원</span>
+                    <span className="ml-4">원</span>
                   </strong>
 
                   <Button
-                    className='text-caption1 pr-8'
-                    size='sm'
+                    className="text-caption1 pr-8"
+                    size="sm"
                     onClick={() => setIsBankAccountOpen(true)}>
                     {selectedPayerData &&
                     selectedPayerData.bankAccountNumber.length > 0 ? (
-                      <span className='text-grey300 ml-[2px]'>
+                      <span className="text-grey300 ml-[2px]">
                         {selectedPayerData.bankAccountNumber}
                       </span>
                     ) : (
                       <>
-                        <SvgPlusSquare className='stroke-grey300' />
-                        <span className='text-grey300 ml-[2px]'>계좌 추가</span>
+                        <SvgPlusSquare className="stroke-grey300" />
+                        <span className="text-grey300 ml-[2px]">계좌 추가</span>
                       </>
                     )}
                   </Button>
                 </div>
-                <span className='ml-auto mt-auto text-right text-caption3 font-light'>
+                <span className="ml-auto mt-auto text-right text-caption3 font-light">
                   마지막 업데이트
                   <br />
                   {lastUpdateDateStr}
                 </span>
               </div>
-              <hr className='border-1 border-darkgrey300' />
+              <hr className="border-1 border-darkgrey300" />
 
-              <div className='px-8 pt-8'>
+              <div className="px-8 pt-8">
                 {selectedPayerData?.payItems.map(payItem => (
                   <PayListItem
                     key={payItem.id}
@@ -204,11 +220,11 @@ export default function AddItem() {
               </div>
             </div>
           </div>
-          <div className='relative min-h-[112px]'>
+          <div className="relative min-h-[112px]">
             {editedPayItem ? (
-              <div className='absolute inset-0'>
+              <div className="absolute inset-0">
                 <PayItemSeparatorInput
-                  buttonText='수정'
+                  buttonText="수정"
                   onItemSubmit={payItem =>
                     handlePayItemUpdate({
                       payItem: { id: editedPayItem.id, ...payItem },
@@ -221,9 +237,9 @@ export default function AddItem() {
                 />
               </div>
             ) : (
-              <div className='absolute inset-0'>
+              <div className="absolute inset-0">
                 <PayItemSeparatorInput
-                  buttonText='추가'
+                  buttonText="추가"
                   onItemSubmit={payItem =>
                     handlePayItemCreate({
                       payItem,
@@ -263,7 +279,7 @@ export default function AddItem() {
 const GoCalculatePageButton = ({ roomId }: { roomId: Room['id'] }) => (
   <Link
     to={pathGenerator.room.calculate({ roomId })}
-    className='flex justify-center items-center w-56 h-44 text-primary400 underline underline-offset-[2px]'>
+    className="flex justify-center items-center w-56 h-44 text-primary400 underline underline-offset-[2px]">
     정산하기
   </Link>
 );
@@ -276,32 +292,32 @@ type PayListItemProps = {
   handlePayItemDelete(apiProps: ApiProps['payItem/delete']): void;
 };
 const PayListItem = ({
-                       payItem,
-                       payerId,
-                       isEditedItem,
-                       setEditedPayItem,
-                       handlePayItemDelete,
-                     }: PayListItemProps) => (
+  payItem,
+  payerId,
+  isEditedItem,
+  setEditedPayItem,
+  handlePayItemDelete,
+}: PayListItemProps) => (
   <div
     key={payItem.id}
-    className='flex h-44 border-b-1 border-b-lightgrey200 text-darkgrey300'>
+    className="flex h-44 border-b-1 border-b-lightgrey200 text-darkgrey300">
     <Button
       className={clsx(
         'flex flex-auto text-body2 hover:font-semibold',
         isEditedItem && 'font-semibold text-primary400',
       )}
-      size='sm'
+      size="sm"
       onClick={() => {
         setEditedPayItem(isEditedItem ? null : payItem);
       }}>
       <span>{payItem.name}</span>
-      <span className='ml-auto underline underline-offset-1'>
+      <span className="ml-auto underline underline-offset-1">
         {numberUtils.thousandsSeparators(payItem.amount)}
       </span>
     </Button>
     <Button
-      className='min-w-32 stroke-darkgrey100 hover:stroke-darkgrey200'
-      size='sm'
+      className="min-w-32 stroke-darkgrey100 hover:stroke-darkgrey200"
+      size="sm"
       onClick={() =>
         handlePayItemDelete({
           payItemId: payItem.id,

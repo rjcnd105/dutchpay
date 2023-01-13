@@ -7,6 +7,15 @@
         filter: brightness(.92);
     }
 
+    .check-icon {
+        transition: all 0.15s;
+        stroke-dasharray: 500;
+        stroke-dashoffset: 500;
+    }
+    [data-state='checked'] .check-icon{
+        stroke-dashoffset: 0;
+    }
+
 
     &:active {
         filter: brightness(0.87);
