@@ -17,28 +17,53 @@ import SvgPlusSquare from '~/components/ui/Icon/PlusSquare';
 import { PayItemD } from '~/domain/PayItemD';
 import type { Message } from '~/model/Message';
 import { isSuccessMessage } from '~/model/Message';
-import __BankAccountInputModal from '~/routes/__components/__BankAccountInputModal';
-import type { PayerModifyDrawerProps } from '~/routes/__components/__PayerFormDrawer';
-import PayerFormDrawer from '~/routes/__components/__PayerFormDrawer';
-import __PayerSelectNavigation from '~/routes/__components/__PayerSelectNavigation';
-import PayItemSeparatorInput from '~/routes/__components/__PayItemSeparatorInput';
-import RoomHeader from '~/routes/__components/__RoomHeader';
-import type { OutletContextData } from '~/routes/$roomId';
+import BankAccountInputModal from '~/components/article/BankAccountInputModal';
 import type { ApiProps } from '~/service/api';
 import { useCallApi } from '~/service/api';
 import numberUtils from '~/utils/numberUtils';
 import pathGenerator from '~/service/pathGenerator';
+import { db } from '~/utils/db.server';
+import type { LoaderArgs } from '@remix-run/server-runtime';
+import type { OutletContextData } from '~/routes/$roomId';
+import { typedjson, useTypedLoaderData } from 'remix-typedjson';
+import { schema } from '../schema';
+import type { PayerModifyDrawerProps } from '~/components/article/PayerFormDrawer';
+import PayerFormDrawer from '~/components/article/PayerFormDrawer';
+import RoomHeader from '~/components/article/RoomHeader';
+import PayItemSeparatorInput from '~/domain/PayItemD/components/PayItemSeparatorInput';
+import PayerSelectNavigation from '~/components/article/PayerSelectNavigation';
 
-export async function loader() {
-  console.log('additem loader', '');
-  return null;
+export async function loader(args: LoaderArgs) {
+  const { roomId } = schema.parse(args.params);
+  const d = await db.room.findUnique({
+    where: {
+      id: roomId,
+    },
+    select: {
+      payItems: {
+        include: {
+          exceptedPayers: true,
+        },
+      },
+      payers: {
+        include: {
+          payItems: true,
+        },
+      },
+    },
+  });
+
+  return typedjson(d);
 }
 
 export default function addItem() {
   const fetcher = useFetcher();
 
+  const loaderData = useTypedLoaderData<typeof loader>();
+  console.log('loaderData', loaderData);
+
   const room = useOutletContext<OutletContextData>();
-  if (!room) return null;
+  if (!room || !loaderData) throw Error('room is undefined');
 
   const actionData = useActionData<Message>();
   const addPayItemInputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +74,9 @@ export default function addItem() {
 
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
 
-  const [selectedPayerId, _setSelectedPayerId] = useState(room.payers[0].id);
+  const [selectedPayerId, _setSelectedPayerId] = useState(
+    loaderData.payers[0].id,
+  );
   const [editedPayItem, _setEditedPayItem] = useState<PayItem | null>(null);
   const [editedPayItemInputValue, setEditedPayItemInputValue] = useState('');
   const [payItemInputValue, setPayItemInputValue] = useState('');
@@ -73,8 +100,8 @@ export default function addItem() {
 
   // 선택된 Payer의 데이터
   const selectedPayerData = useMemo(
-    () => room.payers.find(payer => payer.id === selectedPayerId),
-    [selectedPayerId, room.payers],
+    () => loaderData.payers.find(payer => payer.id === selectedPayerId),
+    [selectedPayerId, loaderData.payers],
   );
 
   // 아이템들의 총액
@@ -110,7 +137,7 @@ export default function addItem() {
 
   // PayerId가 없을시 세팅해줌.
   // useEffect(() => {
-  //   if (!selectedPayerId) setSelectedPayerId(room.payers[0].id);
+  //   if (!selectedPayerId) setSelectedPayerId(loaderData.payers[0].id);
   // }, []);
 
   // 기존에 selected 되어있던 payer을 삭제한 경우 다시 새로운 payers[0]을 selected
@@ -120,9 +147,9 @@ export default function addItem() {
       case 'putPayers': {
         if (
           isSuccessMessage(actionData) &&
-          !room.payers.some(payer => payer.id === selectedPayerId)
+          !loaderData.payers.some(payer => payer.id === selectedPayerId)
         ) {
-          setSelectedPayerId(room.payers[0].id);
+          setSelectedPayerId(loaderData.payers[0].id);
         }
       }
     }
@@ -161,9 +188,9 @@ export default function addItem() {
         roomId={room.id}
         Right={<GoCalculatePageButton roomId={room.id} />}
       />
-      <__PayerSelectNavigation
+      <PayerSelectNavigation
         onNewPayer={onNewPayer}
-        payers={room.payers}
+        payers={loaderData.payers}
         selectedPayerId={selectedPayerId}
         setSelectedPayerId={setSelectedPayerId}
       />
@@ -259,7 +286,7 @@ export default function addItem() {
         </div>
       </div>
       {selectedPayerData && (
-        <__BankAccountInputModal
+        <BankAccountInputModal
           open={isBankAccountOpen}
           onClose={() => setIsBankAccountOpen(false)}
           payer={selectedPayerData}
@@ -269,7 +296,7 @@ export default function addItem() {
       <PayerFormDrawer
         isOpen={isModifyPayerMode}
         onClose={() => setIsModifyPayerMode(false)}
-        previousPayerNames={room.payers.map(({ name }) => name)}
+        previousPayerNames={loaderData.payers.map(({ name }) => name)}
         onSubmit={handlePayerSubmit}
       />
     </>

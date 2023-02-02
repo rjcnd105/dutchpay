@@ -1,68 +1,34 @@
 import type { Room } from '@prisma/client';
-import type { DataFunctionArgs, SerializeFrom } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
-import {
-  Outlet,
-  useLoaderData,
-  useLocation,
-  useMatches,
-  useParams,
-} from '@remix-run/react';
-import pathGenerator from '~/service/pathGenerator';
+import type { SerializeFrom } from '@remix-run/node';
+import { Outlet, useLocation, useMatches, useParams } from '@remix-run/react';
 import { db } from '~/utils/db.server';
+import { typedjson, useTypedLoaderData } from 'remix-typedjson';
+import type { LoaderArgs } from '@remix-run/server-runtime';
+import { redirect } from '@remix-run/node';
 
 const getAllRoomData = (roomId: Room['id']) =>
   db.room.findUnique({
     where: {
       id: roomId,
     },
-    include: {
-      payers: {
-        include: {
-          payItems: {
-            orderBy: {
-              id: 'asc',
-            },
-          },
-          exceptedItems: true
-        },
-      },
-      payItems: {
-        include: {
-          payer: true,
-          exceptedPayers: true,
-        },
-      },
-    },
   });
 
 export type AllRoomData = Awaited<ReturnType<typeof getAllRoomData>>;
+export type OutletContextData = AllRoomData;
 
-export async function loader({ request, params }: DataFunctionArgs) {
-  const url = new URL(request.url);
-
+export async function loader({ request, params }: LoaderArgs) {
   const roomId = params.roomId;
 
-  if (roomId && `/${params.roomId}/`.includes(url.pathname)) {
-    const path = pathGenerator.room.addItem({ roomId });
-    return redirect(path);
-  }
-
-  if (!roomId) return redirect('/empty');
-
+  if (!roomId) throw redirect('/empty');
 
   const roomAllData = await getAllRoomData(roomId);
 
-  return roomAllData ?? redirect('/empty');
+  return typedjson(roomAllData);
 }
 
-export type Loader = typeof loader;
-type MyLoaderData = SerializeFrom<typeof loader>;
-
-export type OutletContextData = AllRoomData;
-
 export default function RoomBy() {
-  const room = useLoaderData<AllRoomData>();
+  const room = useTypedLoaderData<typeof loader>();
+  console.log('room', room);
   const matches = useMatches();
 
   const location = useLocation();
@@ -70,9 +36,6 @@ export default function RoomBy() {
 
   return (
     <div className="relative flex flex-col h-full overflow-hidden">
-      {/*{roomId && !location.pathname.includes(pathGenerator.room.addItem({ roomId })) && (*/}
-      {/*  <RoomHeader roomName={room.name} roomId={room.id} />*/}
-      {/*)}*/}
       <Outlet context={room} />
     </div>
   );

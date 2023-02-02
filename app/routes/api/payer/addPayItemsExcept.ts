@@ -16,20 +16,19 @@ type Props = {
 
 export const api = {
   async [API_NAME]({ payerId, payItemIds }: Props) {
-
     return db.$transaction([
-      db.exceptedPayItemsForPayers.deleteMany({ where: { payerId } }),
-      db.exceptedPayItemsForPayers.createMany({
-        data: payItemIds.map(payItemId => ({ payerId, payItemId }))
-      })
-    ])
-  }
+      db.payItemForPayer.deleteMany({ where: { payerId } }),
+      db.payItemForPayer.createMany({
+        data: payItemIds.map(payItemId => ({ payerId, payItemId })),
+      }),
+    ]);
+  },
 };
 
 export const action = apiAction(API_NAME, api[API_NAME]);
 
 declare module 'app/service/api' {
   export interface ApiFns {
-    readonly [API_NAME]: typeof api[API_NAME] & ApiMethod;
+    readonly [API_NAME]: (typeof api)[API_NAME] & ApiMethod;
   }
 }

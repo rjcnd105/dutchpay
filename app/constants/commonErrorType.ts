@@ -4,4 +4,4 @@ export const COMMON_ERROR_TYPE = {
   최대금액초과: '최대금액초과',
   최소금액미달: '최소금액미달',
   올바른형식아님: '올바른형식아님',
-};
+} as const;

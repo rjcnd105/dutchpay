@@ -14,11 +14,14 @@ type Props = Pick<MyDialogProps, 'open' | 'onClose' | 'children'> & {
   onSubmit?: () => void;
 };
 
-const __BankAccountInputModal = ({ payer, onSubmit, ...dialogProps }: Props) => {
+const BankAccountInputModal = ({ payer, onSubmit, ...dialogProps }: Props) => {
   const fetcher = useFetcher();
   const bankAccountRef = useRef<HTMLInputElement>(null);
 
-  const callPayUpdateBankAccount = useCallApi('payer/updateBankAccount', 'patch');
+  const callPayUpdateBankAccount = useCallApi(
+    'payer/updateBankAccount',
+    'patch',
+  );
 
   return (
     <MyDialog title={`'${payer.name}' 계좌`} {...dialogProps}>
@@ -33,7 +36,9 @@ const __BankAccountInputModal = ({ payer, onSubmit, ...dialogProps }: Props) => 
           />
         </div>
         <div className="grid grid-cols-2 gap-16 mt-24">
-          <Button theme="solid/white" onClick={() => dialogProps.onClose(false)}>
+          <Button
+            theme="solid/white"
+            onClick={() => dialogProps.onClose(false)}>
             취소
           </Button>
           <Button
@@ -54,4 +59,4 @@ const __BankAccountInputModal = ({ payer, onSubmit, ...dialogProps }: Props) => 
     </MyDialog>
   );
 };
-export default __BankAccountInputModal;
+export default BankAccountInputModal;

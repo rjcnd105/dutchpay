@@ -39,8 +39,8 @@ model PayItem {
   roomId         String
   name           String                      @db.VarChar(8)
   amount         Int                         @default(0)
-  payer          Payer                       @relation("payerPayItem", fields: [payerId], references: [id])
-  payerId        Int
+  paidPayer          Payer                       @relation("payerPayItem", fields: [paidPayerId], references: [id])
+  paidPayerId        Int
   exceptedPayers PayItemForPayer[]
 }
 
@@ -50,7 +50,7 @@ model PayItemForPayer {
   payerId      Int
   payItem      PayItem @relation(fields: [payItemId], references: [id], onDelete: Cascade)
   payItemId    Int
-  whetherToPay Boolean @default(false)
+  whetherToPay Boolean @default(true)
   extraAmount       Int      @default(0)
 
   @@id([payerId, payItemId])

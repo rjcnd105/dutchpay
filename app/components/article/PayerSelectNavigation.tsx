@@ -11,7 +11,7 @@ export type PayerSelectNavigationProps = {
   setSelectedPayerId: (payer: Payer['id']) => void;
   selectedPayerId: Payer['id'];
 };
-const __PayerSelectNavigation = ({
+const payerSelectNavigation = ({
   onNewPayer,
   payers,
   setSelectedPayerId,
@@ -20,7 +20,10 @@ const __PayerSelectNavigation = ({
   return (
     <nav className="min-h-56 overflow-x-scroll">
       <div className="flex gap-x-8 nav-contents pl-20">
-        <Button theme="ghost/lightblue" className="min-w-48" onClick={onNewPayer}>
+        <Button
+          theme="ghost/lightblue"
+          className="min-w-48"
+          onClick={onNewPayer}>
           <SvgPlus className="stroke-primary300" />
         </Button>
         {payers.map(payer => {
@@ -41,4 +44,4 @@ const __PayerSelectNavigation = ({
     </nav>
   );
 };
-export default __PayerSelectNavigation;
+export default payerSelectNavigation;

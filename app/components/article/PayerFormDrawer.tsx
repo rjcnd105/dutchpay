@@ -4,8 +4,8 @@ import Button from '~/components/ui/Button';
 import Drawer from '~/components/ui/Drawer';
 import SvgCross from '~/components/ui/Icon/Cross';
 import { useSetState } from '~/hooks/useSetState';
-import __PayerForm from '~/routes/__components/__PayerForm';
 import type { Payer } from '@prisma/client';
+import PayerForm from './PayerForm';
 
 export type PayerModifyDrawerProps = {
   previousPayerNames: string[];
@@ -43,7 +43,7 @@ const PayerFormDrawer = ({
             <SvgCross width={28} height={28} />
           </Button>
         </header>
-        <__PayerForm
+        <PayerForm
           payers={tempPayers.state}
           onPayerAdd={handleAdd}
           onPayerRemove={tempPayers.remove}

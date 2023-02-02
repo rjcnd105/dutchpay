@@ -41,6 +41,6 @@ export const action = apiAction(API_NAME, api[API_NAME]);
 
 declare module 'app/service/api' {
   export interface ApiFns {
-    readonly [API_NAME]: typeof api[API_NAME] & ApiMethod;
+    readonly [API_NAME]: (typeof api)[API_NAME] & ApiMethod;
   }
 }

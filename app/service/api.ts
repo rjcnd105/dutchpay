@@ -1,5 +1,9 @@
 import type { DataFunctionArgs } from '@remix-run/node';
-import type { FetcherWithComponents, FormMethod, SubmitOptions } from '@remix-run/react';
+import type {
+  FetcherWithComponents,
+  FormMethod,
+  SubmitOptions,
+} from '@remix-run/react';
 import { useMemo } from 'react';
 import superjson from 'superjson';
 
@@ -17,7 +21,10 @@ type ApiMethod = {
   [key in ApiFnKeys]: ApiFns[key]['method'];
 };
 
-export const useCallApi = <K extends ApiFnKeys>(action: K, method: ApiMethod[K]) =>
+export const useCallApi = <K extends ApiFnKeys>(
+  action: K,
+  method: ApiMethod[K],
+) =>
   useMemo(() => {
     const props = {
       method: method,
@@ -42,7 +49,9 @@ export function receiveApi<K extends ApiFnKeys>(action: K, formData: FormData) {
   const stringData = formData.get('data');
   console.log('receiveApi', action, stringData);
   if (typeof stringData !== 'string') {
-    throw Error(`[API] ${action} - receive: data를 정상적으로 가져오지 못했습니다.`);
+    throw Error(
+      `[API] ${action} - receive: data를 정상적으로 가져오지 못했습니다.`,
+    );
   }
   const data: ApiProps[K] = superjson.parse(stringData);
   console.log('api.ts', 'receiveApi', data);

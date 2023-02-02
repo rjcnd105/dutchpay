@@ -15,15 +15,15 @@ type Props = {
 };
 
 export const api = {
-  async [API_NAME]({ payItemId, payerId  }: Props) {
-    return db.exceptedPayItemsForPayers.delete({
+  async [API_NAME]({ payItemId, payerId }: Props) {
+    return db.payItemForPayer.delete({
       where: {
-        payerId_payItemId:{
+        payerId_payItemId: {
           payItemId,
-          payerId 
-        }
+          payerId,
+        },
       },
-    }); 
+    });
   },
 };
 
@@ -31,6 +31,6 @@ export const action = apiAction(API_NAME, api[API_NAME]);
 
 declare module 'app/service/api' {
   export interface ApiFns {
-    readonly [API_NAME]: typeof api[API_NAME] & ApiMethod;
+    readonly [API_NAME]: (typeof api)[API_NAME] & ApiMethod;
   }
 }

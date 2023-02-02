@@ -103,7 +103,8 @@ export default function PayerForm({
       </div>
       <footer className="mt-auto mb-16">
         <span className="text-caption1 font-light mb-4 text-grey300">
-          <span className={clsx('text-darkgrey100', payerError.error && 'error')}>
+          <span
+            className={clsx('text-darkgrey100', payerError.error && 'error')}>
             {payers.length}명
           </span>
           /10명

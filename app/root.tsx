@@ -1,4 +1,8 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type {
+  ErrorBoundaryComponent,
+  LinksFunction,
+  MetaFunction,
+} from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -7,6 +11,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
+import { cssBundleHref } from '@remix-run/css-bundle';
 import { ToastContainer } from 'react-toastify';
 
 import styles from './styles/app.css';
@@ -22,6 +27,7 @@ export const meta: MetaFunction = () => ({
 });
 
 export const links: LinksFunction = () => [
+  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: pretendardCss },
   { rel: 'stylesheet', href: globalComponentStyle },
   { rel: 'stylesheet', href: styles },
@@ -31,7 +37,7 @@ export const links: LinksFunction = () => [
 
 export default function App() {
   return (
-    <html lang="en" className="font-Pretendard text-body2 text-darkgrey300">
+    <html lang="ko" className="font-Pretendard text-body2 text-darkgrey300">
       <head>
         <Meta />
         <Links />
@@ -54,3 +60,20 @@ export default function App() {
     </html>
   );
 }
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  console.error(error);
+  return (
+    <html lang="ko">
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        {/* add the UI you want your users to see */}
+        <Scripts />
+      </body>
+    </html>
+  );
+};

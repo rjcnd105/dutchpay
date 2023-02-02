@@ -4,14 +4,16 @@ import clsx from 'clsx';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
 import SvgCheckboxCheck from '~/components/ui/Icon/CheckboxCheck';
 
-type Props = RadixCheckbox.CheckboxProps;
+type Props = Omit<RadixCheckbox.CheckboxProps, 'children'>;
 
-const Checkbox = ({ className }: Props) => {
+const Checkbox = ({ className, ...props }: Props) => {
   return (
-    <RadixCheckbox.Root className={clsx('ui_Checkbox', className)}>
-      <RadixCheckbox.Indicator className="CheckboxIndicator">
-        <SvgCheckboxCheck className="check-icon" stroke="white" />
-      </RadixCheckbox.Indicator>
+    <RadixCheckbox.Root className={clsx('ui_Checkbox', className)} {...props}>
+      <div className="ui_Checkbox_check-wrap">
+        <RadixCheckbox.Indicator className="ui_Checkbox_indicator">
+          <SvgCheckboxCheck className="check-icon" stroke="white" />
+        </RadixCheckbox.Indicator>
+      </div>
     </RadixCheckbox.Root>
   );
 };

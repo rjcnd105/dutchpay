@@ -7,12 +7,24 @@
         filter: brightness(.92);
     }
 
-    .check-icon {
+
+
+    .check-icon path {
         transition: all 0.15s;
         stroke-dasharray: 500;
         stroke-dashoffset: 500;
     }
-    [data-state='checked'] .check-icon{
+
+    
+    &_check-wrap {
+        @apply bg-grey100 rounded-[50%] w-20 h-20; 
+    }
+    &[aria-checked="true"] &_check-wrap{
+        @apply bg-primary400;
+        
+    }
+
+    &[data-state='checked'] .check-icon path{
         stroke-dashoffset: 0;
     }
 
