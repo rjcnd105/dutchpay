@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 import clsx from 'clsx';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
 import SvgCheckboxCheck from '~/components/ui/Icon/CheckboxCheck';

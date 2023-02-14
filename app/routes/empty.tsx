@@ -1,7 +1,5 @@
-import { redirect } from '@remix-run/node'
-
-import Button from '~/components/ui/Button'
-import pathGenerator from '~/service/pathGenerator'
+import Button from '~/components/ui/Button';
+import pathGenerator from '~/service/pathGenerator';
 
 const empty = () => {
   return (
@@ -14,6 +12,6 @@ const empty = () => {
         </Button>
       </div>
     </div>
-  )
-}
-export default empty
+  );
+};
+export default empty;

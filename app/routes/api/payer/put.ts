@@ -2,7 +2,7 @@ import type { Payer, Room } from '@prisma/client';
 import type { Method } from 'app/service/api';
 import { apiAction } from 'app/service/api';
 
-import { message } from '~/model/Message';
+import { message } from '~/module/Message';
 import { db } from '~/utils/db.server';
 
 const API_NAME = 'payer/put';
@@ -34,10 +34,15 @@ const api = {
     }
 
     const previousPayerNames = previousRoom.payers.map(({ name }) => name);
-    const [nameSet, previousNameSet] = [new Set(payerNames), new Set(previousPayerNames)];
+    const [nameSet, previousNameSet] = [
+      new Set(payerNames),
+      new Set(previousPayerNames),
+    ];
 
     const addPayers = [...nameSet].filter(name => !previousNameSet.has(name));
-    const deletePayers = [...previousNameSet].filter(name => !nameSet.has(name));
+    const deletePayers = [...previousNameSet].filter(
+      name => !nameSet.has(name),
+    );
 
     return await db.$transaction([
       db.payer.deleteMany({
@@ -57,6 +62,6 @@ export const action = apiAction(API_NAME, api[API_NAME]);
 
 declare module 'app/service/api' {
   export interface ApiFns {
-    readonly [API_NAME]: typeof api[API_NAME] & ApiMethod;
+    readonly [API_NAME]: (typeof api)[API_NAME] & ApiMethod;
   }
 }

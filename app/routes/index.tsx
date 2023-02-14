@@ -3,17 +3,15 @@ import { redirect } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import PayerForm from '~/components/article/PayerForm';
 
-import { useSetState } from '~/hooks/useSetState';
 import { useCallApi } from '~/service/api';
 import pathGenerator from '~/service/pathGenerator';
 import { db } from '~/utils/db.server';
 import { getStringFormData } from '~/utils/remixUtils';
-
-export function loader({ request, params }: DataFunctionArgs) {
-  return null;
-}
+import { useSnapshot } from 'valtio';
+import { proxySet } from 'valtio/utils';
 
 export async function action({ request }: DataFunctionArgs) {
+  console.log('action');
   const formData = getStringFormData(await request.formData(), ['names']);
 
   if (formData.names === '')
@@ -38,9 +36,9 @@ export async function action({ request }: DataFunctionArgs) {
   return redirect(pathGenerator.room.addItem({ roomId: room.id }));
 }
 
-const index = () => {
+const Root = () => {
   const fetcher = useFetcher();
-  const payers = useSetState([]);
+  const payers = useSnapshot(proxySet<string>([]));
   const callApi = useCallApi('room/create', 'post');
 
   function handleSubmit(_payers: string[]) {
@@ -53,13 +51,13 @@ const index = () => {
         누구누구 정산할꺼야?
       </span>
       <PayerForm
-        payers={payers.state}
-        onPayerAdd={name => payers.add(name)}
-        onPayerRemove={name => payers.remove(name)}
+        payers={[...payers]}
+        onPayerAdd={payers.add}
+        onPayerRemove={payers.delete}
         onSubmit={handleSubmit}
       />
     </div>
   );
 };
 
-export default index;
+export default Root;

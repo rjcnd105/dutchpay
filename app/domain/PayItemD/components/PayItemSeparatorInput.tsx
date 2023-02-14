@@ -36,15 +36,13 @@ const PayItemSeparatorInput = forwardRef<HTMLInputElement, Props>(
       if (E.isRight(payItemResult)) {
         onItemSubmit(payItemResult.right);
       } else {
-        payItemError.showError();
+        payItemError.show();
       }
     }
+
     const handleEnter = domUtils.onEnter(handleButtonClick);
 
-    useEffect(
-      () => payItemError.hiddenError,
-      [payItemError.hiddenError, strValue],
-    );
+    useEffect(() => payItemError.hide, [payItemError.hide, strValue]);
 
     return (
       <div className="shadow-100 px-20 py-12 bg-white">
@@ -64,13 +62,12 @@ const PayItemSeparatorInput = forwardRef<HTMLInputElement, Props>(
         />
         <p className="flex text-caption1 h-20 font-light">
           <span className="text-warning">
-            {payItemError.viewError?.message &&
-              '위 가이드와 같은 형식으로 입력 부탁해!'}
+            {payItemError.viewErr && '위 가이드와 같은 형식으로 입력 부탁해!'}
           </span>
           <span className="ml-auto">
             <span
               className={clsx(
-                payItemError.viewError ? 'text-warning' : 'text-darkgrey100',
+                payItemError.viewErr ? 'text-warning' : 'text-darkgrey100',
               )}>
               {E.isRight(payItemResult) ? payItemResult.right.name.length : 0}
             </span>

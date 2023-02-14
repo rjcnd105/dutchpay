@@ -1,8 +1,7 @@
-import type { LinksFunction } from '@remix-run/react/routeModules'
-import clsx from 'clsx'
-import type { ComponentPropsWithoutRef } from 'react'
+import clsx from 'clsx';
+import type { ComponentPropsWithoutRef } from 'react';
 
-import css from './BgIcon.css'
+import css from './BgIcon.css';
 
 export const iconNames = [
   'arrow_left',
@@ -30,17 +29,16 @@ export const iconNames = [
   'share2',
   'share1',
   'trash',
-] as const
+] as const;
 
 export type IconProps = ComponentPropsWithoutRef<'div'> & {
-  name: keyof typeof icons
-  size?: 'bg' | 'md' | 'sm' | 'xs' | 'xxs'
-}
+  name: keyof typeof icons;
+  size?: 'bg' | 'md' | 'sm' | 'xs' | 'xxs';
+};
 
-export const icons = Object.fromEntries(iconNames.map(name => [name, `/icons/${name}.svg`])) as Record<
-  typeof iconNames[number],
-  string
->
+export const icons = Object.fromEntries(
+  iconNames.map(name => [name, `/icons/${name}.svg`]),
+) as Record<(typeof iconNames)[number], string>;
 
 const Icon = ({ className, name, size = 'md', ...props }: IconProps) => (
   <div
@@ -48,6 +46,6 @@ const Icon = ({ className, name, size = 'md', ...props }: IconProps) => (
     style={{ backgroundImage: `url("${icons[name]}")` }}
     {...props}
   />
-)
+);
 
-export default Icon
+export default Icon;

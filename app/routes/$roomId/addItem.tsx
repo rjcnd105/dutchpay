@@ -7,7 +7,6 @@ import {
 } from '@remix-run/react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import { flow } from 'fp-ts/function';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import AnimatedNumber from '~/components/ui/AnimatedNumber';
@@ -15,8 +14,8 @@ import Button from '~/components/ui/Button';
 import SvgCross from '~/components/ui/Icon/Cross';
 import SvgPlusSquare from '~/components/ui/Icon/PlusSquare';
 import { PayItemD } from '~/domain/PayItemD';
-import type { Message } from '~/model/Message';
-import { isSuccessMessage } from '~/model/Message';
+import type { Message } from '~/module/Message';
+import { isSuccessMessage } from '~/module/Message';
 import BankAccountInputModal from '~/components/article/BankAccountInputModal';
 import type { ApiProps } from '~/service/api';
 import { useCallApi } from '~/service/api';
@@ -26,15 +25,21 @@ import { db } from '~/utils/db.server';
 import type { LoaderArgs } from '@remix-run/server-runtime';
 import type { OutletContextData } from '~/routes/$roomId';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
-import { schema } from '../schema';
 import type { PayerModifyDrawerProps } from '~/components/article/PayerFormDrawer';
 import PayerFormDrawer from '~/components/article/PayerFormDrawer';
 import RoomHeader from '~/components/article/RoomHeader';
 import PayItemSeparatorInput from '~/domain/PayItemD/components/PayItemSeparatorInput';
 import PayerSelectNavigation from '~/components/article/PayerSelectNavigation';
+import { flow } from '@fp-ts/core/Function';
+import { RoomD } from '~/domain/RoomD';
+import { isFailure, isSuccess } from '@fp-ts/schema';
 
 export async function loader(args: LoaderArgs) {
-  const { roomId } = schema.parse(args.params);
+  const parsedParams = RoomD.decode(args.params);
+
+  if (isFailure(parsedParams)) throw Error('invalid params');
+  const roomId = parsedParams.right.id;
+
   const d = await db.room.findUnique({
     where: {
       id: roomId,
@@ -60,7 +65,6 @@ export default function addItem() {
   const fetcher = useFetcher();
 
   const loaderData = useTypedLoaderData<typeof loader>();
-  console.log('loaderData', loaderData);
 
   const room = useOutletContext<OutletContextData>();
   if (!room || !loaderData) throw Error('room is undefined');
@@ -71,9 +75,7 @@ export default function addItem() {
   const editedPayItemInputRef = useRef<HTMLInputElement>(null);
 
   const [isBankAccountOpen, setIsBankAccountOpen] = useState(false);
-
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
-
   const [selectedPayerId, _setSelectedPayerId] = useState(
     loaderData.payers[0].id,
   );
@@ -93,8 +95,11 @@ export default function addItem() {
   // edit PayItem 선택
   const setEditedPayItem = useCallback((editPayItem: typeof editedPayItem) => {
     _setEditedPayItem(editPayItem);
+
     setEditedPayItemInputValue(
-      PayItemD.utils.makePayStrSeparators(editPayItem),
+      editPayItem === null
+        ? ''
+        : PayItemD.utils.makePayStrSeparators(editPayItem),
     );
   }, []);
 

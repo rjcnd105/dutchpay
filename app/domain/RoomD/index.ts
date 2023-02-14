@@ -1,58 +1,45 @@
-import type { Room as RoomModel } from '@prisma/client';
-import { flow } from 'fp-ts/function';
+import * as S from '@fp-ts/schema';
 
-import { stringArrLiftE, stringLiftE } from '~/utils/lift';
-import { foldValidatorS, singleErrorValidator } from '~/utils/validations';
+import { pipe } from '@fp-ts/core/Function';
+import { COMMON_ERROR_TYPE } from '~/constants/commonErrorType';
 
 export namespace RoomD {
   export const ERROR_TYPE = {
-    name: {
-      최대글자수초과: '최대글자수초과',
-      최소글자수미달: '최소글자수미달',
-    },
     payers: {
       최대인원초과: '최대인원초과',
       최소인원미달: '최소인원미달',
     },
   } as const;
 
-  const nameLengthMax = singleErrorValidator(
-    (name: RoomModel['name']) => name.length <= 13,
-    {
-      type: ERROR_TYPE.name.최대글자수초과,
-      message: '13자까지 입력 가능해',
-    },
-  );
-  const nameLengthMin = singleErrorValidator(
-    (name: RoomModel['name']) => name.length > 0,
-    {
-      type: ERROR_TYPE.name.최소글자수미달,
-      message: '이름을 입력해줘',
-    },
-  );
-  const payerMax = singleErrorValidator(
-    (payerName: string[]) => payerName.length <= 10,
-    {
-      type: ERROR_TYPE.payers.최대인원초과,
-      message: '10명까지만 가능해',
-    },
-  );
-  const payerMin = singleErrorValidator(
-    (payerName: string[]) => payerName.length > 0,
-    {
-      type: ERROR_TYPE.payers.최소인원미달,
-    },
-  );
+  export const idSchema = S.string;
 
-  export const validator = {
-    name: flow(stringLiftE, nameLengthMax, nameLengthMin),
-    payers: flow(stringArrLiftE, payerMin, payerMax),
-  } as const;
+  export const nameSchema = pipe(
+    S.string,
+    S.maxLength(13, {
+      message: () => '13자까지 입력 가능해',
+    }),
+    S.minLength(1, {
+      message: () => '이름을 입력해줘',
+    }),
+  );
+  export const nameDecode = S.decode(nameSchema);
 
-  const myValidS = {
-    name: flow(stringLiftE, nameLengthMin, nameLengthMax)('aaa'),
-    payers: flow(stringArrLiftE, payerMax)([]),
-  };
+  export const payerSchema = pipe(
+    S.array(S.string),
+    S.filter(v => v.length <= 10, {
+      message: () => '10명까지만 가능해',
+    }),
+    S.filter(v => v.length > 0, {
+      message: () => '최소 1명은 있어야 해',
+    }),
+  );
+  export const payerDecode = S.decode(payerSchema);
 
-  const f = foldValidatorS(myValidS);
+  export const schema = S.struct({
+    id: idSchema,
+    name: nameSchema,
+    payers: payerSchema,
+  });
+  export type Schema = S.Infer<typeof schema>;
+  export const decode = S.decode(schema);
 }

@@ -6,7 +6,7 @@ import SvgShare1 from '~/components/ui/Icon/Share1';
 import { share } from '~/utils/appUtils';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import Checkbox from '~/components/ui/Checkbox';
-import type { Payer, PayItem, PayItemForPayer } from '@prisma/client';
+import type { PayItem, PayItemForPayer } from '@prisma/client';
 import type { ApiProps } from '~/service/api';
 import { useCallApi } from '~/service/api';
 import clsx from 'clsx';
@@ -14,14 +14,18 @@ import numberUtils from '~/utils/numberUtils';
 import { db } from '~/utils/db.server';
 import type { DataFunctionArgs } from '@remix-run/node';
 import type { OutletContextData } from '~/routes/$roomId';
-import { schema } from '~/routes/$roomId/schema';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import RoomHeader from '~/components/article/RoomHeader';
 import PayItemSeparatorInput from '~/domain/PayItemD/components/PayItemSeparatorInput';
 import { PayItemD } from '~/domain/PayItemD';
+import { RoomD } from '~/domain/RoomD';
+import { isFailure } from '@fp-ts/schema';
 
 export async function loader(args: DataFunctionArgs) {
-  const { roomId } = schema.parse(args.params);
+  const parseResult = RoomD.decode(args.params);
+  if (isFailure(parseResult)) throw new Error('invalid roomId');
+
+  const roomId = parseResult.right.id;
 
   const [payItems, payers] = await Promise.all([
     db.payItem.findMany({
@@ -82,7 +86,9 @@ export default function calculate() {
   const setEditedPayItem = useCallback((editPayItem: typeof editedPayItem) => {
     _setEditedPayItem(editPayItem);
     setEditedPayItemInputValue(
-      PayItemD.utils.makePayStrSeparators(editPayItem),
+      editPayItem === null
+        ? ''
+        : PayItemD.utils.makePayStrSeparators(editPayItem),
     );
   }, []);
 

@@ -3,9 +3,10 @@ import { useEffect, useRef } from 'react';
 import Button from '~/components/ui/Button';
 import Drawer from '~/components/ui/Drawer';
 import SvgCross from '~/components/ui/Icon/Cross';
-import { useSetState } from '~/hooks/useSetState';
 import type { Payer } from '@prisma/client';
 import PayerForm from './PayerForm';
+import { useSnapshot } from 'valtio';
+import { proxySet } from 'valtio/utils';
 
 export type PayerModifyDrawerProps = {
   previousPayerNames: string[];
@@ -16,13 +17,14 @@ export type PayerModifyDrawerProps = {
   isOpen: boolean;
   onClose: () => void;
 };
+
 const PayerFormDrawer = ({
   previousPayerNames,
   isOpen,
   onSubmit,
   onClose,
 }: PayerModifyDrawerProps) => {
-  const tempPayers = useSetState(previousPayerNames);
+  const tempPayers = useSnapshot(proxySet<string>([]));
   const ref = useRef<HTMLInputElement>(null);
 
   function handleAdd(name: string) {
@@ -32,7 +34,7 @@ const PayerFormDrawer = ({
 
   useEffect(() => {
     if (isOpen) requestAnimationFrame(() => ref.current?.focus());
-    else tempPayers.reset();
+    else tempPayers.clear();
   }, [isOpen]);
 
   return (
@@ -44,10 +46,10 @@ const PayerFormDrawer = ({
           </Button>
         </header>
         <PayerForm
-          payers={tempPayers.state}
+          payers={[...tempPayers]}
           onPayerAdd={handleAdd}
-          onPayerRemove={tempPayers.remove}
-          onSubmit={() => onSubmit(tempPayers.defaultState, tempPayers.state)}
+          onPayerRemove={tempPayers.delete}
+          onSubmit={() => onSubmit(previousPayerNames, [...tempPayers])}
           inputRef={ref}
         />
       </div>

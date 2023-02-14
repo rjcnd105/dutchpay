@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import type { ComponentPropsWithoutRef, ComponentPropsWithRef } from 'react';
+import type { ComponentPropsWithRef } from 'react';
 
 import { CrossCircle } from '../Icon';
 
@@ -55,7 +55,9 @@ const Button = ({
       type="button"
       {...props}>
       {isLoading ? <span>loading</span> : children}
-      {hasClose && <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />}
+      {hasClose && (
+        <CrossCircle className="fill-grey200 ml-8" width={14} height={14} />
+      )}
     </button>
   );
 };

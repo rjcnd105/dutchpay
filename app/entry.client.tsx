@@ -1,13 +1,8 @@
 import { RemixBrowser } from '@remix-run/react';
 import { enableMapSet } from 'immer';
 import * as React from 'react';
-import { hydrateRoot } from 'react-dom/client';
+import { hydrate } from 'react-dom';
 
 enableMapSet();
 
-hydrateRoot(
-  document,
-  <>
-    <RemixBrowser />
-  </>,
-);
+hydrate(<RemixBrowser />, document);

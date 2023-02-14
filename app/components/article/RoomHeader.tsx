@@ -15,11 +15,16 @@ export type RoomHeaderProps = {
   Left?: JSX.Element;
   Right?: JSX.Element;
 };
-export default function RoomHeader({ roomName, roomId, Left, Right }: RoomHeaderProps) {
+export default function RoomHeader({
+  roomName,
+  roomId,
+  Left,
+  Right,
+}: RoomHeaderProps) {
   const fetcher = useFetcher();
   const [roomNameEditMode, _setRoomNameEditMode] = useState(false);
   const [newRoomName, setNewRoomName] = useState(roomName);
-  const newRoomNameError = useError(RoomD.validator.name(newRoomName));
+  const newRoomNameError = useError(RoomD.nameDecode(newRoomName));
   const setRoomNameEditMode = useCallback((v: boolean) => {
     _setRoomNameEditMode(v);
 
@@ -27,7 +32,9 @@ export default function RoomHeader({ roomName, roomId, Left, Right }: RoomHeader
       setTimeout(
         () =>
           (
-            document.querySelector('input[name=roomName]') as HTMLInputElement | null
+            document.querySelector(
+              'input[name=roomName]',
+            ) as HTMLInputElement | null
           )?.focus(),
         100,
       );
@@ -64,7 +71,7 @@ export default function RoomHeader({ roomName, roomId, Left, Right }: RoomHeader
             <Button
               type="submit"
               className="text-primary400 h-[44px] min-w-[44px]"
-              disabled={!!newRoomNameError.error}>
+              disabled={!!newRoomNameError.err}>
               <span className="underline underline-offset-1">저장</span>
             </Button>
             <input type="hidden" name="roomId" value={roomId} />

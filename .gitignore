@@ -26,6 +26,7 @@ api/index.js.map
 /cypress/videos
 /coverage
 
+.DS_Store 
 .idea
 
 app/styles

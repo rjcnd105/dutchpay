@@ -1,6 +1,5 @@
 import * as E from '@fp-ts/core/Either';
 import * as Str from '@fp-ts/core/String';
-import type { SingleValidation } from '~/utils/validations';
 
 export const liftE = <A>(v: A) => E.of(v);
 export const stringLiftE = (v: unknown) =>

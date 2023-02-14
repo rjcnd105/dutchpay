@@ -5,6 +5,16 @@ import { db } from '~/utils/db.server';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { LoaderArgs } from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/node';
+import type { UseDataFunctionReturn } from 'remix-typedjson/dist/remix';
+import { RoomD } from '~/domain/RoomD';
+import * as E from '@fp-ts/core/Either';
+import * as O from '@fp-ts/core/Option';
+import * as Z from '@effect/io/Effect';
+import { flow, pipe } from '@fp-ts/core/Function';
+import { decode } from '@fp-ts/schema';
+import * as ID from '@fp-ts/core/Identity';
+import { filterNilO } from '~/utils/fpUtils';
+import { getOrThrow } from '@fp-ts/core/Option';
 
 const getAllRoomData = (roomId: Room['id']) =>
   db.room.findUnique({
@@ -13,17 +23,25 @@ const getAllRoomData = (roomId: Room['id']) =>
     },
   });
 
-export type AllRoomData = Awaited<ReturnType<typeof getAllRoomData>>;
-export type OutletContextData = AllRoomData;
+export type OutletContextData = UseDataFunctionReturn<typeof getAllRoomData>;
+
+const loaderFn = flow(
+  decode(RoomD.idSchema),
+  O.fromEither,
+  ID.map(async result =>
+    pipe(
+      result,
+      O.map(getAllRoomData),
+      filterNilO,
+      O.match(() => {
+        throw redirect('/empty');
+      }, typedjson),
+    ),
+  ),
+);
 
 export async function loader({ request, params }: LoaderArgs) {
-  const roomId = params.roomId;
-
-  if (!roomId) throw redirect('/empty');
-
-  const roomAllData = await getAllRoomData(roomId);
-
-  return typedjson(roomAllData);
+  return loaderFn(params.roomId);
 }
 
 export default function RoomBy() {

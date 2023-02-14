@@ -1,8 +1,8 @@
-import type { ComponentPropsWithoutRef } from 'react'
+import type { ComponentPropsWithoutRef } from 'react';
 
-import Button from '~/components/ui/Button'
-import ButtonInput from '~/components/ui/ButtonInput'
-import Input from '~/components/ui/Input'
+import Button from '~/components/ui/Button';
+import ButtonInput from '~/components/ui/ButtonInput';
+import Input from '~/components/ui/Input';
 
 const buttonThemes = [
   'solid/blue',
@@ -15,9 +15,12 @@ const buttonThemes = [
   'chip/lightblue',
   'chip/blue',
   'chip/lightgrey',
-] as const
+] as const;
 
-const CompHead = (p: ComponentPropsWithoutRef<'h3'>) => <h3 className="text-white text-title mt-24 mb-12" {...p} />
+const CompHead = (p: ComponentPropsWithoutRef<'h3'>) => (
+  // eslint-disable-next-line jsx-a11y/heading-has-content
+  <h3 className="text-white text-title mt-24 mb-12" {...p} />
+);
 const components = () => {
   return (
     <div className="bg-darkgrey200 p-16">
@@ -41,6 +44,6 @@ const components = () => {
         <ButtonInput isInvalid button={{ children: '추가' }}></ButtonInput>
       </div>
     </div>
-  )
-}
-export default components
+  );
+};
+export default components;

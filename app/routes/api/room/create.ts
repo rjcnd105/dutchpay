@@ -3,7 +3,7 @@ import { redirect } from '@remix-run/node';
 import type { Method } from 'app/service/api';
 import { apiAction } from 'app/service/api';
 
-import { message } from '~/model/Message';
+import { message } from '~/module/Message';
 import pathGenerator from '~/service/pathGenerator';
 import { db } from '~/utils/db.server';
 
@@ -43,6 +43,6 @@ export const action = apiAction(API_NAME, api[API_NAME]);
 
 declare module 'app/service/api' {
   export interface ApiFns {
-    readonly [API_NAME]: typeof api[API_NAME] & ApiMethod;
+    readonly [API_NAME]: (typeof api)[API_NAME] & ApiMethod;
   }
 }

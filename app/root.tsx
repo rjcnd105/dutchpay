@@ -11,7 +11,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
-import { cssBundleHref } from '@remix-run/css-bundle';
 import { ToastContainer } from 'react-toastify';
 
 import styles from './styles/app.css';
@@ -27,7 +26,6 @@ export const meta: MetaFunction = () => ({
 });
 
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   { rel: 'stylesheet', href: pretendardCss },
   { rel: 'stylesheet', href: globalComponentStyle },
   { rel: 'stylesheet', href: styles },
@@ -36,6 +34,7 @@ export const links: LinksFunction = () => [
 ];
 
 export default function App() {
+  console.log('app');
   return (
     <html lang="ko" className="font-Pretendard text-body2 text-darkgrey300">
       <head>
