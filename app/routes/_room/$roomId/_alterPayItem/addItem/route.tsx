@@ -1,17 +1,15 @@
-import type { Payer, PayItem, Room } from '@prisma/client';
+import type { PayItem, Room } from '@prisma/client';
 import {
   Link,
   useActionData,
   useFetcher,
   useOutletContext,
 } from '@remix-run/react';
-import clsx from 'clsx';
 import { format } from 'date-fns';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import AnimatedNumber from '~/components/ui/AnimatedNumber';
 import Button from '~/components/ui/Button';
-import SvgCross from '~/components/ui/Icon/Cross';
 import SvgPlusSquare from '~/components/ui/Icon/PlusSquare';
 import { PayItemD } from '~/domain/PayItemD';
 import type { Message } from '~/module/Message';
@@ -19,26 +17,28 @@ import { isSuccessMessage } from '~/module/Message';
 import BankAccountInputModal from '~/components/article/BankAccountInputModal';
 import type { ApiProps } from '~/service/api';
 import { useCallApi } from '~/service/api';
-import numberUtils from '~/utils/numberUtils';
 import pathGenerator from '~/service/pathGenerator';
 import { db } from '~/utils/db.server';
 import type { LoaderArgs } from '@remix-run/server-runtime';
-import type { OutletContextData } from '~/routes/$roomId';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import type { PayerModifyDrawerProps } from '~/components/article/PayerFormDrawer';
 import PayerFormDrawer from '~/components/article/PayerFormDrawer';
 import RoomHeader from '~/components/article/RoomHeader';
-import PayItemSeparatorInput from '~/domain/PayItemD/components/PayItemSeparatorInput';
+import PayItemSeparatorInput from '~/domain/PayItemD/modules/PayItemSeparatorInput';
 import PayerSelectNavigation from '~/components/article/PayerSelectNavigation';
 import { flow } from '@fp-ts/core/Function';
 import { RoomD } from '~/domain/RoomD';
-import { isFailure, isSuccess } from '@fp-ts/schema';
+import { isFailure } from '@fp-ts/schema';
+import PayListItem from './PayListItem';
+import usePayItemSeparatorInput from '~/domain/PayItemD/modules/PayItemSeparatorInput/usePayItemSeparatorInput';
+import type { RoomOutletContextData } from '~/routes/_room/_index';
 
 export async function loader(args: LoaderArgs) {
-  const parsedParams = RoomD.decode(args.params);
+  const roomIdResult = RoomD.idDecode(args.params.roomId);
 
-  if (isFailure(parsedParams)) throw Error('invalid params');
-  const roomId = parsedParams.right.id;
+  if (isFailure(roomIdResult)) throw Error('invalid params');
+
+  const roomId = roomIdResult.right;
 
   const d = await db.room.findUnique({
     where: {
@@ -61,18 +61,16 @@ export async function loader(args: LoaderArgs) {
   return typedjson(d);
 }
 
-export default function addItem() {
+export default function route() {
   const fetcher = useFetcher();
 
   const loaderData = useTypedLoaderData<typeof loader>();
 
-  const room = useOutletContext<OutletContextData>();
+  const room = useOutletContext<RoomOutletContextData>();
   if (!room || !loaderData) throw Error('room is undefined');
 
   const actionData = useActionData<Message>();
-  const addPayItemInputRef = useRef<HTMLInputElement>(null);
   const addPayItemScrollRef = useRef<HTMLDivElement>(null);
-  const editedPayItemInputRef = useRef<HTMLInputElement>(null);
 
   const [isBankAccountOpen, setIsBankAccountOpen] = useState(false);
   const [isModifyPayerMode, setIsModifyPayerMode] = useState(false);
@@ -80,8 +78,6 @@ export default function addItem() {
     loaderData.payers[0].id,
   );
   const [editedPayItem, _setEditedPayItem] = useState<PayItem | null>(null);
-  const [editedPayItemInputValue, setEditedPayItemInputValue] = useState('');
-  const [payItemInputValue, setPayItemInputValue] = useState('');
 
   const callPayItemCreateApi = useCallApi('payItem/create', 'post');
   const callPayItemDeleteApi = useCallApi('payItem/delete', 'delete');
@@ -92,11 +88,13 @@ export default function addItem() {
     _setEditedPayItem(null),
   );
 
+  const payItemInput = usePayItemSeparatorInput();
+
   // edit PayItem 선택
   const setEditedPayItem = useCallback((editPayItem: typeof editedPayItem) => {
     _setEditedPayItem(editPayItem);
 
-    setEditedPayItemInputValue(
+    payItemInput.setValue(
       editPayItem === null
         ? ''
         : PayItemD.utils.makePayStrSeparators(editPayItem),
@@ -140,11 +138,6 @@ export default function addItem() {
     setIsModifyPayerMode(false);
   };
 
-  // PayerId가 없을시 세팅해줌.
-  // useEffect(() => {
-  //   if (!selectedPayerId) setSelectedPayerId(loaderData.payers[0].id);
-  // }, []);
-
   // 기존에 selected 되어있던 payer을 삭제한 경우 다시 새로운 payers[0]을 selected
   useEffect(() => {
     if (!actionData || !room) return;
@@ -162,7 +155,7 @@ export default function addItem() {
 
   function handlePayItemCreate(data: ApiProps['payItem/create']) {
     callPayItemCreateApi.submit(fetcher, data);
-    setPayItemInputValue('');
+    payItemInput.setValue('');
     setTimeout(() => {
       addPayItemScrollRef.current?.scrollTo({
         top: addPayItemScrollRef.current.clientHeight,
@@ -263,9 +256,7 @@ export default function addItem() {
                       payerId: selectedPayerId,
                     })
                   }
-                  value={editedPayItemInputValue}
-                  onChange={e => setEditedPayItemInputValue(e.target.value)}
-                  ref={editedPayItemInputRef}
+                  {...payItemInput.props}
                 />
               </div>
             ) : (
@@ -279,11 +270,7 @@ export default function addItem() {
                       roomId: room.id,
                     })
                   }
-                  value={payItemInputValue}
-                  onChange={e => {
-                    setPayItemInputValue(e.target.value);
-                  }}
-                  ref={addPayItemInputRef}
+                  {...payItemInput.props}
                 />
               </div>
             )}
@@ -314,49 +301,4 @@ const GoCalculatePageButton = ({ roomId }: { roomId: Room['id'] }) => (
     className="flex justify-center items-center w-56 h-44 text-primary400 underline underline-offset-[2px]">
     정산하기
   </Link>
-);
-
-type PayListItemProps = {
-  payItem: PayItem;
-  payerId: Payer['id'];
-  isEditedItem: boolean;
-  setEditedPayItem(payItem: PayItem | null): void;
-  handlePayItemDelete(apiProps: ApiProps['payItem/delete']): void;
-};
-const PayListItem = ({
-  payItem,
-  payerId,
-  isEditedItem,
-  setEditedPayItem,
-  handlePayItemDelete,
-}: PayListItemProps) => (
-  <div
-    key={payItem.id}
-    className="flex h-44 border-b-1 border-b-lightgrey200 text-darkgrey300">
-    <Button
-      className={clsx(
-        'flex flex-auto text-body2 hover:font-semibold',
-        isEditedItem && 'font-semibold text-primary400',
-      )}
-      size="sm"
-      onClick={() => {
-        setEditedPayItem(isEditedItem ? null : payItem);
-      }}>
-      <span>{payItem.name}</span>
-      <span className="ml-auto underline underline-offset-1">
-        {numberUtils.thousandsSeparators(payItem.amount)}
-      </span>
-    </Button>
-    <Button
-      className="min-w-32 stroke-darkgrey100 hover:stroke-darkgrey200"
-      size="sm"
-      onClick={() =>
-        handlePayItemDelete({
-          payItemId: payItem.id,
-          payerId,
-        })
-      }>
-      <SvgCross width={16} height={16}></SvgCross>
-    </Button>
-  </div>
 );

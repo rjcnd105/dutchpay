@@ -33,6 +33,8 @@ export async function action({ request }: DataFunctionArgs) {
     },
   });
 
+  console.log('room', room);
+
   return redirect(pathGenerator.room.addItem({ roomId: room.id }));
 }
 

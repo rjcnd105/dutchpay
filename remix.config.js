@@ -9,4 +9,8 @@ module.exports = {
   server: process.env.VERCEL ? './server.js' : undefined,
   cacheDirectory: './node_modules/.cache/remix',
   ignoredRouteFiles: ['**/.*', '**/*.css', '**/*.test.{js,jsx,ts,tsx}'],
+  future: {
+    unstable_postcss: true,
+    v2_routeConvention: true,
+  },
 };

@@ -17,8 +17,10 @@ export default function Rooms() {
   const rooms = useLoaderData<LoaderData>();
   return (
     <ul>
-      {rooms.map(user => (
-        <li key={user.id}>{user.name}</li>
+      {rooms.map(room => (
+        <li key={room.id}>
+          {room.name}: {room.id}
+        </li>
       ))}
     </ul>
   );

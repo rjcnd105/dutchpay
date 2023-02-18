@@ -12,6 +12,7 @@ export namespace RoomD {
   } as const;
 
   export const idSchema = S.string;
+  export const idDecode = S.decode(idSchema);
 
   export const nameSchema = pipe(
     S.string,

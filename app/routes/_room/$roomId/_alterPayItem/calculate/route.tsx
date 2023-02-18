@@ -13,13 +13,13 @@ import clsx from 'clsx';
 import numberUtils from '~/utils/numberUtils';
 import { db } from '~/utils/db.server';
 import type { DataFunctionArgs } from '@remix-run/node';
-import type { OutletContextData } from '~/routes/$roomId';
 import { typedjson, useTypedLoaderData } from 'remix-typedjson';
 import RoomHeader from '~/components/article/RoomHeader';
-import PayItemSeparatorInput from '~/domain/PayItemD/components/PayItemSeparatorInput';
+import Index from '~/domain/PayItemD/modules/PayItemSeparatorInput';
 import { PayItemD } from '~/domain/PayItemD';
 import { RoomD } from '~/domain/RoomD';
 import { isFailure } from '@fp-ts/schema';
+import type { RoomOutletContextData } from '~/routes/_room/_index';
 
 export async function loader(args: DataFunctionArgs) {
   const parseResult = RoomD.decode(args.params);
@@ -74,7 +74,7 @@ const makeItemId = ({
 //   }, [])
 // }
 
-export default function calculate() {
+export default function route() {
   const fetcher = useFetcher();
   const { payers, payItems } = useTypedLoaderData<typeof loader>();
   const editedPayItemInputRef = useRef<HTMLInputElement>(null);
@@ -98,7 +98,7 @@ export default function calculate() {
     callPayItemUpdateApi.submit(fetcher, data);
   }
 
-  const room = useOutletContext<OutletContextData>();
+  const room = useOutletContext<RoomOutletContextData>();
   if (!room) return null;
 
   const callAddPayItemsExcept = useCallApi('payer/addPayItemsExcept', 'post');
@@ -283,7 +283,7 @@ export default function calculate() {
         </Button>
         {!!editedPayItem && (
           <div className="absolute inset-0">
-            <PayItemSeparatorInput
+            <Index
               buttonText="수정"
               onItemSubmit={payItem =>
                 handlePayItemUpdate({

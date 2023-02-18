@@ -3,7 +3,6 @@ import * as E from '@fp-ts/core/Either';
 import * as AST from '@fp-ts/schema/AST';
 import type * as PR from '@fp-ts/schema/ParseResult';
 import * as O from '@fp-ts/core/Option';
-import * as ID from '@fp-ts/core/Identity';
 import { compose, flow, pipe } from '@fp-ts/core/Function';
 import {
   CustomId,
@@ -17,7 +16,7 @@ import {
 } from '@fp-ts/schema/annotation/AST';
 import type { LazyArg } from '@fp-ts/core/src/Function';
 import type { NonEmptyReadonlyArray } from '@fp-ts/core/ReadonlyArray';
-import { composeR } from '~/utils/fpUtils';
+import { composeR, imap } from '~/utils/fpUtils';
 
 export interface ErrorData<T extends string> {
   message: string;
@@ -91,7 +90,7 @@ df(1)(2)(3); /*?*/
 
 // Right인 경우는 Schema에설정해 놓은 에러, Left인 경우는 defaultError로 구분할 수 있다.
 export const firstErrorWithDefault = (defaultError: ErrorData<string>) =>
-  flow(getFirstAnnotationX(getError), ID.map(E.fromOption(() => defaultError)));
+  flow(getFirstAnnotationX(getError), imap(E.fromOption(() => defaultError)));
 
 // 위의 Right, Left 케이스를 하나로 합친다.
 export const getFirstErrorWithDefault = flow(

@@ -11,6 +11,7 @@ import { RoomD } from '~/domain/RoomD';
 import useError from '~/hooks/useError';
 import domUtils from '~/utils/domUtils';
 import * as O from '@fp-ts/core/Option';
+import { lazyNull } from '~/constants/common';
 
 type Props = {
   payers: Payer['name'][];
@@ -61,7 +62,7 @@ const PayerForm = React.memo(
           />
 
           <span className="flex text-caption1 font-light mt-4 text-right text-grey300">
-            {nameError.renderViewErr(error => (
+            {nameError.render(lazyNull, error => (
               <span className="text-warning">{error.message}</span>
             ))}
             <span
