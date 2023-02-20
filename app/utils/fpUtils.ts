@@ -1,10 +1,11 @@
 import * as E from '@fp-ts/core/Either';
 import * as O from '@fp-ts/core/Option';
 import type * as PR from '@fp-ts/schema/ParseResult';
-import { compose, flow, pipe } from '@fp-ts/core/Function';
+import { flow, pipe } from '@fp-ts/core/Function';
 import type { ErrorData } from '~/module/schema/schemaError';
 import { resultWithDefaultError } from '~/module/schema/schemaError';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { DEFAULT_ERROR } from '~/constants/commonErrorType';
 
 export const alt =
   <E2>(e2: E2) =>
@@ -33,14 +34,21 @@ export const imap =
   (self: A): B =>
     f(self);
 
-export const resultRender = flow(
-  resultWithDefaultError,
-  // 타입스크립트는 point free를 싫어해....ㅠㅠㅠ
-  resultFn =>
-    <A>(r: PR.ParseResult<A>) =>
-    (
-      onSuccess: (a: A) => ReactNode,
-      onFailure: (e: ErrorData<string>) => ReactNode,
-    ) =>
-      pipe(resultFn(r), E.match(onFailure, onSuccess)),
-);
+type ResultRender<A> = {
+  onSuccess: (a: A) => ReactNode;
+  onFailure: (e: ErrorData<string>) => ReactNode;
+};
+
+export const resultRender = (defaultError: ErrorData<string>) =>
+  pipe(
+    defaultError,
+    resultWithDefaultError,
+    // 타입스크립트는 point free를 싫어해....ㅠㅠㅠ
+    resultFn =>
+      <A>(r: PR.ParseResult<A>) =>
+      (matchRender: ResultRender<A>) =>
+        pipe(
+          resultFn(r),
+          E.match(matchRender.onFailure, matchRender.onSuccess),
+        ),
+  );

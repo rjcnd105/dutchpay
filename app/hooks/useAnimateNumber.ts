@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { Subscriber, useMotionValue, useSpring } from "framer-motion";
+import { useEffect } from 'react';
+import type { Subscriber } from 'framer-motion';
+import { useMotionValue, useSpring } from 'framer-motion';
 
 export type UseAnimateNumberProps = {
   value: number;

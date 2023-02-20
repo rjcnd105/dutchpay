@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router';
-import type { RoomOutletContextData } from '~/routes/_room/$roomId/_index';
+import type { RoomOutletContextData } from '~/routes/_room/_index';
 
 const route = () => {
   const data = useOutletContext<RoomOutletContextData>();

@@ -29,7 +29,9 @@ const components = () => {
       <CompHead>Button</CompHead>
       <div className="grid grid-cols-5">
         {buttonThemes.map(v => (
-          <Button theme={v}>{v}</Button>
+          <Button key={v} theme={v}>
+            {v}
+          </Button>
         ))}
         <Button theme="solid/blue" size="sm">
           sm

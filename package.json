@@ -10,7 +10,7 @@
     "build:prisma-gen": "prisma generate",
     "build:remix": "remix build",
     "dev": "PORT=3300 run-p dev:*",
-    "dev:remix": "remix dev",
+    "dev:remix": "remix dev --debug",
     "dev:prisma-gen": "prisma generate --watch",
     "start": "remix-serve build",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",

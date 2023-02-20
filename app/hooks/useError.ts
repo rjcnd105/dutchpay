@@ -1,17 +1,9 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type * as PR from '@fp-ts/schema/ParseResult';
 import * as O from '@fp-ts/core/Option';
-import type { ErrorData } from '~/module/schema/schemaError';
-import {
-  getFirstErrorWithDefault,
-  result2ErrorWithDefault,
-} from '~/module/schema/schemaError';
+import { result2ErrorWithDefault } from '~/module/schema/schemaError';
 import { DEFAULT_ERROR } from '~/constants/commonErrorType';
-import { pipe } from '@fp-ts/core/Function';
-import { lazyNull } from '~/constants/common';
-import { isSuccess } from '@fp-ts/schema';
 import { resultRender } from '~/utils/fpUtils';
-import * as F from "@fp-ts/core/Function
 
 const defaultOpt = {
   defaultHideError: true,
@@ -33,7 +25,6 @@ const useError = <A>(value: PR.ParseResult<A>, opt?: typeof defaultOpt) => {
   const isViewErr = O.isSome(viewErr);
 
   const render = resultRender(DEFAULT_ERROR)(value);
-
 
   return {
     value,

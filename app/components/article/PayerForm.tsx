@@ -62,9 +62,13 @@ const PayerForm = React.memo(
           />
 
           <span className="flex text-caption1 font-light mt-4 text-right text-grey300">
-            {nameError.render(lazyNull, error => (
-              <span className="text-warning">{error.message}</span>
-            ))}
+            {nameError.render({
+              onSuccess: () => null,
+              onFailure: error =>
+                nameError.isViewErr && (
+                  <span className="text-warning">{error.message}</span>
+                ),
+            })}
             <span
               className={clsx(
                 'text-darkgrey100 ml-auto',

@@ -1,8 +1,6 @@
 import clsx from 'clsx';
 import type { ComponentPropsWithoutRef } from 'react';
 
-import css from './BgIcon.css';
-
 export const iconNames = [
   'arrow_left',
   'arrow_right',
